@@ -1,0 +1,27 @@
+{
+  "name": "outils-wlu",
+  "main": "src/worker.js",
+  "workers_dev": true,
+  "preview_urls": false,
+  "compatibility_date": "2026-02-10",
+  "vars": {
+    // Ces IDs de base Notion ne sont pas des secrets
+    "NOTION_PROJECTS_DB_ID": "3039264124f280e08392db597ec52ff6",
+    "NOTION_RESPONSES_DB_ID": "3039264124f280058c29daad9ec26a6c"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  }
+}
