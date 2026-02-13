@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ce qui change, ce qui reste — We Love Users</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:    #F4EFE6;
+    --cream-dk: #E8E0D0;
+    --anthracite: #2B2B2B;
+    --bronze:   #A0763A;
+    --bronze-lt:#C4954D;
+    --warm-grey:#888070;
+    --mid:      #6B6458;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--anthracite);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 17px;
+  }
+
+  /* ── LAYOUT ─────────────────────────────── */
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  header {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--cream-dk);
+  }
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 6vw, 58px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--anthracite);
+    margin-bottom: 24px;
+  }
+
+  header p {
+    color: var(--mid);
+    font-size: 15px;
+    max-width: 500px;
+  }
+
+  /* ── NAV INDEX ───────────────────────────── */
+  .nav-index {
+    display: flex;
+    gap: 6px 20px;
+    flex-wrap: wrap;
+    margin-top: 36px;
+  }
+
+  .nav-index a {
+    font-size: 13px;
+    color: var(--bronze);
+    text-decoration: none;
+    border-bottom: 1px solid var(--cream-dk);
+    padding-bottom: 1px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .nav-index a:hover { color: var(--anthracite); border-color: var(--anthracite); }
+
+  /* ── SECTION ─────────────────────────────── */
+  section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--cream-dk);
+  }
+  section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--anthracite);
+    margin-bottom: 20px;
+  }
+
+  p { margin-bottom: 16px; color: var(--anthracite); }
+  p:last-child { margin-bottom: 0; }
+
+  .lead {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--anthracite);
+    margin-bottom: 20px;
+  }
+
+  /* Before / After comparison */
+  .shift {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--cream-dk);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+  .shift-col {
+    background: var(--cream);
+    padding: 20px 24px;
+  }
+  .shift-col .shift-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .shift-col p { font-size: 15px; margin: 0; }
+  .shift-col:last-child .shift-label { color: var(--bronze); }
+
+  /* Pull quote */
+  blockquote {
+    border-left: 3px solid var(--bronze);
+    margin: 32px 0;
+    padding: 4px 0 4px 24px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--anthracite);
+    line-height: 1.55;
+  }
+
+  /* ── IA SUBSECTIONS ─────────────────────── */
+  .ia-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--cream-dk);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+  .ia-item {
+    background: var(--cream);
+    padding: 20px 20px 24px;
+  }
+  .ia-item strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--anthracite);
+    margin-bottom: 8px;
+  }
+  .ia-item p {
+    font-size: 14px;
+    color: var(--mid);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── PRINCIPLES GRID ────────────────────── */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--cream-dk);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+
+  .principle-card {
+    background: var(--cream);
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .principle-card:hover { background: #EDE7DA; }
+  .principle-card.open { background: var(--anthracite); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 24px 20px;
+  }
+
+  .principle-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    margin-top: 2px;
+  }
+  .principle-card .principle-icon path,
+  .principle-card .principle-icon circle,
+  .principle-card .principle-icon line,
+  .principle-card .principle-icon rect,
+  .principle-card .principle-icon polyline,
+  .principle-card .principle-icon ellipse {
+    stroke: var(--bronze);
+    transition: stroke 0.2s;
+  }
+  .principle-card.open .principle-icon path,
+  .principle-card.open .principle-icon circle,
+  .principle-card.open .principle-icon line,
+  .principle-card.open .principle-icon rect,
+  .principle-card.open .principle-icon polyline,
+  .principle-card.open .principle-icon ellipse {
+    stroke: var(--bronze-lt);
+  }
+
+  .card-title-wrap { flex: 1; }
+
+  .card-number {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-grey);
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .principle-card.open .card-number { color: #7A6E60; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--anthracite);
+    transition: color 0.2s;
+  }
+  .principle-card.open .card-title { color: var(--cream); }
+
+  .card-toggle {
+    width: 20px;
+    height: 20px;
+    color: var(--warm-grey);
+    margin-top: 4px;
+    flex-shrink: 0;
+    transition: transform 0.3s, color 0.2s;
+  }
+  .principle-card.open .card-toggle { transform: rotate(45deg); color: var(--bronze-lt); }
+
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .card-body-inner {
+    padding: 0 24px 24px;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: #A09585;
+  }
+  .principle-card.open .card-body-inner { color: #C4B99E; }
+
+  /* ── IMPLICATIONS ───────────────────────── */
+  .impl-list {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--cream-dk);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .impl-item {
+    background: var(--cream);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: baseline;
+  }
+  .impl-key {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--bronze);
+  }
+  .impl-val { font-size: 15px; color: var(--anthracite); }
+
+  /* ── PLATFORM ───────────────────────────── */
+  .platform-box {
+    border: 1px solid var(--cream-dk);
+    border-radius: 6px;
+    padding: 28px 32px;
+    margin-top: 28px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .platform-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
+  }
+  .platform-url {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--bronze);
+    display: block;
+    margin-bottom: 12px;
+  }
+  .platform-features {
+    list-style: none;
+    font-size: 14px;
+    color: var(--mid);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .platform-features li::before {
+    content: '— ';
+    color: var(--bronze);
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ─────────────────────────────── */
+  footer {
+    padding: 40px 0 64px;
+  }
+  .sig-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--anthracite);
+  }
+  .sig-sub {
+    font-size: 13px;
+    color: var(--warm-grey);
+    margin-top: 4px;
+  }
+
+  /* ── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 600px) {
+    .principles-grid { grid-template-columns: 1fr; }
+    .shift { grid-template-columns: 1fr; }
+    .ia-grid { grid-template-columns: 1fr; }
+    .impl-item { grid-template-columns: 1fr; gap: 6px; }
+    .platform-box { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ── HEADER ─────────────────────────────── -->
+  <header>
+    <p class="eyebrow">We Love Users · Note interne · Février 2026</p>
+    <h1>Ce qui change,<br>ce qui reste.</h1>
+    <p>À l'attention des membres du collectif.</p>
+    <nav class="nav-index" aria-label="Sommaire">
+      <a href="#changement">Ce qui change</a>
+      <a href="#ia">Quid de l'IA ?</a>
+      <a href="#principes">Notre façon de travailler</a>
+      <a href="#implications">Implications concrètes</a>
+      <a href="#plateforme">La plateforme</a>
+    </nav>
+  </header>
+
+  <!-- ── INTRO ──────────────────────────────── -->
+  <section id="intro">
+    <p class="lead">Cette note a deux objectifs. D'abord, vous mettre en contexte sur le repositionnement de We Love Users — pour que vous puissiez en comprendre la logique, et vous en saisir si vous le jugez utile. Ensuite, mettre par écrit quelque chose qui existait déjà à l'état implicite&nbsp;: notre façon de travailler.</p>
+    <p>Ce n'est pas un règlement intérieur. C'est une tentative de nommer ce que nous savons déjà — pour que ça reste vrai même quand nous ne travaillons pas ensemble dans la même pièce.</p>
+  </section>
+
+  <!-- ── CE QUI CHANGE ──────────────────────── -->
+  <section id="changement">
+    <p class="section-label">Ce qui change</p>
+    <h2>Un nouveau cadre pour une valeur ancienne</h2>
+    <p>Je repositionne We Love Users en Cabinet de Conseil en Sécurité Décisionnelle, spécialisé dans les écosystèmes de produits et services numériques complexes.</p>
+    <p>En pratique, l'entrée dans nos missions n'est plus «&nbsp;faites-nous une étude UX&nbsp;» — c'est «&nbsp;aidez-nous à prendre une décision engageante sans risquer de nous tromper&nbsp;». La recherche terrain reste le cœur de notre valeur. Ce qui change, c'est l'interlocuteur visé et la façon de cadrer la mission.</p>
+
+    <div class="shift">
+      <div class="shift-col">
+        <span class="shift-label">Avant</span>
+        <p>La commande venait d'un UX Lead ou d'un Product Designer cherchant à valider une interface.</p>
+      </div>
+      <div class="shift-col">
+        <span class="shift-label">Maintenant</span>
+        <p>L'enjeu est de convaincre un CPO, un VP Product ou un CEO que l'incertitude sur leurs hypothèses mérite d'être levée avant de décider.</p>
+      </div>
+    </div>
+
+    <p>Ce glissement change la façon dont les missions sont cadrées en amont — pas la façon dont elles sont menées sur le terrain.</p>
+  </section>
+
+  <!-- ── IA ─────────────────────────────────── -->
+  <section id="ia">
+    <p class="section-label">Ce que ça change pour notre pratique</p>
+    <h2>Quid de l'IA&nbsp;?</h2>
+    <p>L'IA est déjà dans nos outils — et elle va y rester. La question n'est pas de savoir si c'est pertinent de l'utiliser, mais comment l'utiliser sans perdre ce qui fait la valeur de notre travail.</p>
+
+    <blockquote>Apprendre à faire avec, avec discernement et prudence. Ni rejet, ni adoption naïve.</blockquote>
+
+    <div class="ia-grid">
+      <div class="ia-item">
+        <strong>C'est ok d'utiliser des outils IA</strong>
+        <p>Transcription, structuration, reformulation — ces usages sont légitimes. Ils libèrent du temps pour l'interprétation et le jugement. La condition : être conscient de ce qu'on délègue et ce qu'on garde. Le résultat d'un modèle n'est pas une analyse — c'est un point de départ.</p>
+      </div>
+      <div class="ia-item">
+        <strong>Observer comment ça change nos pratiques</strong>
+        <p>L'IA modifie notre rapport à certaines tâches. Certaines choses deviennent plus rapides, d'autres moins visibles dans leur complexité. C'est important de garder un œil critique sur ces glissements. Si vous observez des effets intéressants, faites-les remonter.</p>
+      </div>
+      <div class="ia-item">
+        <strong>Observer ce que ça change chez nos clients</strong>
+        <p>De plus en plus d'interfaces sont conçues avec des outils génératifs. Les patterns, les choix d'interaction, les formulations — tout ça peut avoir une texture particulière. Être capable de le détecter fait partie de notre expertise terrain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRINCIPES ──────────────────────────── -->
+  <section id="principes">
+    <p class="section-label">Ce qui reste</p>
+    <h2>Notre façon de travailler</h2>
+    <p>Ce qui suit n'est pas nouveau. C'est une tentative de nommer ce qui guide déjà notre travail. Cliquez sur chaque principe pour le développer.</p>
+
+    <div class="principles-grid">
+
+      <!-- 1 -->
+      <div class="principle-card" onclick="toggle(this)">
+        <div class="card-header">
+          <svg class="principle-icon" viewBox="0 0 36 36" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Anchor -->
+            <circle cx="18" cy="10" r="4"/>
+            <line x1="18" y1="14" x2="18" y2="30"/>
+            <path d="M10 18 C10 26 26 26 26 18"/>
+            <line x1="10" y1="18" x2="8" y2="18"/>
+            <line x1="26" y1="18" x2="28" y2="18"/>
+          </svg>
+          <div class="card-title-wrap">
+            <div class="card-number">Principe 1</div>
+            <div class="card-title">La fidélité au terrain, au-delà du brief</div>
+          </div>
+          <svg class="card-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-body-inner">
+            L'étude répond à la commande. Le rapport restitue le terrain. Ces deux choses ne sont pas identiques — et c'est tant mieux. Ce qu'un participant révèle spontanément a autant de valeur que ce qui était cherché. Un insight hors périmètre mais significatif appartient au rapport, clairement identifié comme tel.
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="principle-card" onclick="toggle(this)">
+        <div class="card-header">
+          <svg class="principle-icon" viewBox="0 0 36 36" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Branching paths -->
+            <line x1="18" y1="6" x2="18" y2="14"/>
+            <path d="M18 14 L10 24"/>
+            <path d="M18 14 L18 24"/>
+            <path d="M18 14 L26 24"/>
+            <circle cx="10" cy="27" r="2.5"/>
+            <circle cx="18" cy="27" r="2.5"/>
+            <circle cx="26" cy="27" r="2.5"/>
+          </svg>
+          <div class="card-title-wrap">
+            <div class="card-number">Principe 2</div>
+            <div class="card-title">Interpréter sans réduire la complexité</div>
+          </div>
+          <svg class="card-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-body-inner">
+            Face à un verbatim ambigu ou une observation contradictoire, ne pas trancher arbitrairement. Exposer les interprétations possibles et ce qu'elles impliquent chacune. C'est une forme d'honnêteté intellectuelle — et ça donne au commanditaire les moyens de décider, plutôt que de lui imposer une conclusion.
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="principle-card" onclick="toggle(this)">
+        <div class="card-header">
+          <svg class="principle-icon" viewBox="0 0 36 36" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Zoom in / zoom out -->
+            <circle cx="13" cy="15" r="6"/>
+            <line x1="11" y1="15" x2="15" y2="15"/>
+            <line x1="13" y1="13" x2="13" y2="17"/>
+            <line x1="17.2" y1="19.2" x2="22" y2="24"/>
+            <circle cx="25" cy="23" r="4"/>
+            <line x1="23" y1="23" x2="27" y2="23"/>
+          </svg>
+          <div class="card-title-wrap">
+            <div class="card-number">Principe 3</div>
+            <div class="card-title">Observer à plusieurs échelles</div>
+          </div>
+          <svg class="card-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-body-inner">
+            Un même sujet mérite d'être regardé au microscope et au télescope. Au microscope : l'interaction précise, le verbatim exact, la friction dans un geste. Au télescope : le parcours global, le contexte organisationnel, la logique d'usage dans la durée. Ces deux lectures ne se contredisent pas — elles se complètent.
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="principle-card" onclick="toggle(this)">
+        <div class="card-header">
+          <svg class="principle-icon" viewBox="0 0 36 36" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Layered pages -->
+            <rect x="10" y="14" width="18" height="14" rx="1.5"/>
+            <path d="M13 14 V11 a1.5 1.5 0 0 1 1.5-1.5 h9 A1.5 1.5 0 0 1 25 11 v3"/>
+            <line x1="14" y1="19" x2="22" y2="19"/>
+            <line x1="14" y1="23" x2="19" y2="23"/>
+          </svg>
+          <div class="card-title-wrap">
+            <div class="card-number">Principe 4</div>
+            <div class="card-title">La forme est au service du lecteur</div>
+          </div>
+          <svg class="card-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-body-inner">
+            Un livrable doit fonctionner pour plusieurs lecteurs aux besoins différents. Le directeur qui lit en diagonale, le designer qui cherche les détails d'interaction, le product manager qui veut les recommandations. La structure, la densité, la hiérarchie de l'information — tout ça se décide en pensant à qui va lire.
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="principle-card" onclick="toggle(this)">
+        <div class="card-header">
+          <svg class="principle-icon" viewBox="0 0 36 36" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Balance scale -->
+            <line x1="18" y1="7" x2="18" y2="29"/>
+            <line x1="18" y1="13" x2="10" y2="17"/>
+            <line x1="18" y1="13" x2="26" y2="17"/>
+            <ellipse cx="10" cy="19" rx="4" ry="2"/>
+            <ellipse cx="26" cy="19" rx="4" ry="2"/>
+            <line x1="14" y1="29" x2="22" y2="29"/>
+          </svg>
+          <div class="card-title-wrap">
+            <div class="card-number">Principe 5</div>
+            <div class="card-title">Livrer engage une responsabilité</div>
+          </div>
+          <svg class="card-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-body-inner">
+            Un rapport n'est pas produit pour clore une mission — il va influencer des décisions, parfois à des niveaux hiérarchiques que nous n'avons pas rencontrés. Ça implique de la rigueur sur ce qu'on affirme, comment on le dit, et ce qu'on choisit de mettre en avant. Les autres équipes, les autres niveaux, parfois l'utilisateur final, sont des bénéficiaires indirects.
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="principle-card" onclick="toggle(this)">
+        <div class="card-header">
+          <svg class="principle-icon" viewBox="0 0 36 36" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Two equal nodes -->
+            <circle cx="11" cy="18" r="5"/>
+            <circle cx="25" cy="18" r="5"/>
+            <line x1="16" y1="18" x2="20" y2="18"/>
+            <path d="M11 13 L11 8"/>
+            <path d="M25 13 L25 8"/>
+            <line x1="8" y1="8" x2="14" y2="8"/>
+            <line x1="22" y1="8" x2="28" y2="8"/>
+          </svg>
+          <div class="card-title-wrap">
+            <div class="card-number">Principe 6</div>
+            <div class="card-title">Une collaboration entre pairs</div>
+          </div>
+          <svg class="card-toggle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-body-inner">
+            Je confie des missions sans expliquer comment faire votre métier. Je transmets un cadre et une vision, pas des règles. Ce n'est pas de la sous-traitance — c'est une coopération entre professionnels. Ce mode de fonctionnement n'est possible que si chacun se sent libre de signaler un doute, de questionner un cadrage, ou de remonter quelque chose d'inattendu.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── IMPLICATIONS ───────────────────────── -->
+  <section id="implications">
+    <p class="section-label">Implications concrètes</p>
+    <h2>Ce que ça change pour vous</h2>
+    <p>En termes de pratique terrain : pas grand-chose. Vous continuez à mener les études en autonomie, selon votre jugement professionnel. Deux points méritent néanmoins votre attention.</p>
+
+    <div class="impl-list">
+      <div class="impl-item">
+        <span class="impl-key">Le cadrage amont</span>
+        <span class="impl-val">Les missions arrivent désormais avec une question décisionnelle plus explicite. Si ce n'est pas le cas, c'est utile de le signaler — pour que nous puissions recadrer ensemble avant de démarrer.</span>
+      </div>
+      <div class="impl-item">
+        <span class="impl-key">Le niveau de restitution</span>
+        <span class="impl-val">Les conclusions doivent pouvoir fonctionner pour un CoDir, pas seulement pour une équipe produit. Synthèse, formulation des recommandations, niveau d'abstraction — ça se prépare en conséquence.</span>
+      </div>
+    </div>
+
+    <p style="margin-top: 20px;">Si vous avez des questions ou des retours sur ce repositionnement, ils sont bienvenus.</p>
+  </section>
+
+  <!-- ── PLATEFORME ──────────────────────────── -->
+  <section id="plateforme">
+    <p class="section-label">La plateforme interne</p>
+    <h2>team.weloveusers.com</h2>
+    <p>J'ai commencé à construire une plateforme pour centraliser les ressources utiles au collectif.</p>
+
+    <div class="platform-box">
+      <svg class="platform-icon" viewBox="0 0 40 40" fill="none" stroke="var(--bronze)" stroke-width="1.5" stroke-linecap="round">
+        <rect x="6" y="8" width="28" height="24" rx="3"/>
+        <line x1="6" y1="14" x2="34" y2="14"/>
+        <circle cx="10" cy="11" r="1.2"/>
+        <circle cx="14" cy="11" r="1.2"/>
+        <circle cx="18" cy="11" r="1.2"/>
+        <line x1="12" y1="20" x2="28" y2="20"/>
+        <line x1="12" y1="25" x2="22" y2="25"/>
+      </svg>
+      <div>
+        <a class="platform-url" href="https://team.weloveusers.com">team.weloveusers.com</a>
+        <ul class="platform-features">
+          <li><strong>Modèles et livrables</strong> — Accès aux modèles Google Docs avec leur contexte d'usage</li>
+          <li><strong>Questionnaires UX</strong> — SUS, DEEP, UMUX et autres, directement utilisables</li>
+          <li><strong>Ressources IA</strong> — Recommandations d'usage, prompts, outils — par finalité de mission</li>
+        </ul>
+        <p style="font-size:13px; color: var(--warm-grey); margin-top: 14px; margin-bottom: 0;">La plateforme est en développement. Les accès seront communiqués par mail.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────── -->
+  <footer>
+    <div class="sig-name">Florent Jaouali</div>
+    <div class="sig-sub">We Love Users · Février 2026</div>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(card) {
+    const body = card.querySelector('.card-body');
+    const isOpen = card.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.principle-card').forEach(c => {
+      c.classList.remove('open');
+      c.querySelector('.card-body').style.maxHeight = '0';
+    });
+
+    // Open clicked if it was closed
+    if (!isOpen) {
+      card.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 40 + 'px';
+    }
+  }
+
+  // Keyboard accessibility
+  document.querySelectorAll('.principle-card').forEach(card => {
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(card); }
+    });
+  });
+</script>
+
+</body>
+</html>
