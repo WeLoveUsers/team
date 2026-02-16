@@ -103,7 +103,6 @@ export function ProjectDetail({
   const [deleting, setDeleting] = useState(false)
   const [internalTab, setInternalTab] = useState<ProjectTab>('stats')
 
-  // Si contrôlé par le parent, on utilise ses props ; sinon fallback interne
   const activeTab = controlledTab ?? internalTab
   const setActiveTab = onTabChange ?? setInternalTab
   const [togglingStatus, setTogglingStatus] = useState(false)
@@ -203,11 +202,11 @@ export function ProjectDetail({
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-start justify-between">
-          <h2 className="text-xl font-bold text-slate-900">{project.name || '(Sans titre)'}</h2>
+          <h2 className="text-xl font-bold text-ink">{project.name || '(Sans titre)'}</h2>
           {activeResponses.length > 0 && (
             <button
               onClick={() => exportCsv(project, responses)}
-              className="text-xs text-primary-600 hover:text-primary-700 font-medium cursor-pointer flex items-center gap-1 shrink-0"
+              className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 shrink-0 transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -225,7 +224,7 @@ export function ProjectDetail({
             className={`inline-flex items-center gap-1.5 text-xs font-medium pl-2 pr-2.5 py-1 rounded-full transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
               isOpen
                 ? 'bg-success-50 text-success-700 hover:bg-success-100'
-                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                : 'bg-slate-100 text-taupe hover:bg-slate-200'
             }`}
           >
             <span className="relative flex h-4 w-7 items-center">
@@ -245,32 +244,32 @@ export function ProjectDetail({
 
           {/* Questionnaire type badge */}
           {project.questionnaireType && (
-            <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+            <span className="text-xs font-medium text-taupe bg-slate-100 px-2 py-1 rounded-full">
               {project.questionnaireType}
             </span>
           )}
 
           {/* Séparateur */}
           {publicUrl && (
-            <span className="w-px h-4 bg-slate-200" />
+            <span className="w-px h-4 bg-stone" />
           )}
 
           {/* Public URL + copy */}
           {publicUrl && (
             <div className="inline-flex items-center gap-1.5 min-w-0">
-              <code className="text-[11px] text-slate-400 truncate max-w-[280px]">
+              <code className="text-[11px] text-taupe truncate max-w-[280px]">
                 {publicUrl}
               </code>
               <button
                 onClick={handleCopyUrl}
-                className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1 text-xs text-flame hover:text-ink font-medium cursor-pointer shrink-0 transition-colors"
               >
                 {copied ? (
                   <>
-                    <svg className="w-3 h-3 text-success-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg className="w-3 h-3 text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-success-600">Copié</span>
+                    <span className="text-sage">Copié</span>
                   </>
                 ) : (
                   <>
@@ -287,7 +286,7 @@ export function ProjectDetail({
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200 mb-6">
+      <div className="border-b border-stone mb-6">
         <nav className="flex gap-6">
           {tabs.map((tab) => (
             <button
@@ -295,8 +294,8 @@ export function ProjectDetail({
               onClick={() => setActiveTab(tab.id)}
               className={`pb-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
                 activeTab === tab.id
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700'
+                  ? 'border-flame text-flame'
+                  : 'border-transparent text-taupe hover:text-ink'
               }`}
             >
               {tab.label}
@@ -309,10 +308,10 @@ export function ProjectDetail({
       {activeTab === 'stats' && (
         <div>
           {responsesLoading ? (
-            <p className="text-sm text-slate-400 py-8">Chargement des résultats...</p>
+            <p className="text-sm text-taupe py-8">Chargement des résultats...</p>
           ) : !stats?.data ? (
             <div className="text-center py-12">
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-taupe">
                 {answersArray.length === 0
                   ? 'Aucune réponse pour calculer les statistiques.'
                   : 'Type de questionnaire non reconnu.'}
@@ -342,7 +341,7 @@ export function ProjectDetail({
       {activeTab === 'responses' && (
         <div>
           {responsesLoading ? (
-            <p className="text-sm text-slate-400 py-8">Chargement des réponses...</p>
+            <p className="text-sm text-taupe py-8">Chargement des réponses...</p>
           ) : (
             <ResponsesTable
               project={project}
@@ -362,10 +361,10 @@ export function ProjectDetail({
             onSaved={onProjectUpdated}
           />
 
-          <div className="mt-8 pt-6 border-t border-slate-200">
+          <div className="mt-8 pt-6 border-t border-stone">
             <button
               onClick={() => setShowDeleteModal(true)}
-              className="text-sm text-danger-600 hover:text-danger-700 font-medium cursor-pointer"
+              className="text-sm text-berry hover:text-berry/80 font-medium cursor-pointer transition-colors"
             >
               Supprimer ce projet
             </button>

@@ -97,26 +97,26 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
   return (
     <div>
       <div className="flex items-center gap-3 mb-3">
-        <h3 className="text-sm font-semibold text-slate-900">
+        <h3 className="text-sm font-semibold text-ink">
           Réponses
         </h3>
-        <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+        <span className="text-xs text-taupe bg-slate-100 px-2 py-0.5 rounded-full">
           {activeResponses.length} active{activeResponses.length > 1 ? 's' : ''}
         </span>
       </div>
 
       {responses.length === 0 ? (
-        <p className="text-sm text-slate-400 py-4">Aucune réponse pour le moment.</p>
+        <p className="text-sm text-taupe py-4">Aucune réponse pour le moment.</p>
       ) : (
-        <div className="border border-slate-200 rounded-lg overflow-hidden">
+        <div className="border border-stone rounded-brand overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase">#</th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase">Score</th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase">Note</th>
-                <th className="px-3 py-2 text-left text-xs font-medium text-slate-500 uppercase">Date</th>
-                <th className="px-3 py-2 text-right text-xs font-medium text-slate-500 uppercase">Action</th>
+              <tr className="bg-cream border-b border-stone">
+                <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">#</th>
+                <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">Score</th>
+                <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">Note</th>
+                <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">Date</th>
+                <th className="px-3 py-2 text-right text-xs font-medium text-taupe uppercase">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -125,26 +125,26 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
                 const scoreInfo = payload?.answers ? getScore(project.questionnaireType, payload.answers) : null
 
                 return (
-                  <tr key={r.id} className="hover:bg-slate-50/50">
-                    <td className="px-3 py-2 text-slate-500">{i + 1}</td>
-                    <td className="px-3 py-2 font-medium text-slate-900">
+                  <tr key={r.id} className="hover:bg-cream/50">
+                    <td className="px-3 py-2 text-taupe">{i + 1}</td>
+                    <td className="px-3 py-2 font-medium text-ink">
                       {scoreInfo ? scoreInfo.score.toFixed(1) : '—'}
                     </td>
                     <td className="px-3 py-2">
                       {scoreInfo?.label ? (
-                        <span className={`inline-block text-xs font-semibold px-1.5 py-0.5 rounded ${GRADE_COLORS[scoreInfo.label] ?? 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`inline-block text-xs font-semibold px-1.5 py-0.5 rounded ${GRADE_COLORS[scoreInfo.label] ?? 'bg-slate-100 text-graphite'}`}>
                           {scoreInfo.label}
                         </span>
                       ) : '—'}
                     </td>
-                    <td className="px-3 py-2 text-slate-500 text-xs">
+                    <td className="px-3 py-2 text-taupe text-xs">
                       {new Date(r.createdTime).toLocaleString('fr-FR')}
                     </td>
                     <td className="px-3 py-2 text-right">
                       <button
                         onClick={() => handleDelete(r.id)}
                         disabled={loadingId === r.id}
-                        className="text-xs text-danger-600 hover:text-danger-700 font-medium cursor-pointer disabled:opacity-50"
+                        className="text-xs text-berry hover:text-berry/80 font-medium cursor-pointer disabled:opacity-50 transition-colors"
                       >
                         Supprimer
                       </button>
@@ -154,17 +154,17 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
               })}
 
               {archivedResponses.map((r, i) => (
-                <tr key={r.id} className="bg-slate-50/30 opacity-50">
-                  <td className="px-3 py-2 text-slate-400 line-through">{activeResponses.length + i + 1}</td>
-                  <td className="px-3 py-2 text-slate-400 line-through" colSpan={2}>Supprimée</td>
-                  <td className="px-3 py-2 text-slate-400 text-xs line-through">
+                <tr key={r.id} className="bg-cream/30 opacity-50">
+                  <td className="px-3 py-2 text-taupe line-through">{activeResponses.length + i + 1}</td>
+                  <td className="px-3 py-2 text-taupe line-through" colSpan={2}>Supprimée</td>
+                  <td className="px-3 py-2 text-taupe text-xs line-through">
                     {new Date(r.createdTime).toLocaleString('fr-FR')}
                   </td>
                   <td className="px-3 py-2 text-right">
                     <button
                       onClick={() => handleRecover(r.id)}
                       disabled={loadingId === r.id}
-                      className="text-xs text-primary-600 hover:text-primary-700 font-medium cursor-pointer disabled:opacity-50"
+                      className="text-xs text-flame hover:text-ink font-medium cursor-pointer disabled:opacity-50 transition-colors"
                     >
                       Récupérer
                     </button>

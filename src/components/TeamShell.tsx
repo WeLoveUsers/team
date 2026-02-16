@@ -27,7 +27,55 @@ type NavItem = {
   end?: boolean
   separatorBefore?: boolean
   children?: NavSubItem[]
+  icon?: ReactNode
 }
+
+/* ── Icônes SVG (outline, 20×20 viewBox) ────────────────────────────── */
+
+const IconHome = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" />
+  </svg>
+)
+
+const IconCompass = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+  </svg>
+)
+
+const IconClipboard = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+  </svg>
+)
+
+const IconPalette = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+  </svg>
+)
+
+const IconDocument = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+  </svg>
+)
+
+const IconSettings = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+)
+
+const IconLogout = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+  </svg>
+)
+
+/* ── Données de navigation ──────────────────────────────────────────── */
 
 const DOC_CATEGORY_LINKS: NavSubItem[] = [
   { to: '/modeles-documents#cadrage', label: 'Cadrage' },
@@ -38,12 +86,13 @@ const DOC_CATEGORY_LINKS: NavSubItem[] = [
 ]
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: 'Accueil', end: true },
-  { to: '/notre-facon-de-travailler', label: 'Notre façon de travailler' },
-  { to: '/questionnaires', label: 'Questionnaires UX' },
+  { to: '/', label: 'Accueil', end: true, icon: IconHome },
+  { to: '/notre-facon-de-travailler', label: 'Notre façon de travailler', icon: IconCompass },
+  { to: '/questionnaires', label: 'Questionnaires UX', icon: IconClipboard },
   {
     to: '/charte-graphique',
     label: 'Charte graphique',
+    icon: IconPalette,
     children: [
       { to: '/charte-graphique/fonts', label: 'Fonts' },
       { to: '/charte-graphique/slides', label: 'Slides' },
@@ -53,9 +102,10 @@ const NAV_ITEMS: NavItem[] = [
   {
     to: '/modeles-documents',
     label: 'Modèles de documents',
+    icon: IconDocument,
     children: DOC_CATEGORY_LINKS,
   },
-  { to: '/administration', label: 'Administration', separatorBefore: true },
+  { to: '/administration', label: 'Administration', separatorBefore: true, icon: IconSettings },
 ]
 
 const NO_FOLDER = '__sans_dossier__'
@@ -73,7 +123,7 @@ function findParentWithSecondLevel(pathname: string): NavItem | undefined {
 
 function getTopLevelTarget(item: NavItem): string {
   if (item.to === '/charte-graphique') return '/charte-graphique/fonts'
-  if (item.to === '/questionnaires') return '/questionnaires#presentation'
+  if (item.to === '/questionnaires') return '/questionnaires'
   return item.to
 }
 
@@ -152,11 +202,6 @@ export function TeamShell({
   const isSecondLevelOpen = !!openParent?.children
     || openParent?.to === '/questionnaires'
 
-  const isQuestionnairesPresentationActive = (
-    location.pathname === '/questionnaires'
-    && (location.hash === '' || location.hash === '#' || location.hash === '#presentation')
-  )
-
   const isQuestionnaireProjectActive = (projectId: string) => (
     location.pathname === '/questionnaires'
     && (
@@ -211,28 +256,21 @@ export function TeamShell({
             <span className="brand-chip">TEAM</span>
           </Link>
 
-          <div className="flex items-center gap-4">
-            {headerSyncState && <SyncIndicator state={headerSyncState} />}
-            <button
-              onClick={onLogout}
-              className="btn-secondary-sm cursor-pointer justify-center"
-            >
-              Déconnexion
-            </button>
-          </div>
+          {headerSyncState && <SyncIndicator state={headerSyncState} />}
         </div>
       </header>
 
       <div className="min-h-0 flex flex-1">
         <aside className="w-72 shrink-0 px-3 pb-3">
-          <div className="relative h-full overflow-hidden rounded-brand border border-stone bg-white shadow-sm">
+          <div className="relative h-full overflow-hidden rounded-brand border border-stone bg-white shadow-sm flex flex-col">
+            {/* ── Panneau niveau 1 ────────────────────────────────── */}
             <div
-              className={`absolute inset-0 overflow-y-auto px-3 py-4 transition-transform duration-300 ease-out ${
+              className={`absolute inset-0 flex flex-col transition-transform duration-300 ease-out ${
                 isSecondLevelOpen ? '-translate-x-full' : 'translate-x-0'
               }`}
             >
-              <nav>
-                <ul className="space-y-2">
+              <nav className="flex-1 overflow-y-auto px-3 py-4">
+                <ul className="space-y-1">
                   {NAV_ITEMS.map((item) => (
                     <li key={item.to} className={item.separatorBefore ? 'nav-item-separator' : ''}>
                       {hasSecondLevel(item) ? (
@@ -247,9 +285,12 @@ export function TeamShell({
                             isTopLevelItemActive(item) ? 'active' : ''
                           }`}
                         >
-                          <span>{item.label}</span>
+                          <span className="flex items-center gap-2.5">
+                            {item.icon}
+                            <span>{item.label}</span>
+                          </span>
                           <svg
-                            className={`h-4 w-4 ${
+                            className={`h-4 w-4 shrink-0 ${
                               isTopLevelItemActive(item) ? 'text-flame' : 'text-taupe'
                             }`}
                             viewBox="0 0 20 20"
@@ -270,15 +311,31 @@ export function TeamShell({
                           onClick={() => setOpenParentTo(null)}
                           className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                         >
-                          {item.label}
+                          <span className="flex items-center gap-2.5">
+                            {item.icon}
+                            <span>{item.label}</span>
+                          </span>
                         </NavLink>
                       )}
                     </li>
                   ))}
                 </ul>
               </nav>
+
+              {/* Déconnexion — ancré en bas */}
+              <div className="border-t border-stone px-3 py-3">
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="nav-link flex w-full items-center gap-2.5 text-left cursor-pointer"
+                >
+                  {IconLogout}
+                  <span>Déconnexion</span>
+                </button>
+              </div>
             </div>
 
+            {/* ── Panneau niveau 2 ────────────────────────────────── */}
             <div
               className={`absolute inset-0 overflow-y-auto border-l border-stone/70 bg-white/60 px-4 py-4 transition-transform duration-300 ease-out ${
                 isSecondLevelOpen ? 'translate-x-0' : 'translate-x-full'
@@ -310,18 +367,18 @@ export function TeamShell({
 
               {openParent?.to === '/questionnaires' ? (
                 <nav>
-                  <ul className="space-y-1">
-                    <li>
-                      <Link
-                        to="/questionnaires#presentation"
-                        className={`subnav-link ${
-                          isQuestionnairesPresentationActive ? 'active' : ''
-                        }`}
-                      >
-                        Présentation
-                      </Link>
-                    </li>
+                  {/* Bouton Nouveau projet */}
+                  <Link
+                    to="/questionnaires#new"
+                    className="btn-primary-sm mb-4 flex w-full cursor-pointer items-center justify-center gap-1.5"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau projet
+                  </Link>
 
+                  <ul className="space-y-1">
                     {questionnairesLoading ? (
                       <li>
                         <span className="subnav-link opacity-70">Chargement...</span>

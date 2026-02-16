@@ -268,11 +268,6 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'fr'))
   }, [projects])
 
-  const handleNewProject = () => {
-    setSelectedProject(null)
-    setMode('new')
-    clear()
-  }
 
   const handleProjectSaved = useCallback((saved: Project) => {
     setProjects((prev) => {
@@ -316,19 +311,19 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
         <div className="flex items-center justify-center h-full py-32">
           <div className="text-center">
             <div className="inline-block w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mb-3" />
-            <p className="text-sm text-slate-500">Chargement des projets...</p>
+            <p className="text-sm text-taupe">Chargement des projets...</p>
           </div>
         </div>
       ) : error ? (
         <div className="flex items-center justify-center h-full py-32">
           <div className="text-center max-w-sm">
-            <p className="text-sm text-danger-600 mb-2">Impossible de charger les projets.</p>
-            <p className="text-xs text-slate-400">{error}</p>
+            <p className="text-sm text-berry mb-2">Impossible de charger les projets.</p>
+            <p className="text-xs text-taupe">{error}</p>
           </div>
         </div>
       ) : mode === 'new' ? (
         <div className="p-6 max-w-lg">
-          <h2 className="text-xl font-bold text-slate-900 mb-6">Nouveau projet</h2>
+          <h2 className="text-xl font-bold text-ink mb-6">Nouveau projet</h2>
           <ProjectForm
             project={null}
             hasResponses={false}
@@ -351,29 +346,18 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
           onTabChange={setActiveTab}
         />
       ) : (
-        <div className="mx-auto max-w-3xl px-6 py-14">
-          <h2 className="text-2xl font-semibold text-slate-900">Présentation</h2>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600">
-            Cette section regroupe les questionnaires UX de l&apos;équipe. Vous pouvez créer
-            un projet, suivre ses réponses et accéder aux analyses directement depuis la liste.
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-500">
-            Sélectionnez un projet dans le panneau latéral pour ouvrir son détail.
-          </p>
-          <div className="mt-6">
-            <button
-              onClick={handleNewProject}
-              className="btn-primary-sm cursor-pointer"
-            >
-              Créer un projet
-            </button>
-          </div>
-          {projects.length > 0 && (
-            <p className="mt-5 text-xs text-slate-400">
-              {projects.length} projet{projects.length > 1 ? 's' : ''} disponible
-              {projects.length > 1 ? 's' : ''}.
+        <div className="flex items-center justify-center h-full py-32">
+          <div className="text-center max-w-sm">
+            <p className="text-sm text-graphite">
+              Sélectionnez un projet dans le panneau latéral ou créez-en un nouveau.
             </p>
-          )}
+            {projects.length > 0 && (
+              <p className="mt-3 text-xs text-taupe">
+                {projects.length} projet{projects.length > 1 ? 's' : ''} disponible
+                {projects.length > 1 ? 's' : ''}.
+              </p>
+            )}
+          </div>
         </div>
       )}
     </Layout>

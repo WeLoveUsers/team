@@ -168,7 +168,7 @@ export function AdministrationPage() {
           </div>
 
           {error && (
-            <div className="md:col-span-3 rounded-lg bg-danger-50 px-3 py-2 text-sm text-danger-700">
+            <div className="md:col-span-3 rounded-lg bg-danger-50 px-3 py-2 text-sm text-berry">
               {error}
             </div>
           )}

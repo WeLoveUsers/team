@@ -86,7 +86,6 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
 
   const ensureToken = (): string => {
     if (publicToken.trim()) return publicToken.trim()
-    // Fallback : crypto.randomUUID n'est pas dispo dans tous les contextes (HTTP non-secure)
     let raw: string
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
       raw = crypto.randomUUID()
@@ -137,7 +136,6 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
     ? `${window.location.origin}/p/${publicToken}`
     : null
 
-  // Liste unique des dossiers existants pour l'autocomplete
   const folderSuggestions = useMemo(() => {
     return existingFolders.filter((f) => f.trim().length > 0)
   }, [existingFolders])
@@ -145,7 +143,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="pf-name" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="pf-name" className="block text-sm font-medium text-ink mb-1">
           Nom du projet
         </label>
         <input
@@ -154,13 +152,13 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="field-input"
           placeholder="Mon projet"
         />
       </div>
 
       <div>
-        <label htmlFor="pf-product-name" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="pf-product-name" className="block text-sm font-medium text-ink mb-1">
           Nom du produit évalué
         </label>
         <input
@@ -169,17 +167,17 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="field-input"
           placeholder="Ex : Google Maps, Mon application..."
         />
-        <p className="text-xs text-slate-400 mt-1">
-          Utilisé dans les instructions et remplace <code className="bg-slate-100 px-1 rounded">@product_name</code>.
+        <p className="text-xs text-taupe mt-1">
+          Utilisé dans les instructions et remplace <code className="bg-cream px-1 rounded border border-stone text-graphite">@product_name</code>.
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="pf-type" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="pf-type" className="block text-sm font-medium text-ink mb-1">
             Questionnaire
           </label>
           <select
@@ -188,7 +186,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
             onChange={(e) => setQuestionnaireType(e.target.value)}
             disabled={hasResponses}
             required
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-slate-100 disabled:text-slate-500"
+            className="field-select disabled:opacity-60"
           >
             <option value="">Choisir...</option>
             {QUESTIONNAIRE_OPTIONS.map((opt) => (
@@ -196,12 +194,12 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
             ))}
           </select>
           {hasResponses && (
-            <p className="text-xs text-slate-400 mt-1">Non modifiable (réponses existantes)</p>
+            <p className="text-xs text-taupe mt-1">Non modifiable (réponses existantes)</p>
           )}
         </div>
 
         <div>
-          <label htmlFor="pf-product-type" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="pf-product-type" className="block text-sm font-medium text-ink mb-1">
             Type de produit
           </label>
           <select
@@ -209,7 +207,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
             value={productType}
             onChange={(e) => setProductType(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            className="field-select"
           >
             <option value="">Choisir...</option>
             {PRODUCT_TYPE_OPTIONS.map((opt) => (
@@ -220,7 +218,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       </div>
 
       <div>
-        <label htmlFor="pf-status" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="pf-status" className="block text-sm font-medium text-ink mb-1">
           Statut
         </label>
         <select
@@ -228,7 +226,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="field-select"
         >
           {STATUS_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -237,7 +235,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       </div>
 
       <div>
-        <label htmlFor="pf-folder" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="pf-folder" className="block text-sm font-medium text-ink mb-1">
           Dossier
         </label>
         <input
@@ -246,7 +244,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           value={folder}
           onChange={(e) => setFolder(e.target.value)}
           list="pf-folder-suggestions"
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="field-input"
           placeholder="Aucun dossier"
         />
         {folderSuggestions.length > 0 && (
@@ -256,13 +254,13 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
             ))}
           </datalist>
         )}
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-taupe mt-1">
           Saisissez un nom de dossier ou choisissez un existant. Laissez vide pour aucun dossier.
         </p>
       </div>
 
       <div>
-        <label htmlFor="pf-instructions" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="pf-instructions" className="block text-sm font-medium text-ink mb-1">
           Instructions aux répondants
         </label>
         <textarea
@@ -270,16 +268,16 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
           rows={5}
-          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-y"
+          className="field-textarea"
           placeholder="Instructions affichées aux répondants en haut du questionnaire..."
         />
-        <p className="text-xs text-slate-400 mt-1">
-          <code className="bg-slate-100 px-1 rounded">@product_name</code> sera remplacé par le nom du produit évalué.
+        <p className="text-xs text-taupe mt-1">
+          <code className="bg-cream px-1 rounded border border-stone text-graphite">@product_name</code> sera remplacé par le nom du produit évalué.
         </p>
         {productName.trim() && instructions.includes('@product_name') && (
-          <div className="mt-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-xs font-medium text-slate-500 mb-1">Aperçu pour le répondant :</p>
-            <p className="text-sm text-slate-700 whitespace-pre-line">
+          <div className="mt-2 p-3 bg-cream rounded-brand border border-stone">
+            <p className="text-xs font-medium text-taupe mb-1">Aperçu pour le répondant :</p>
+            <p className="text-sm text-ink whitespace-pre-line">
               {instructions.replace(/@product_name/g, productName.trim())}
             </p>
           </div>
@@ -287,10 +285,10 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       </div>
 
       {publicUrl && (
-        <div className="bg-slate-50 rounded-lg p-3">
-          <p className="text-xs font-medium text-slate-500 mb-1">URL publique du questionnaire</p>
+        <div className="bg-cream rounded-brand border border-stone p-3">
+          <p className="text-xs font-medium text-taupe mb-1">URL publique du questionnaire</p>
           <div className="flex items-center gap-2">
-            <code className="text-xs text-primary-700 bg-primary-50 px-2 py-1 rounded flex-1 truncate">
+            <code className="text-xs text-flame bg-wash px-2 py-1 rounded flex-1 truncate">
               {publicUrl}
             </code>
             <button
@@ -301,7 +299,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
                   setTimeout(() => setCopied(false), 2000)
                 })
               }}
-              className="shrink-0 text-xs text-primary-600 hover:text-primary-700 font-medium cursor-pointer"
+              className="shrink-0 text-xs text-flame hover:text-ink font-medium cursor-pointer transition-colors"
             >
               {copied ? 'Copié !' : 'Copier'}
             </button>
@@ -310,14 +308,14 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       )}
 
       {error && (
-        <div className="text-sm text-danger-600 bg-danger-50 px-3 py-2 rounded-lg">{error}</div>
+        <div className="text-sm text-berry bg-danger-50 px-3 py-2 rounded-lg">{error}</div>
       )}
 
       <div className="flex gap-3">
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
+          className="btn-primary-sm disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
         >
           {saving ? 'Enregistrement...' : project ? 'Mettre à jour' : 'Créer le projet'}
         </button>
@@ -325,7 +323,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+            className="btn-secondary-sm cursor-pointer"
           >
             Annuler
           </button>

@@ -8,7 +8,10 @@
       "WebFetch(domain:en.everybodywiki.com)",
       "WebFetch(domain:www.aoe.com)",
       "WebFetch(domain:d-nb.info)",
-      "WebFetch(domain:visualdsgn.fr)"
+      "WebFetch(domain:visualdsgn.fr)",
+      "Bash(wc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
