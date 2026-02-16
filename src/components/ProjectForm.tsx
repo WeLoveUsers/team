@@ -49,8 +49,6 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
-  const isEditing = !!project
-
   useEffect(() => {
     if (project) {
       setName(project.name ?? '')
