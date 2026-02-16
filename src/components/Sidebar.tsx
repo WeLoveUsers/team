@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import type { Project } from '../api'
 
-type QuestionnaireId = 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'attrakdiff' | 'attrakdiff_abridged'
+type QuestionnaireId = 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged'
 
 const BADGE_COLORS: Record<string, string> = {
   SUS: 'bg-wash text-flame',
@@ -9,6 +9,7 @@ const BADGE_COLORS: Record<string, string> = {
   UMUX: 'bg-success-50 text-success-700',
   'UMUX (Lite)': 'bg-slate-200 text-slate-700',
   UEQ: 'bg-rose text-flame',
+  'UEQ-S': 'bg-rose text-flame',
   AttrakDiff: 'bg-warning-50 text-warning-600',
   'AttrakDiff (abrégé)': 'bg-danger-50 text-danger-700',
 }
@@ -28,6 +29,11 @@ export function computeQuestionnaireId(
   if (normalized.includes('umuxlite'))
     return 'umux_lite'
   if (normalized.includes('umux')) return 'umux'
+  if (
+    normalized.includes('ueqs')
+    || normalized.includes('ueqshort')
+    || normalized.includes('userexperiencequestionnaireshort')
+  ) return 'ueq_s'
   if (normalized.includes('ueq') || normalized.includes('userexperiencequestionnaire')) return 'ueq'
   if (normalized.includes('abrige') || normalized.includes('abridged'))
     return 'attrakdiff_abridged'

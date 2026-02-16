@@ -10,6 +10,7 @@ const QUESTIONNAIRE_OPTIONS = [
   { value: 'UMUX', label: 'UMUX' },
   { value: 'UMUX (Lite)', label: 'UMUX (Lite)' },
   { value: 'UEQ', label: 'UEQ' },
+  { value: 'UEQ-S', label: 'UEQ-S' },
   { value: 'AttrakDiff', label: 'AttrakDiff' },
   { value: 'AttrakDiff (abrégé)', label: 'AttrakDiff (abrégé)' },
 ]

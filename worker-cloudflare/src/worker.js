@@ -24,6 +24,11 @@ function computeQuestionnaireIdFromType(questionnaireType) {
   if (normalized.includes('umuxlite'))
     return 'umux_lite'
   if (normalized.includes('umux')) return 'umux'
+  if (
+    normalized.includes('ueqs')
+    || normalized.includes('ueqshort')
+    || normalized.includes('userexperiencequestionnaireshort')
+  ) return 'ueq_s'
   if (normalized.includes('ueq') || normalized.includes('userexperiencequestionnaire')) return 'ueq'
   if (normalized.includes('abrige') || normalized.includes('abridged'))
     return 'attrakdiff_abridged'

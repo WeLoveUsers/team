@@ -46,6 +46,13 @@ export type UeqResult = {
   GLOBAL: StatsSummary
 }
 
+export type UeqSResult = {
+  n: number
+  PRAG: StatsSummary
+  HED: StatsSummary
+  GLOBAL: StatsSummary
+}
+
 export type AttrakDiffResult = {
   n: number
   QP: StatsSummary
@@ -386,6 +393,56 @@ export const UEQ_DIMENSION_LABELS: Record<keyof typeof UEQ_DIMENSIONS | 'GLOBAL'
   DEP: 'Contrôlabilité',
   STIM: 'Stimulation',
   NOV: 'Nouveauté',
+  GLOBAL: 'Score global',
+}
+
+// ─── UEQ-S ──────────────────────────────────────────────────────────────────
+
+const UEQ_S_DIMENSIONS: Record<'PRAG' | 'HED', string[]> = {
+  PRAG: ['Q1', 'Q2', 'Q3', 'Q4'],
+  HED: ['Q5', 'Q6', 'Q7', 'Q8'],
+}
+
+function normalizeUeqSValue(raw: number): number | null {
+  if (!Number.isFinite(raw) || raw < 1 || raw > 7) return null
+  // Toutes les paires UEQ-S sont orientées négatif à gauche / positif à droite.
+  return raw - 4
+}
+
+export function computeUeqSStats(responses: Answers[]): UeqSResult | null {
+  if (responses.length === 0) return null
+
+  const values: Record<'PRAG' | 'HED' | 'GLOBAL', number[]> = {
+    PRAG: [],
+    HED: [],
+    GLOBAL: [],
+  }
+
+  for (const a of responses) {
+    for (const [dimension, keys] of Object.entries(UEQ_S_DIMENSIONS) as Array<[keyof typeof UEQ_S_DIMENSIONS, string[]]>) {
+      for (const key of keys) {
+        const raw = a[key]
+        if (typeof raw !== 'number') continue
+        const normalized = normalizeUeqSValue(raw)
+        if (normalized == null) continue
+        values[dimension].push(normalized)
+        values.GLOBAL.push(normalized)
+      }
+    }
+  }
+
+  const n = responses.length
+  return {
+    n,
+    PRAG: values.PRAG.length > 0 ? computeStatsSummary(values.PRAG, n) : { ...ZERO_SUMMARY },
+    HED: values.HED.length > 0 ? computeStatsSummary(values.HED, n) : { ...ZERO_SUMMARY },
+    GLOBAL: values.GLOBAL.length > 0 ? computeStatsSummary(values.GLOBAL, n) : { ...ZERO_SUMMARY },
+  }
+}
+
+export const UEQ_S_DIMENSION_LABELS: Record<keyof typeof UEQ_S_DIMENSIONS | 'GLOBAL', string> = {
+  PRAG: 'Qualité pragmatique',
+  HED: 'Qualité hédonique',
   GLOBAL: 'Score global',
 }
 

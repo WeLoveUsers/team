@@ -22,7 +22,7 @@ export type BipolarQuestion = {
 export type QuestionnaireQuestion = LikertQuestion | BipolarQuestion
 
 export type QuestionnaireDefinition = {
-  id: 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'attrakdiff' | 'attrakdiff_abridged'
+  id: 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged'
   nameFr: string
   descriptionHtmlFr: string
   questions: QuestionnaireQuestion[]
@@ -351,6 +351,23 @@ const UEQ: QuestionnaireDefinition = {
   ],
 }
 
+const UEQ_S: QuestionnaireDefinition = {
+  id: 'ueq_s',
+  nameFr: 'User Experience Questionnaire - Short (UEQ-S)',
+  descriptionHtmlFr:
+    'Version courte du questionnaire UEQ en <strong>8 paires de mots</strong> sur une échelle en <strong>7 positions</strong>.',
+  questions: [
+    { id: 'Q1', type: 'bipolar', leftFr: 'Rigide', rightFr: 'Facilitant', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q2', type: 'bipolar', leftFr: 'Compliqué', rightFr: 'Simple', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q3', type: 'bipolar', leftFr: 'Inefficace', rightFr: 'Efficace', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q4', type: 'bipolar', leftFr: 'Déroutant', rightFr: 'Clair', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q5', type: 'bipolar', leftFr: 'Ennuyeux', rightFr: 'Captivant', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q6', type: 'bipolar', leftFr: 'Inintéressant', rightFr: 'Intéressant', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q7', type: 'bipolar', leftFr: 'Conventionnel', rightFr: 'Original', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+    { id: 'Q8', type: 'bipolar', leftFr: 'Habituel', rightFr: 'Avant-gardiste', scaleValues: [1, 2, 3, 4, 5, 6, 7] },
+  ],
+}
+
 const ATTRAKDIFF: QuestionnaireDefinition = {
   id: 'attrakdiff',
   nameFr: 'AttrakDiff',
@@ -459,6 +476,7 @@ export const QUESTIONNAIRES: QuestionnaireDefinition[] = [
   UMUX,
   UMUX_LITE,
   UEQ,
+  UEQ_S,
   ATTRAKDIFF,
   ATTRAKDIFF_ABRIGED,
 ]
@@ -480,6 +498,8 @@ export const DEFAULT_INSTRUCTIONS: Record<QuestionnaireDefinition['id'], string>
   umux_lite: `Nous souhaitons évaluer de la facilité d'utilisation de @product_name.\nDes affirmations vont vous être présentées. Veuillez donner votre degré d'accord avec celles-ci (de "pas du tout d'accord" à "tout à fait d'accord").`,
 
   ueq: `S'il vous plaît donnez-nous votre avis.\n\nAfin d'évaluer le produit, veuillez remplir le questionnaire ci-dessous.\nIl se compose de paires opposées de propriétés que peuvent avoir le produit.\nLa gradation entre les contraires est représentée par des cercles.\n\nEn cochant l'un de ces cercles, vous pouvez exprimer votre approbation d'un concept.\n\nRépondez le plus spontanément possible.\n\nVeuillez répondre à toutes les questions, même si vous n'êtes pas sûr de l'évaluation.\n\nIl n’y a pas de « bonne » ou de « mauvaise » réponse, seul votre avis compte !\n\nDites-nous maintenant ce que vous pensez de notre produit (une seule réponse possible par qualité/défaut).`,
+
+  ueq_s: `S'il vous plaît donnez-nous votre avis.\n\nAfin d'évaluer le produit, veuillez remplir le questionnaire ci-dessous.\nIl se compose de paires opposées de propriétés que peuvent avoir le produit.\nLa gradation entre les contraires est représentée par des cercles.\n\nEn cochant l'un de ces cercles, vous pouvez exprimer votre approbation d'un concept.\n\nRépondez le plus spontanément possible.\n\nVeuillez répondre à toutes les questions, même si vous n'êtes pas sûr de l'évaluation.\n\nIl n’y a pas de « bonne » ou de « mauvaise » réponse, seul votre avis compte !\n\nDites-nous maintenant ce que vous pensez de notre produit (une seule réponse possible par qualité/défaut).`,
 
   attrakdiff: `Dans le cadre d'un projet sur l'expérience utilisateur, nous souhaiterions évaluer vos impressions sur @product_name.\n\n• Ce questionnaire se présente sous forme de paires de mots pour vous assister dans l'évaluation du système.\n• Chaque paire représente des contrastes. Les échelons entre les deux extrémités vous permettent de décrire l'intensité de la qualité choisie.\n• Ne pensez pas aux paires de mots et essayez simplement de donner une réponse spontanée.\n• Vous pourrez avoir l'impression que certains termes ne décrivent pas correctement le système. Dans ce cas, assurez-vous de donner tout de même une réponse.\n• Gardez à l'esprit qu'il n'y a pas de bonne ou mauvaise réponse. Seule votre opinion compte !`,
 
