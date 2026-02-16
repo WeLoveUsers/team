@@ -110,8 +110,8 @@ export function ProjectDetail({
   const activeResponses = responses.filter((r) => !r.archived)
 
   const isOpen = project.status === 'Ouvert'
-  const publicUrl = qid && project.publicToken
-    ? `${window.location.origin}/p/${qid}/${project.publicToken}`
+  const publicUrl = project.publicToken
+    ? `${window.location.origin}/p/${project.publicToken}`
     : null
 
   const handleToggleStatus = async () => {

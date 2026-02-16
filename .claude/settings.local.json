@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "WebFetch(domain:www.ueq-online.org)",
+      "WebFetch(domain:blucado.com)",
+      "WebFetch(domain:en.everybodywiki.com)",
+      "WebFetch(domain:www.aoe.com)",
+      "WebFetch(domain:d-nb.info)",
+      "WebFetch(domain:visualdsgn.fr)"
+    ]
+  }
+}

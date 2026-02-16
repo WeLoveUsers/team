@@ -7,6 +7,24 @@ const NOTION_VERSION = '2025-09-03'
 
 const dataSourceCache = new Map()
 
+/**
+ * Normalise le label Notion "Questionnaire type" en identifiant technique.
+ * Miroir de computeQuestionnaireId côté front (src/components/Sidebar.tsx).
+ */
+function computeQuestionnaireIdFromType(questionnaireType) {
+  if (!questionnaireType) return null
+  const t = questionnaireType.toLowerCase()
+  if (t.includes('sus')) return 'sus'
+  if (t.includes('deep')) return 'deep'
+  if (t.includes('umux (lite') || t.includes('umux-lite') || t.includes('umux lite'))
+    return 'umux_lite'
+  if (t.includes('umux')) return 'umux'
+  if (t.includes('abrégé') || t.includes('abrige') || t.includes('abridged'))
+    return 'attrakdiff_abridged'
+  if (t.includes('attrakdiff')) return 'attrakdiff'
+  return null
+}
+
 function checkAuth(request, env) {
   const bearerSecret = env.AUTH_BEARER_TOKEN
   if (!bearerSecret) {
@@ -512,14 +530,10 @@ async function handlePublicSubmit(request, env) {
     return jsonResponse({ error: 'Corps JSON invalide' }, 400)
   }
 
-  const { projectToken, questionnaireId, answers } = body || {}
+  const { projectToken, answers } = body || {}
 
   if (!projectToken || typeof projectToken !== 'string') {
     return jsonResponse({ error: 'projectToken manquant' }, 400)
-  }
-
-  if (!questionnaireId || typeof questionnaireId !== 'string') {
-    return jsonResponse({ error: 'questionnaireId manquant' }, 400)
   }
 
   if (!answers || typeof answers !== 'object') {
@@ -568,6 +582,16 @@ async function handlePublicSubmit(request, env) {
   const projectStatus = projectPage.properties?.Status?.select?.name
   if (projectStatus === 'Fermé') {
     return jsonResponse({ error: 'Ce questionnaire est fermé', closed: true }, 403)
+  }
+
+  // Derive questionnaireId from the project (source of truth)
+  const questionnaireType = projectPage.properties?.['Questionnaire type']?.select?.name
+  if (!questionnaireType) {
+    return jsonResponse({ error: 'Type de questionnaire non défini pour ce projet' }, 400)
+  }
+  const questionnaireId = computeQuestionnaireIdFromType(questionnaireType)
+  if (!questionnaireId) {
+    return jsonResponse({ error: 'Type de questionnaire non reconnu' }, 400)
   }
 
   const responsesDataSourceId = await getDataSourceIdForDatabase(responsesDbId, env)

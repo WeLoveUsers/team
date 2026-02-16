@@ -73,6 +73,17 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
     setError(null)
   }, [project])
 
+  // En mode création, pré-remplir les instructions quand le type de questionnaire change
+  useEffect(() => {
+    if (project) return // Ne pas écraser les instructions en mode édition
+    const qid = computeQuestionnaireId(questionnaireType)
+    if (qid && DEFAULT_INSTRUCTIONS[qid]) {
+      setInstructions(DEFAULT_INSTRUCTIONS[qid])
+    } else {
+      setInstructions('')
+    }
+  }, [questionnaireType, project])
+
   const ensureToken = (): string => {
     if (publicToken.trim()) return publicToken.trim()
     // Fallback : crypto.randomUUID n'est pas dispo dans tous les contextes (HTTP non-secure)
@@ -99,15 +110,6 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       if (!productType) throw new Error('Le type de produit est requis.')
       if (!productName.trim()) throw new Error('Le nom du produit est requis.')
 
-      // À la création, on pré-remplit les instructions depuis le template du questionnaire
-      let finalInstructions: string | null = instructions || null
-      if (!project) {
-        const qid = computeQuestionnaireId(questionnaireType)
-        if (qid && DEFAULT_INSTRUCTIONS[qid]) {
-          finalInstructions = DEFAULT_INSTRUCTIONS[qid]
-        }
-      }
-
       const payload: ProjectPayload = {
         name: name.trim(),
         questionnaireType: questionnaireType || null,
@@ -116,7 +118,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
         folder: folder.trim() || null,
         productType: productType || null,
         productName: productName.trim(),
-        instructions: finalInstructions,
+        instructions: instructions || null,
       }
 
       const saved = project
@@ -131,9 +133,8 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
     }
   }
 
-  const qid = computeQuestionnaireId(questionnaireType)
-  const publicUrl = qid && publicToken
-    ? `${window.location.origin}/p/${qid}/${publicToken}`
+  const publicUrl = publicToken
+    ? `${window.location.origin}/p/${publicToken}`
     : null
 
   // Liste unique des dossiers existants pour l'autocomplete
@@ -260,24 +261,30 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
         </p>
       </div>
 
-      {isEditing && (
-        <div>
-          <label htmlFor="pf-instructions" className="block text-sm font-medium text-slate-700 mb-1">
-            Instructions aux répondants
-          </label>
-          <textarea
-            id="pf-instructions"
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
-            rows={5}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-y"
-            placeholder="Instructions affichées aux répondants en haut du questionnaire..."
-          />
-          <p className="text-xs text-slate-400 mt-1">
-            <code className="bg-slate-100 px-1 rounded">@product_name</code> sera remplacé par le nom du produit évalué.
-          </p>
-        </div>
-      )}
+      <div>
+        <label htmlFor="pf-instructions" className="block text-sm font-medium text-slate-700 mb-1">
+          Instructions aux répondants
+        </label>
+        <textarea
+          id="pf-instructions"
+          value={instructions}
+          onChange={(e) => setInstructions(e.target.value)}
+          rows={5}
+          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-y"
+          placeholder="Instructions affichées aux répondants en haut du questionnaire..."
+        />
+        <p className="text-xs text-slate-400 mt-1">
+          <code className="bg-slate-100 px-1 rounded">@product_name</code> sera remplacé par le nom du produit évalué.
+        </p>
+        {productName.trim() && instructions.includes('@product_name') && (
+          <div className="mt-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <p className="text-xs font-medium text-slate-500 mb-1">Aperçu pour le répondant :</p>
+            <p className="text-sm text-slate-700 whitespace-pre-line">
+              {instructions.replace(/@product_name/g, productName.trim())}
+            </p>
+          </div>
+        )}
+      </div>
 
       {publicUrl && (
         <div className="bg-slate-50 rounded-lg p-3">

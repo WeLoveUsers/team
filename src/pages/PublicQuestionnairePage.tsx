@@ -8,6 +8,7 @@ import {
   type BipolarQuestion,
 } from '../questionnaires'
 import { submitPublicResponse, fetchProjectStatus, type PublicAnswers } from '../api'
+import { computeQuestionnaireId } from '../components/Sidebar'
 
 type Answers = Record<string, number | null>
 
@@ -192,26 +193,29 @@ function BipolarQuestionView({
 
 export function PublicQuestionnairePage() {
   const params = useParams()
-  const questionnaireId = (params.questionnaireId as QuestionnaireDefinition['id']) ?? 'sus'
   const projectToken = params.projectToken as string | undefined
-
-  const questionnaire = useMemo(() => getQuestionnaireById(questionnaireId), [questionnaireId])
 
   const [answers, setAnswers] = useState<Answers>({})
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showValidation, setShowValidation] = useState(false)
+  const [questionnaireId, setQuestionnaireId] = useState<QuestionnaireDefinition['id'] | null>(null)
   const [projectName, setProjectName] = useState<string | null>(null)
   const [productType, setProductType] = useState<string | null>(null)
   const [productName, setProductName] = useState<string | null>(null)
   const [projectInstructions, setProjectInstructions] = useState<string | null>(null)
   const [projectClosed, setProjectClosed] = useState(false)
-  const [statusLoading, setStatusLoading] = useState(!!projectToken)
+  const [statusLoading, setStatusLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
 
-  // Check project status
+  // Fetch project info (including questionnaire type) from the API
   useEffect(() => {
-    if (!projectToken) return
+    if (!projectToken) {
+      setStatusLoading(false)
+      setLoadError(true)
+      return
+    }
     let cancelled = false
     const check = async () => {
       try {
@@ -221,9 +225,15 @@ export function PublicQuestionnairePage() {
         setProductType(info.productType)
         setProductName(info.productName)
         setProjectInstructions(info.instructions)
+        const qid = computeQuestionnaireId(info.questionnaireType)
+        if (qid) {
+          setQuestionnaireId(qid)
+        } else {
+          setLoadError(true)
+        }
         if (info.status === 'Fermé') setProjectClosed(true)
       } catch {
-        // Continue anyway
+        if (!cancelled) setLoadError(true)
       } finally {
         if (!cancelled) setStatusLoading(false)
       }
@@ -231,6 +241,11 @@ export function PublicQuestionnairePage() {
     check()
     return () => { cancelled = true }
   }, [projectToken])
+
+  const questionnaire = useMemo(
+    () => (questionnaireId ? getQuestionnaireById(questionnaireId) : null),
+    [questionnaireId],
+  )
 
   // Questions avec @product_type remplacé
   const resolvedQuestions = useMemo(() => {
@@ -246,20 +261,20 @@ export function PublicQuestionnairePage() {
     return projectInstructions.replace(/@product_name/g, name)
   }, [projectInstructions, productName])
 
-  if (!questionnaire) {
+  if (statusLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="inline-block w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (loadError || !questionnaire) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center max-w-sm">
           <p className="text-slate-600">Questionnaire introuvable.</p>
         </div>
-      </div>
-    )
-  }
-
-  if (statusLoading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="inline-block w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -312,7 +327,6 @@ export function PublicQuestionnairePage() {
       setSubmitting(true)
       await submitPublicResponse({
         projectToken,
-        questionnaireId,
         answers: answers as PublicAnswers,
       })
       setSubmitted(true)

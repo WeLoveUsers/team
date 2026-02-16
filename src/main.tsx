@@ -10,8 +10,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/p/:questionnaireId" element={<PublicQuestionnairePage />} />
-        <Route path="/p/:questionnaireId/:projectToken" element={<PublicQuestionnairePage />} />
+        <Route path="/p/:projectToken" element={<PublicQuestionnairePage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

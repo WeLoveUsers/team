@@ -2,7 +2,7 @@
 
 # Modifier l'UI répondant
 
-# Login depuis base de mes utilisateurs (base Notion ou autre solutio ?)
+# Login depuis base de mes utilisateurs (base Notion ou autre solution ?)
 
 # Renommer en TEAM
 - Principes de travail => onBoarding (email lors de la création du dossier de la mission avec les autres liens et rappels des responsabilités de chacun ?)

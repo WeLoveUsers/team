@@ -171,7 +171,6 @@ export type PublicAnswers = Record<string, number | null>
 
 export async function submitPublicResponse(params: {
   projectToken: string
-  questionnaireId: string
   answers: PublicAnswers
 }): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/public/submit`, {
