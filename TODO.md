@@ -27,4 +27,3 @@
     Questionnaires
     Contextes d'IA
 - Filets de sécurité ? (spécifique à un projet donc ... à voir)
-# 
