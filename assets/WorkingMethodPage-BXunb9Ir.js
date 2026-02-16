@@ -1,0 +1,284 @@
+import{j as u}from"./charts-DKGMT1ng.js";import{r as l}from"./react-DGBwUpAK.js";const x=`
+<style>
+  .note-principle.is-open {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+
+  .note-principle.is-open .note-principle-label {
+    color: #a8a29e;
+  }
+
+  .note-principle.is-open .note-principle-title {
+    color: var(--color-cream);
+  }
+
+  .note-principle.is-open .note-principle-body {
+    color: #d6d1c8;
+  }
+
+  .note-principle.is-open .note-principle-icon,
+  .note-principle.is-open .note-principle-plus {
+    color: #ffd7ce;
+  }
+
+  .note-principle-plus {
+    transition: transform 0.25s ease, color 0.25s ease;
+  }
+
+  .note-principle.is-open .note-principle-plus {
+    transform: rotate(45deg);
+  }
+</style>
+
+<article class="mx-auto max-w-4xl">
+  <header class="pb-12 border-b border-stone">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
+    <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Ce qui change,<br>ce qui reste.</h1>
+    <p class="text-lg text-graphite font-light max-w-2xl">À l'attention des membres du collectif.</p>
+
+    <nav class="mt-10 flex flex-wrap gap-x-5 gap-y-2" aria-label="Sommaire">
+      <a href="#changement" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Ce qui change</a>
+      <a href="#ia" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Quid de l'IA ?</a>
+      <a href="#principes" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Notre façon de travailler</a>
+      <a href="#implications" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Implications concrètes</a>
+      <a href="#plateforme" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">La plateforme</a>
+    </nav>
+  </header>
+
+  <section id="intro" class="py-14 border-b border-stone">
+    <p class="text-xl md:text-2xl font-light text-ink leading-relaxed mb-6">Cette note a deux objectifs. D'abord, vous mettre en contexte sur le repositionnement de We Love Users, pour que vous puissiez en comprendre la logique, et vous en saisir si vous le jugez utile. Ensuite, mettre par écrit quelque chose qui existait déjà à l'état implicite : notre façon de travailler.</p>
+    <p class="text-base text-graphite leading-relaxed">Ce n'est pas un règlement intérieur. C'est une tentative de nommer ce que nous savons déjà, pour que ça reste vrai même quand nous ne travaillons pas ensemble dans la même pièce.</p>
+  </section>
+
+  <section id="changement" class="py-14 border-b border-stone">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui change</p>
+    <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Un nouveau cadre pour une valeur ancienne</h2>
+    <p class="text-base text-graphite leading-relaxed mb-4">Je repositionne We Love Users en Cabinet de Conseil en Sécurité Décisionnelle, spécialisé dans les écosystèmes de produits et services numériques complexes.</p>
+    <p class="text-base text-graphite leading-relaxed">En pratique, l'entrée dans nos missions n'est plus « faites-nous une étude UX » : c'est « aidez-nous à prendre une décision engageante sans risquer de nous tromper ». La recherche terrain reste le cœur de notre valeur. Ce qui change, c'est l'interlocuteur visé et la façon de cadrer la mission.</p>
+
+    <div class="mt-8 grid gap-px bg-stone rounded-brand overflow-hidden md:grid-cols-2">
+      <div class="bg-cream p-6 md:p-7">
+        <span class="text-xs font-bold uppercase tracking-[0.18em] text-taupe mb-3 block">Avant</span>
+        <p class="text-sm text-graphite leading-relaxed">La commande venait d'un UX Lead ou d'un Product Designer cherchant à valider une interface.</p>
+      </div>
+      <div class="bg-cream p-6 md:p-7">
+        <span class="text-xs font-bold uppercase tracking-[0.18em] text-flame mb-3 block">Maintenant</span>
+        <p class="text-sm text-graphite leading-relaxed">L'enjeu est de convaincre un CPO, un VP Product ou un CEO que l'incertitude sur leurs hypothèses mérite d'être levée avant de décider.</p>
+      </div>
+    </div>
+
+    <p class="text-base text-graphite leading-relaxed mt-6">Ce glissement change la façon dont les missions sont cadrées en amont, pas la façon dont elles sont menées sur le terrain.</p>
+  </section>
+
+  <section id="ia" class="py-14 border-b border-stone">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce que ça change pour notre pratique</p>
+    <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Quid de l'IA ?</h2>
+    <p class="text-base text-graphite leading-relaxed">L'IA est déjà dans nos outils, et elle va y rester. La question n'est pas de savoir si c'est pertinent de l'utiliser, mais comment l'utiliser sans perdre ce qui fait la valeur de notre travail.</p>
+
+    <blockquote class="border-l-2 border-flame pl-6 py-1 my-8 font-serif italic text-xl text-ink leading-relaxed">
+      Apprendre à faire avec, avec discernement et prudence. Ni rejet, ni adoption naïve.
+    </blockquote>
+
+    <div class="grid gap-px bg-stone rounded-brand overflow-hidden md:grid-cols-3">
+      <article class="bg-cream p-6">
+        <h3 class="font-serif text-lg text-ink mb-3">C'est ok d'utiliser des outils IA</h3>
+        <p class="text-sm text-graphite leading-relaxed">Transcription, structuration, reformulation : ces usages sont légitimes. Ils libèrent du temps pour l'interprétation et le jugement. La condition : être conscient de ce qu'on délègue et ce qu'on garde. Le résultat d'un modèle n'est pas une analyse, c'est un point de départ.</p>
+      </article>
+      <article class="bg-cream p-6">
+        <h3 class="font-serif text-lg text-ink mb-3">Observer comment ça change nos pratiques</h3>
+        <p class="text-sm text-graphite leading-relaxed">L'IA modifie notre rapport à certaines tâches. Certaines choses deviennent plus rapides, d'autres moins visibles dans leur complexité. C'est important de garder un œil critique sur ces glissements. Si vous observez des effets intéressants, faites-les remonter.</p>
+      </article>
+      <article class="bg-cream p-6">
+        <h3 class="font-serif text-lg text-ink mb-3">Observer ce que ça change chez nos clients</h3>
+        <p class="text-sm text-graphite leading-relaxed">De plus en plus d'interfaces sont conçues avec des outils génératifs. Les patterns, les choix d'interaction, les formulations, tout ça peut avoir une texture particulière. Être capable de le détecter fait partie de notre expertise terrain.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="principes" class="py-14 border-b border-stone">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui reste</p>
+    <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Notre façon de travailler</h2>
+    <p class="text-base text-graphite leading-relaxed">Ce qui suit n'est pas nouveau. C'est une tentative de nommer ce qui guide déjà notre travail. Cliquez sur chaque principe pour le développer.</p>
+
+    <div id="principes-grid" class="grid md:grid-cols-2 gap-4 mt-8">
+      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
+        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+          <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="10" r="4"/>
+            <line x1="18" y1="14" x2="18" y2="30"/>
+            <path d="M10 18 C10 26 26 26 26 18"/>
+            <line x1="10" y1="18" x2="8" y2="18"/>
+            <line x1="26" y1="18" x2="28" y2="18"/>
+          </svg>
+          <span class="flex-1">
+            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 1</span>
+            <span class="note-principle-title font-serif text-lg leading-snug text-ink">La fidélité au terrain, au-delà du brief</span>
+          </span>
+          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
+        </button>
+        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">L'étude répond à la commande. Le rapport restitue le terrain. Ces deux choses ne sont pas identiques, et c'est tant mieux. Ce qu'un participant révèle spontanément a autant de valeur que ce qui était cherché. Un insight hors périmètre mais significatif appartient au rapport, clairement identifié comme tel.</p>
+        </div>
+      </article>
+
+      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
+        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+          <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="18" y2="14"/>
+            <path d="M18 14 L10 24"/>
+            <path d="M18 14 L18 24"/>
+            <path d="M18 14 L26 24"/>
+            <circle cx="10" cy="27" r="2.5"/>
+            <circle cx="18" cy="27" r="2.5"/>
+            <circle cx="26" cy="27" r="2.5"/>
+          </svg>
+          <span class="flex-1">
+            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 2</span>
+            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Interpréter sans réduire la complexité</span>
+          </span>
+          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
+        </button>
+        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Face à un verbatim ambigu ou une observation contradictoire, ne pas trancher arbitrairement. Exposer les interprétations possibles et ce qu'elles impliquent chacune. C'est une forme d'honnêteté intellectuelle, et ça donne au commanditaire les moyens de décider, plutôt que de lui imposer une conclusion.</p>
+        </div>
+      </article>
+
+      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
+        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+          <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13" cy="15" r="6"/>
+            <line x1="11" y1="15" x2="15" y2="15"/>
+            <line x1="13" y1="13" x2="13" y2="17"/>
+            <line x1="17.2" y1="19.2" x2="22" y2="24"/>
+            <circle cx="25" cy="23" r="4"/>
+            <line x1="23" y1="23" x2="27" y2="23"/>
+          </svg>
+          <span class="flex-1">
+            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 3</span>
+            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Observer à plusieurs échelles</span>
+          </span>
+          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
+        </button>
+        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Un même sujet mérite d'être regardé au microscope et au télescope. Au microscope : l'interaction précise, le verbatim exact, la friction dans un geste. Au télescope : le parcours global, le contexte organisationnel, la logique d'usage dans la durée. Ces deux lectures ne se contredisent pas, elles se complètent.</p>
+        </div>
+      </article>
+
+      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
+        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+          <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="10" y="14" width="18" height="14" rx="1.5"/>
+            <path d="M13 14 V11 a1.5 1.5 0 0 1 1.5-1.5 h9 A1.5 1.5 0 0 1 25 11 v3"/>
+            <line x1="14" y1="19" x2="22" y2="19"/>
+            <line x1="14" y1="23" x2="19" y2="23"/>
+          </svg>
+          <span class="flex-1">
+            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 4</span>
+            <span class="note-principle-title font-serif text-lg leading-snug text-ink">La forme est au service du lecteur</span>
+          </span>
+          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
+        </button>
+        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Un livrable doit fonctionner pour plusieurs lecteurs aux besoins différents. Le directeur qui lit en diagonale, le designer qui cherche les détails d'interaction, le product manager qui veut les recommandations. La structure, la densité, la hiérarchie de l'information, tout ça se décide en pensant à qui va lire.</p>
+        </div>
+      </article>
+
+      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
+        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+          <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="7" x2="18" y2="29"/>
+            <line x1="18" y1="13" x2="10" y2="17"/>
+            <line x1="18" y1="13" x2="26" y2="17"/>
+            <ellipse cx="10" cy="19" rx="4" ry="2"/>
+            <ellipse cx="26" cy="19" rx="4" ry="2"/>
+            <line x1="14" y1="29" x2="22" y2="29"/>
+          </svg>
+          <span class="flex-1">
+            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 5</span>
+            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Livrer engage une responsabilité</span>
+          </span>
+          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
+        </button>
+        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Un rapport n'est pas produit pour clore une mission : il va influencer des décisions, parfois à des niveaux hiérarchiques que nous n'avons pas rencontrés. Ça implique de la rigueur sur ce qu'on affirme, comment on le dit, et ce qu'on choisit de mettre en avant. Les autres équipes, les autres niveaux, parfois l'utilisateur final, sont des bénéficiaires indirects.</p>
+        </div>
+      </article>
+
+      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
+        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+          <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="18" r="5"/>
+            <circle cx="25" cy="18" r="5"/>
+            <line x1="16" y1="18" x2="20" y2="18"/>
+            <path d="M11 13 L11 8"/>
+            <path d="M25 13 L25 8"/>
+            <line x1="8" y1="8" x2="14" y2="8"/>
+            <line x1="22" y1="8" x2="28" y2="8"/>
+          </svg>
+          <span class="flex-1">
+            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 6</span>
+            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Une collaboration entre pairs</span>
+          </span>
+          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
+        </button>
+        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Je confie des missions sans expliquer comment faire votre métier. Je transmets un cadre et une vision, pas des règles. Ce n'est pas de la sous-traitance, c'est une coopération entre professionnels. Ce mode de fonctionnement n'est possible que si chacun se sent libre de signaler un doute, de questionner un cadrage, ou de remonter quelque chose d'inattendu.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="implications" class="py-14 border-b border-stone">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Implications concrètes</p>
+    <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Ce que ça change pour vous</h2>
+    <p class="text-base text-graphite leading-relaxed">En termes de pratique terrain : pas grand-chose. Vous continuez à mener les études en autonomie, selon votre jugement professionnel. Deux points méritent néanmoins votre attention.</p>
+
+    <div class="mt-8 grid gap-px bg-stone rounded-brand overflow-hidden">
+      <div class="bg-cream p-6 md:p-7 md:flex md:gap-8">
+        <span class="block md:w-44 shrink-0 text-sm font-bold tracking-wide text-flame mb-2 md:mb-0">Le cadrage amont</span>
+        <span class="text-sm text-graphite leading-relaxed">Les missions arrivent désormais avec une question décisionnelle plus explicite. Si ce n'est pas le cas, c'est utile de le signaler, pour que nous puissions recadrer ensemble avant de démarrer.</span>
+      </div>
+      <div class="bg-cream p-6 md:p-7 md:flex md:gap-8">
+        <span class="block md:w-44 shrink-0 text-sm font-bold tracking-wide text-flame mb-2 md:mb-0">Le niveau de restitution</span>
+        <span class="text-sm text-graphite leading-relaxed">Les conclusions doivent pouvoir fonctionner pour un CoDir, pas seulement pour une équipe produit. Synthèse, formulation des recommandations, niveau d'abstraction, ça se prépare en conséquence.</span>
+      </div>
+    </div>
+
+    <p class="text-base text-graphite leading-relaxed mt-6">Si vous avez des questions ou des retours sur ce repositionnement, ils sont bienvenus.</p>
+  </section>
+
+  <section id="plateforme" class="py-14 border-b border-stone">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">La plateforme interne</p>
+    <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">team.weloveusers.com</h2>
+    <p class="text-base text-graphite leading-relaxed">J'ai commencé à construire une plateforme pour centraliser les ressources utiles au collectif.</p>
+
+    <div class="mt-8 border border-stone rounded-brand p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8">
+      <svg class="w-10 h-10 text-flame shrink-0" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="8" width="28" height="24" rx="3"/>
+        <line x1="6" y1="14" x2="34" y2="14"/>
+        <circle cx="10" cy="11" r="1.2"/>
+        <circle cx="14" cy="11" r="1.2"/>
+        <circle cx="18" cy="11" r="1.2"/>
+        <line x1="12" y1="20" x2="28" y2="20"/>
+        <line x1="12" y1="25" x2="22" y2="25"/>
+      </svg>
+      <div>
+        <a class="font-serif text-2xl text-flame hover:text-ink transition-colors" href="https://team.weloveusers.com">team.weloveusers.com</a>
+        <ul class="mt-4 space-y-2 text-sm text-graphite">
+          <li><strong class="text-ink">Modèles et livrables</strong> — Accès aux modèles Google Docs avec leur contexte d'usage</li>
+          <li><strong class="text-ink">Questionnaires UX</strong> — SUS, DEEP, UMUX et autres, directement utilisables</li>
+          <li><strong class="text-ink">Ressources IA</strong> — Recommandations d'usage, prompts, outils par finalité de mission</li>
+        </ul>
+        <p class="text-xs text-taupe mt-4">La plateforme est en développement. Les accès seront communiqués par mail.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pt-10 pb-2">
+    <p class="font-serif text-xl text-ink">Florent Jaouali</p>
+    <p class="text-sm text-taupe mt-1">We Love Users · Février 2026</p>
+  </footer>
+</article>
+
+`;function b(){const r=l.useRef(null);return l.useEffect(()=>{const a=r.current;if(!a)return;const s=Array.from(a.querySelectorAll(".note-principle")),i=[],c=e=>{const n=e.querySelector(".note-principle-toggle"),t=e.querySelector(".note-principle-panel");!n||!t||(e.classList.remove("is-open"),n.setAttribute("aria-expanded","false"),t.style.maxHeight="0px")},p=e=>{const n=e.querySelector(".note-principle-toggle"),t=e.querySelector(".note-principle-panel");!n||!t||(e.classList.add("is-open"),n.setAttribute("aria-expanded","true"),t.style.maxHeight=`${t.scrollHeight}px`)};s.forEach(e=>{const n=e.querySelector(".note-principle-toggle");if(!n)return;const t=()=>{const d=e.classList.contains("is-open");s.forEach(c),d||p(e)};n.addEventListener("click",t),i.push(()=>n.removeEventListener("click",t))});const o=()=>{s.forEach(e=>{if(!e.classList.contains("is-open"))return;const n=e.querySelector(".note-principle-panel");n&&(n.style.maxHeight=`${n.scrollHeight}px`)})};return window.addEventListener("resize",o),i.push(()=>window.removeEventListener("resize",o)),()=>{i.forEach(e=>e())}},[]),u.jsx("div",{ref:r,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:x}})}export{b as WorkingMethodPage};

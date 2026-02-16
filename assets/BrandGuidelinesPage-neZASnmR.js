@@ -1,0 +1,422 @@
+import{j as e}from"./charts-DKGMT1ng.js";import"./react-DGBwUpAK.js";const t=`
+<section class="mb-20">
+    <div class="border-b border-stone pb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Documentation</span>
+        <h1 class="font-serif text-5xl md:text-6xl text-ink mb-6">Design System</h1>
+        <p class="text-xl text-graphite font-light max-w-2xl">
+            Référentiel visuel des éléments constitutifs de l'identité numérique de We Love Users.
+            <br>Posture : Expert, Sobre, Haute Couture.
+        </p>
+    </div>
+</section>
+
+<!-- 1. COULEURS -->
+<section class="mb-24">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">01.</span> Palette de couleurs
+    </h2>
+
+    <h3 class="font-bold text-ink mb-6 uppercase tracking-widest text-xs border-b border-stone pb-2">Couleurs Principales</h3>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 mb-12">
+        <!-- Ink -->
+        <div class="space-y-3">
+            <div class="h-32 rounded-brand bg-ink shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Ink</strong>
+                <code class="text-xs text-graphite">#1A1A1A</code>
+                <p class="text-xs text-graphite mt-1">Texte principal, fonds sombres.</p>
+            </div>
+        </div>
+
+        <!-- Cream -->
+        <div class="space-y-3">
+            <div class="h-32 rounded-brand bg-cream border border-stone shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Cream</strong>
+                <code class="text-xs text-graphite">#FAF9F7</code>
+                <p class="text-xs text-graphite mt-1">Arrière-plan principal (Eggshell).</p>
+            </div>
+        </div>
+
+        <!-- Flame -->
+        <div class="space-y-3">
+            <div class="h-32 rounded-brand bg-flame shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Flame</strong>
+                <code class="text-xs text-graphite">#E0553D</code>
+                <p class="text-xs text-graphite mt-1">Accent, CTAs, liens, branding.</p>
+            </div>
+        </div>
+
+        <!-- Graphite -->
+        <div class="space-y-3">
+            <div class="h-32 rounded-brand bg-graphite shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Graphite</strong>
+                <code class="text-xs text-graphite">#5F5F5F</code>
+                <p class="text-xs text-graphite mt-1">Texte secondaire, paragraphes.</p>
+            </div>
+        </div>
+
+        <!-- Stone -->
+        <div class="space-y-3">
+            <div class="h-32 rounded-brand bg-stone shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Stone</strong>
+                <code class="text-xs text-graphite">#E2E0DC</code>
+                <p class="text-xs text-graphite mt-1">Bordures, séparateurs.</p>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="font-bold text-ink mb-6 uppercase tracking-widest text-xs border-b border-stone pb-2">Nuances Utilitaires (UI)</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        <!-- Taupe -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-taupe shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Taupe</strong>
+                <code class="text-xs text-graphite">#A8A29E</code>
+                <p class="text-xs text-graphite mt-1">Éléments discrets sur fond clair.</p>
+            </div>
+        </div>
+
+        <!-- Grey -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-grey shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Grey</strong>
+                <code class="text-xs text-graphite">#9CA3AF</code>
+                <p class="text-xs text-graphite mt-1">Texte secondaire sur fond sombre.</p>
+            </div>
+        </div>
+
+        <!-- Wash -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-wash border border-stone shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Wash</strong>
+                <code class="text-xs text-graphite">#FFF1F2</code>
+                <p class="text-xs text-graphite mt-1">Fond highlight (Rosé très pâle).</p>
+            </div>
+        </div>
+
+        <!-- Rose Pâle -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-rose border border-stone shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Rose Pâle</strong>
+                <code class="text-xs text-graphite">#FFE4E6</code>
+                <p class="text-xs text-graphite mt-1">Texte sur fond Flame.</p>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="font-bold text-ink mb-6 uppercase tracking-widest text-xs border-b border-stone pb-2">Palette Audit / Sévérité</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <!-- Sage (Positif) -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-sage shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Sage (Positif)</strong>
+                <code class="text-xs text-graphite">#4A7C59</code>
+                <p class="text-xs text-graphite mt-1">Validé, sain, pérenne.</p>
+            </div>
+        </div>
+
+        <!-- Ochre (Mineur) -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-ochre shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Ochre (Mineur)</strong>
+                <code class="text-xs text-graphite">#D9A521</code>
+                <p class="text-xs text-graphite mt-1">Point d'attention, non-bloquant.</p>
+            </div>
+        </div>
+
+        <!-- Flame (Majeur) -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-flame shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Flame (Majeur)</strong>
+                <code class="text-xs text-graphite">#E0553D</code>
+                <p class="text-xs text-graphite mt-1">Important, chaud, prioritaire.</p>
+            </div>
+        </div>
+
+        <!-- Berry (Critique) -->
+        <div class="space-y-3">
+            <div class="h-20 rounded-brand bg-berry shadow-sm"></div>
+            <div>
+                <strong class="block text-ink">Berry (Critique)</strong>
+                <code class="text-xs text-graphite">#9E2A2B</code>
+                <p class="text-xs text-graphite mt-1">Bloquant, danger, lourd.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. TYPOGRAPHIE -->
+<section class="mb-24 border-t border-stone pt-16">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">02.</span> Typographie
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-16">
+        <!-- Serif (Titres) -->
+        <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-graphite mb-6 block">Famille Serif (Titres)</span>
+            <div class="space-y-8">
+                <div>
+                    <p class="font-serif text-6xl text-ink leading-tight">Heading 1</p>
+                    <code class="text-xs text-stone block mt-2">font-serif text-5xl md:text-7xl</code>
+                </div>
+                <div>
+                    <p class="font-serif text-5xl text-ink leading-tight">Heading 2</p>
+                    <code class="text-xs text-stone block mt-2">font-serif text-4xl md:text-6xl</code>
+                </div>
+                <div>
+                    <p class="font-serif text-4xl text-ink leading-tight">Heading 3</p>
+                    <code class="text-xs text-stone block mt-2">font-serif text-3xl md:text-5xl</code>
+                </div>
+                <div>
+                    <p class="font-serif text-3xl text-ink leading-tight">Heading 4</p>
+                    <code class="text-xs text-stone block mt-2">font-serif text-2xl</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sans-Serif (Corps) -->
+        <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-graphite mb-6 block">Famille Sans-Serif (Satoshi)</span>
+            <div class="space-y-8">
+                <div>
+                    <p class="text-2xl text-ink font-light">Lead Paragraph</p>
+                    <p class="text-graphite font-light mt-2">Utilisé pour les chapôs et les introductions. Apporte de l'élégance et de la légèreté.</p>
+                    <code class="text-xs text-stone block mt-2">font-light text-xl md:text-2xl</code>
+                </div>
+                <div>
+                    <p class="text-base text-ink font-bold">Body Bold</p>
+                    <p class="text-base text-graphite">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Utilisé pour les mises en exergue.</p>
+                    <code class="text-xs text-stone block mt-2">text-base font-bold</code>
+                </div>
+                <div>
+                    <p class="text-base text-ink font-medium">Body Medium</p>
+                    <p class="text-base text-graphite">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <code class="text-xs text-stone block mt-2">text-base font-medium</code>
+                </div>
+                <div>
+                    <p class="text-base text-ink font-normal">Body Regular</p>
+                    <p class="text-base text-graphite">Lorem ipsum dolor sit amet, consectetur adipiscing elit. C'est le style par défaut pour le contenu long.</p>
+                    <code class="text-xs text-stone block mt-2">text-base font-normal (ou font-light)</code>
+                </div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame">Micro-titre / Label</p>
+                    <code class="text-xs text-stone block mt-2">text-xs font-bold uppercase tracking-[0.2em]</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. BOUTONS & LIENS -->
+<section class="mb-24 border-t border-stone pt-16">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">03.</span> Boutons & Liens
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-12">
+        <div class="space-y-8">
+            <div>
+                <span class="text-xs text-graphite mb-4 block">Bouton Primaire (CTA Principal)</span>
+                <a href="#" class="btn-primary">
+                    Parler de votre situation
+                </a>
+            </div>
+            
+            <div>
+                <span class="text-xs text-graphite mb-4 block">Bouton Secondaire (Ghost)</span>
+                <a href="#" class="btn-secondary">
+                    Découvrir nos offres
+                </a>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <div>
+                <span class="text-xs text-graphite mb-4 block">Lien texte simple</span>
+                <a href="#" class="text-flame hover:underline font-medium transition-colors">
+                    Lire l'analyse complète
+                </a>
+            </div>
+            
+            <div>
+                <span class="text-xs text-graphite mb-4 block">Lien avec icône</span>
+                <a href="#" class="inline-flex items-center text-flame font-medium hover:underline">
+                    Découvrir l'offre
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+            </div>
+
+            <div>
+                 <span class="text-xs text-graphite mb-4 block">Navigation Header</span>
+                 <nav class="flex gap-6">
+                    <a href="#" class="nav-link active">Actif</a>
+                    <a href="#" class="nav-link">Inactif</a>
+                    <a href="#" class="nav-link hover:text-flame">Hover</a>
+                 </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. COMPOSANTS UI -->
+<section class="mb-24 border-t border-stone pt-16">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">04.</span> Composants UI
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-12">
+        
+        <!-- Carte Standard -->
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">Carte de contenu (Offres / Services)</span>
+            <div class="bg-white p-10 rounded-brand border border-stone hover:shadow-lg transition-all cursor-pointer group">
+                <h3 class="font-serif text-2xl text-ink mb-6 group-hover:text-flame transition-colors">Incertitude stratégique</h3>
+                <p class="text-graphite font-light leading-relaxed">
+                    Avant de lancer un nouveau produit ou une refonte majeure, pour valider que la proposition de valeur rencontre un usage réel.
+                </p>
+            </div>
+        </div>
+
+        <!-- Citation / Verbatim -->
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">Bloc Citation (Quote)</span>
+            <blockquote class="pl-6 border-l-4 border-flame bg-cream py-4 pr-6 rounded-r-brand">
+                <p class="text-lg font-serif text-ink italic mb-2">
+                    "On ne se base pas sur des ressentis et des opinions personnelles, mais sur des faits."
+                </p>
+                <footer class="text-sm font-bold text-graphite uppercase tracking-wide">— CLIENT REFERENCE</footer>
+            </blockquote>
+        </div>
+
+        <!-- Liste personnalisée -->
+        <div class="space-y-4">
+             <span class="text-xs text-graphite block">Listes (Standard & Heart)</span>
+             <ul class="space-y-3 text-graphite">
+                <li class="flex items-start"><span class="mr-3 text-flame">•</span>Point de liste standard (puce)</li>
+                <li class="flex items-start"><span class="mr-3 text-flame">•</span>Utilisé pour des énumérations simples</li>
+            </ul>
+            <ul class="list-heart text-graphite mt-4">
+                <li>Liste avec puce "Cœur" (CSS personnalisé)</li>
+                <li>Utilisé pour les points clés ou avantages</li>
+            </ul>
+        </div>
+
+        <!-- Séparateur -->
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">Séparateur visuel</span>
+            <div class="flex justify-center py-4 text-flame opacity-80 border border-stone bg-white rounded-brand">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- 5. FORMULAIRES -->
+<section class="mb-24 border-t border-stone pt-16">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">05.</span> Formulaires
+    </h2>
+
+    <div class="max-w-xl bg-white p-8 md:p-10 rounded-brand border border-stone shadow-sm">
+        <form class="space-y-6">
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-ink">Label du champ</label>
+                <input type="text" placeholder="Placeholder text..." class="field-input">
+            </div>
+             <div class="space-y-2">
+                <label class="block text-sm font-medium text-ink">Zone de texte</label>
+                <textarea rows="3" placeholder="Saisissez votre message..." class="field-textarea"></textarea>
+            </div>
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-ink">Champ en focus</label>
+                <input type="text" value="Valeur saisie" 
+                       class="w-full px-4 py-3 rounded-lg border border-flame ring-1 ring-flame bg-white outline-none text-ink">
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- 6. PATTERNS GLOBAUX -->
+<section class="mb-24 border-t border-stone pt-16">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">06.</span> Patterns Globaux
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-12">
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">Badges de sévérité (Audit)</span>
+            <div class="bg-white p-8 rounded-brand border border-stone space-y-4">
+                <div class="flex flex-wrap gap-3">
+                    <span class="badge-severity badge-severity-sage">Validé</span>
+                    <span class="badge-severity badge-severity-ochre">Mineur</span>
+                    <span class="badge-severity badge-severity-flame">Majeur</span>
+                    <span class="badge-severity badge-severity-berry">Critique</span>
+                </div>
+                <p class="text-sm text-graphite">Utiliser ces variantes pour toutes les fiches d'audit et les synthèses.</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">État de succès (Formulaire)</span>
+            <div class="bg-white p-8 rounded-brand border border-stone text-center">
+                <div class="feedback-success-icon">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="font-serif text-2xl text-ink mb-2">Message envoyé</h3>
+                <p class="text-sm text-graphite">Composant de confirmation aligné sur la palette WLU.</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">Bannière Cookies</span>
+            <div class="bg-white p-6 rounded-brand border border-stone shadow-sm space-y-4">
+                <p class="text-sm text-graphite"><strong class="text-ink">Nous respectons votre vie privée.</strong> Nous utilisons des cookies pour analyser l'audience.</p>
+                <div class="flex gap-3">
+                    <button class="px-4 py-2 bg-cream border border-stone text-ink text-sm font-medium rounded-brand">Tout refuser</button>
+                    <button class="btn-primary-sm">Tout accepter</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <span class="text-xs text-graphite block">Skip Link (Accessibilité)</span>
+            <div class="bg-white p-6 rounded-brand border border-stone">
+                <p class="text-sm text-graphite mb-3">Présent sur tous les layouts. Visible au focus clavier.</p>
+                <code class="text-xs text-stone">class="skip-link"</code>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7. RÈGLES D'HOMOGÉNÉITÉ -->
+<section class="border-t border-stone pt-16">
+    <h2 class="font-serif text-3xl text-ink mb-10 flex items-center gap-4">
+        <span class="text-stone font-sans text-xl font-bold">07.</span> Règles d'homogénéité
+    </h2>
+
+    <ul class="list-disc marker:text-flame marker:font-bold pl-6 space-y-4 text-graphite">
+        <li>Utiliser uniquement les tokens de couleur de la palette (\`ink\`, \`cream\`, \`flame\`, \`graphite\`, etc.).</li>
+        <li>Interdire les valeurs HEX en dur dans les classes utilitaires quand un token existe déjà.</li>
+        <li>Éviter les styles inline ; créer une classe dédiée dans la couche composants.</li>
+        <li>Utiliser les classes partagées (\`btn-primary\`, \`btn-secondary\`, \`field-input\`, \`field-textarea\`, \`badge-severity-*\`) pour garantir la cohérence.</li>
+        <li>Conserver la pile typographique officielle : Sans = Satoshi, Serif = Times New Roman.</li>
+    </ul>
+</section>
+`;function a(){return e.jsx("div",{className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:t}})}export{a as BrandGuidelinesPage};

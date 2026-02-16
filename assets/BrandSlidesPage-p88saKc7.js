@@ -1,0 +1,755 @@
+import{j as e}from"./charts-DKGMT1ng.js";import"./react-DGBwUpAK.js";const t=`
+<section class="mb-12">
+    <div class="border-b border-stone pb-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Slides</span>
+        <h1 class="font-serif text-5xl md:text-6xl text-ink mb-6">Templates de Présentation</h1>
+        <p class="text-xl text-graphite font-light max-w-2xl">
+            Modèles de diapositives au format 16:9 pour les restitutions stratégiques.
+            <br>Codes couleurs HEX solides (sans transparence) pour copier-coller facile.
+        </p>
+    </div>
+</section>
+
+<!-- CONTAINER DES SLIDES -->
+<div class="space-y-20 mb-32 max-w-[960px] mx-auto">
+
+    <!-- 1. SLIDE DE COUVERTURE -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">01. Slide de Couverture (Dark)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#1A1A1A</strong> (Ink)</span>
+            <span class="block">Titre: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Sous-titre: <strong>#E2E0DC</strong> (Stone)</span>
+            <span class="block">Accent: <strong>#E0553D</strong> (Flame)</span>
+            <span class="block">Footer: <strong>#9CA3AF</strong> (Grey - Nouveau)</span>
+        </p>
+        
+        <!-- SLIDE 16:9 CONTAINER -->
+        <div class="w-full aspect-video bg-ink relative overflow-hidden shadow-2xl flex flex-col justify-between p-16">
+            <!-- Top -->
+            <div class="flex justify-between items-start">
+                <span class="font-serif text-2xl text-cream tracking-tight">We Love Users</span>
+                <span class="text-xs font-bold uppercase tracking-widest text-flame">Restitution Stratégique</span>
+            </div>
+
+            <!-- Center -->
+            <div>
+                <h1 class="font-serif text-6xl text-cream leading-[1.1] mb-6">
+                    Audit d'usage et<br>recommandations stratégiques
+                </h1>
+                <p class="text-2xl text-stone font-light max-w-2xl">
+                    Projet de refonte de l'espace sociétaire.
+                </p>
+            </div>
+
+            <!-- Bottom -->
+            <div class="flex justify-between items-end border-t border-stone pt-6">
+                <!-- Utilisation de la nuance Grey (#9CA3AF) pour hiérarchiser l'info secondaire -->
+                <div class="text-sm text-grey">
+                    <p>Pour : MAIF</p>
+                    <p>Date : Octobre 2023</p>
+                </div>
+                <div class="text-right text-sm text-grey">
+                    <p>Intervenant</p>
+                    <p class="text-cream">Florent Jaouali</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. SLIDE SOMMAIRE -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">02. Sommaire (Light)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Titre: <strong>#1A1A1A</strong> (Ink)</span>
+            <span class="block">Numéros: <strong>#A8A29E</strong> (Taupe - Nouveau, pour le contraste)</span>
+            <span class="block">Texte: <strong>#5F5F5F</strong> (Graphite)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-cream relative overflow-hidden shadow-2xl p-16 flex flex-col">
+            <h2 class="font-serif text-4xl text-ink mb-12">Sommaire</h2>
+            
+            <div class="grid grid-cols-2 gap-x-20 gap-y-12 flex-grow content-center">
+                <div class="flex items-start gap-6 group">
+                    <!-- Utilisation de Taupe (#A8A29E) pour que le numéro se voit sur fond clair -->
+                    <span class="text-4xl font-serif text-taupe group-hover:text-flame transition-colors">01.</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Le contexte d'intervention</h3>
+                        <p class="text-sm text-graphite">Cadrage, enjeux et méthodologie déployée.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 group">
+                    <span class="text-4xl font-serif text-taupe group-hover:text-flame transition-colors">02.</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Les enseignements terrain</h3>
+                        <p class="text-sm text-graphite">Ce que la réalité des usages nous apprend.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 group">
+                    <span class="text-4xl font-serif text-taupe group-hover:text-flame transition-colors">03.</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Les points de friction</h3>
+                        <p class="text-sm text-graphite">Analyse détaillée des ruptures de parcours.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-6 group">
+                    <span class="text-4xl font-serif text-taupe group-hover:text-flame transition-colors">04.</span>
+                    <div>
+                        <h3 class="text-xl font-bold text-ink mb-2">Recommandations</h3>
+                        <p class="text-sm text-graphite">Pistes d'arbitrage et roadmap priorisée.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-6 left-16 right-16 flex justify-between items-center pt-4 border-t border-stone">
+                <span class="text-xs text-graphite">We Love Users</span>
+                <span class="text-xs text-graphite">2</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. TITRE DE CHAPITRE -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">03. Titre de Chapitre (Brand)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#E0553D</strong> (Flame)</span>
+            <span class="block">Titre: <strong>#FFFFFF</strong> (White)</span>
+            <span class="block">Label: <strong>#FFE4E6</strong> (Rose Pâle - Nouveau, pour détacher du blanc)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-flame relative overflow-hidden shadow-2xl flex items-center justify-center p-16 text-center">
+            <div class="max-w-3xl">
+                <!-- Utilisation d'un rose très pâle (#FFE4E6) pour créer une hiérarchie avec le titre blanc -->
+                <span class="text-xs font-bold uppercase tracking-[0.3em] text-rose mb-6 block">Chapitre 02</span>
+                <h2 class="font-serif text-6xl text-white leading-tight">
+                    La réalité du terrain :<br>Entre contournements et expertise.
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. TITRE DE SOUS-CHAPITRE -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">04. Titre de Sous-Chapitre</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Titre: <strong>#1A1A1A</strong> (Ink)</span>
+            <span class="block">Texte: <strong>#5F5F5F</strong> (Graphite)</span>
+            <span class="block">Bordure: <strong>#E0553D</strong> (Flame)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-cream relative overflow-hidden shadow-2xl flex flex-col justify-center p-16">
+            <div class="border-l-4 border-flame pl-12 py-4">
+                <h2 class="font-serif text-5xl text-ink mb-4">L'enjeu de la mobilité</h2>
+                <p class="text-2xl text-graphite font-light">
+                    Comment les outils sont utilisés en déplacement, loin du bureau.
+                </p>
+            </div>
+            
+            <div class="absolute bottom-6 left-16 right-16 flex justify-between items-center pt-4 border-t border-stone">
+                <span class="text-xs text-graphite">We Love Users</span>
+                <span class="text-xs text-graphite">12</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5.1 FICHE VALIDÉ (SAGE) -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">05.1 Fiche : Point Validé (Sage)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Couleur: <strong>#4A7C59</strong> (Sage)</span>
+            <span class="block">Signification: <strong>Validé / Pérenne / Point Fort</strong></span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl p-12 flex flex-col">
+            <!-- Header Fiche -->
+            <div class="flex justify-between items-start mb-8 pb-4 border-b border-stone">
+                <div>
+                    <span class="text-xs font-bold uppercase text-graphite tracking-widest mb-1 block">Compréhension globale</span>
+                    <h2 class="font-serif text-2xl text-ink">1.2 Clarté de la proposition de valeur</h2>
+                </div>
+                <!-- Badge Sage -->
+                <div class="flex items-center gap-2 bg-sage text-white px-4 py-2 rounded-full">
+                    <span class="text-xs font-bold uppercase tracking-wide">Validé</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8 flex-grow">
+                <!-- Left: Placeholder Screenshot (Sage Accent) -->
+                <div class="col-span-7 bg-stone/20 rounded-brand overflow-hidden relative border border-stone flex items-center justify-center">
+                    <svg class="w-16 h-16 text-sage opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="absolute bottom-4 left-4 bg-white text-sage text-xs px-2 py-1 rounded font-bold border border-sage/20">Capture Landing Page</span>
+                </div>
+
+                <!-- Right: Analysis -->
+                <div class="col-span-5 flex flex-col gap-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-sage">●</span> Observation
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            Les utilisateurs reformulent spontanément l'offre avec les bons mots-clés ("c'est pour gérer mes remboursements").
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-sage">●</span> Pourquoi ça marche ?
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            L'accroche principale est centrée sur le bénéfice client et non sur la technicité du produit.
+                        </p>
+                    </div>
+                    
+                    <!-- RECOMMANDATION SIMPLIFIÉE (SAGE) -->
+                    <div class="mt-auto pt-6 border-t border-sage">
+                        <span class="text-xs font-bold text-sage uppercase tracking-widest block mb-2">Recommandation</span>
+                        <p class="text-base text-ink font-medium leading-relaxed">
+                            Ne rien changer sur le wording. Sanctuariser ce vocabulaire pour les campagnes marketing.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-4 left-12 right-12 flex justify-end">
+                <span class="text-xs text-graphite">Audit UX - Page 14</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5.2 FICHE MINEURE (OCHRE) -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">05.2 Fiche : Problème Mineur (Ochre)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Couleur: <strong>#D9A521</strong> (Ochre)</span>
+            <span class="block">Signification: <strong>Attention / Friction / Non-bloquant</strong></span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl p-12 flex flex-col">
+            <div class="flex justify-between items-start mb-8 pb-4 border-b border-stone">
+                <div>
+                    <span class="text-xs font-bold uppercase text-graphite tracking-widest mb-1 block">Parcours Édition</span>
+                    <h2 class="font-serif text-2xl text-ink">4.1 Contrastes insuffisants sur les labels</h2>
+                </div>
+                <!-- Badge Ochre -->
+                <div class="flex items-center gap-2 bg-ochre text-white px-4 py-2 rounded-full">
+                    <span class="text-xs font-bold uppercase tracking-wide">Mineur</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8 flex-grow">
+                <div class="col-span-7 bg-stone/20 rounded-brand overflow-hidden relative border border-stone flex items-center justify-center">
+                    <svg class="w-16 h-16 text-ochre opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <span class="absolute bottom-4 left-4 bg-white text-ochre text-xs px-2 py-1 rounded font-bold border border-ochre/20">Capture Formulaire</span>
+                </div>
+
+                <div class="col-span-5 flex flex-col gap-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-ochre">●</span> Phénomène observé
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            Sur écran mal calibré ou en extérieur, l'utilisateur plisse les yeux pour lire les légendes des champs (gris clair sur blanc).
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-ochre">●</span> Impact
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            Ralentissement de la saisie, mais pas d'erreur fonctionnelle constatée.
+                        </p>
+                    </div>
+                    
+                    <!-- RECOMMANDATION SIMPLIFIÉE (OCHRE) -->
+                    <div class="mt-auto pt-6 border-t border-ochre">
+                        <span class="text-xs font-bold text-ochre uppercase tracking-widest block mb-2">Amélioration</span>
+                        <p class="text-base text-ink font-medium leading-relaxed">
+                            Passer les labels secondaires en Gris #5F5F5F au lieu du Gris #A8A29E actuel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-4 left-12 right-12 flex justify-end">
+                <span class="text-xs text-graphite">Audit UX - Page 28</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5.3 FICHE MAJEURE (FLAME) -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">05.3 Fiche : Problème Majeur (Flame)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Couleur: <strong>#E0553D</strong> (Flame)</span>
+            <span class="block">Signification: <strong>Important / Risque d'erreur / Prioritaire</strong></span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl p-12 flex flex-col">
+            <div class="flex justify-between items-start mb-8 pb-4 border-b border-stone">
+                <div>
+                    <span class="text-xs font-bold uppercase text-graphite tracking-widest mb-1 block">Parcours Souscription</span>
+                    <h2 class="font-serif text-2xl text-ink">3.1 Perte de contexte lors de la validation</h2>
+                </div>
+                <!-- Badge Flame -->
+                <div class="flex items-center gap-2 bg-flame text-white px-4 py-2 rounded-full">
+                    <span class="text-xs font-bold uppercase tracking-wide">Majeur</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8 flex-grow">
+                <div class="col-span-7 bg-stone/20 rounded-brand overflow-hidden relative border border-stone flex items-center justify-center">
+                    <svg class="w-16 h-16 text-flame opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                    <span class="absolute bottom-4 left-4 bg-white text-flame text-xs px-2 py-1 rounded font-bold border border-flame/20">Capture Modale Panier</span>
+                </div>
+
+                <div class="col-span-5 flex flex-col gap-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-flame">●</span> Phénomène observé
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            L'utilisateur ne sait plus ce qu'il valide. Le récapitulatif du panier a disparu de l'écran modal.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-flame">●</span> Analyse
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            Charge mentale élevée. L'utilisateur doit mémoriser 4 informations complexes sans support visuel.
+                        </p>
+                    </div>
+                    
+                    <!-- RECOMMANDATION SIMPLIFIÉE (FLAME) -->
+                    <div class="mt-auto pt-6 border-t border-flame">
+                        <span class="text-xs font-bold text-flame uppercase tracking-widest block mb-2">Recommandation</span>
+                        <p class="text-base text-ink font-medium leading-relaxed">
+                            Réintégrer un résumé synthétique (sticky) des options choisies directement dans la modale.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-4 left-12 right-12 flex justify-end">
+                <span class="text-xs text-graphite">Audit UX - Page 24</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5.4 FICHE CRITIQUE (BERRY) -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">05.4 Fiche : Problème Critique (Berry)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Couleur: <strong>#9E2A2B</strong> (Berry)</span>
+            <span class="block">Signification: <strong>Bloquant / Perte de données / Churn immédiat</strong></span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl p-12 flex flex-col">
+            <div class="flex justify-between items-start mb-8 pb-4 border-b border-stone">
+                <div>
+                    <span class="text-xs font-bold uppercase text-graphite tracking-widest mb-1 block">Espace Personnel</span>
+                    <h2 class="font-serif text-2xl text-ink">5.0 Échec silencieux de la sauvegarde</h2>
+                </div>
+                <!-- Badge Berry -->
+                <div class="flex items-center gap-2 bg-berry text-white px-4 py-2 rounded-full shadow-sm">
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <span class="text-xs font-bold uppercase tracking-wide">Critique</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8 flex-grow">
+                <div class="col-span-7 bg-stone/20 rounded-brand overflow-hidden relative border border-stone flex items-center justify-center">
+                    <svg class="w-16 h-16 text-berry opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="absolute bottom-4 left-4 bg-white text-berry text-xs px-2 py-1 rounded font-bold border border-berry/20">Capture Message Erreur</span>
+                </div>
+
+                <div class="col-span-5 flex flex-col gap-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-berry">●</span> Phénomène observé
+                        </h4>
+                        <p class="text-sm text-graphite leading-relaxed">
+                            Si l'utilisateur a une micro-coupure réseau, le bouton "Enregistrer" tourne dans le vide indéfiniment. Aucune alerte.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-ink uppercase tracking-wide mb-2 flex items-center gap-2">
+                            <span class="text-berry">●</span> Conséquence
+                        </h4>
+                        <p class="text-sm text-ink font-bold leading-relaxed">
+                            Perte intégrale des données saisies (30 min de travail). Colère forte et abandon du service.
+                        </p>
+                    </div>
+                    
+                    <!-- RECOMMANDATION SIMPLIFIÉE (BERRY) -->
+                    <div class="mt-auto pt-6 border-t border-berry">
+                        <span class="text-xs font-bold text-berry uppercase tracking-widest block mb-2">Correctif immédiat</span>
+                        <p class="text-base text-ink font-medium leading-relaxed">
+                            Implémenter une sauvegarde locale (localStorage) automatique à chaque champ et un message d'erreur explicite.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-4 left-12 right-12 flex justify-end">
+                <span class="text-xs text-graphite">Audit UX - Page 35</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. INSIGHT MARQUANT -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">06. Insight Stratégique (Dark)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#1A1A1A</strong> (Ink)</span>
+            <span class="block">Texte: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Guillemet: <strong>#E0553D</strong> (Flame)</span>
+            <span class="block">Footer: <strong>#9CA3AF</strong> (Grey - Nouveau)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-ink relative overflow-hidden shadow-2xl p-16 flex flex-col justify-center">
+            
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-8 block">Insight #04</span>
+            
+            <h2 class="font-serif text-4xl md:text-5xl text-cream leading-tight mb-10">
+                La confiance ne se joue pas sur la sécurité technique, mais sur la lisibilité du langage.
+            </h2>
+            
+            <div class="flex items-start gap-4">
+                <span class="text-6xl text-flame font-serif leading-none">"</span>
+                <div>
+                    <!-- Utilisation de Stone (#E2E0DC) qui est lisible sur fond noir -->
+                    <p class="text-xl text-stone italic font-light leading-relaxed max-w-2xl">
+                        Je vois bien que le cadenas est vert, mais je ne comprends pas ce que veut dire 'Provision mathématique'. Dans le doute, je préfère appeler mon conseiller.
+                    </p>
+                    <p class="text-sm text-flame font-bold mt-4 uppercase tracking-wide">— Véronique, 52 ans, Cliente depuis 15 ans</p>
+                </div>
+            </div>
+
+            <!-- Footer en Grey (#9CA3AF) -->
+            <div class="absolute bottom-6 left-16 right-16 flex justify-between items-center pt-4 border-t border-stone">
+                <span class="text-xs text-grey">We Love Users</span>
+                <span class="text-xs text-grey">31</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. SLIDE TABLEAU -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">07. Données / Tableau</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Highlight: <strong>#FFF1F2</strong> (Wash - Nouveau, fond rosé très pâle)</span>
+            <span class="block">En-tête: <strong>#E2E0DC</strong> (Stone)</span>
+            <span class="block">Texte: <strong>#1A1A1A</strong> (Ink)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-cream relative overflow-hidden shadow-2xl p-16 flex flex-col">
+            <h2 class="font-serif text-3xl text-ink mb-8">Comparatif des scénarios d'usage</h2>
+            
+            <div class="flex-grow bg-white rounded-brand border border-stone overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-stone border-b border-stone text-xs font-bold uppercase text-ink tracking-wider">
+                            <th class="p-6">Critères</th>
+                            <th class="p-6 text-center border-l border-white">Scénario A (Actuel)</th>
+                            <th class="p-6 text-center border-l border-white text-flame">Scénario B (Recommandé)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-graphite">
+                        <tr class="border-b border-stone">
+                            <td class="p-6 font-medium text-ink">Temps de réalisation</td>
+                            <td class="p-6 text-center border-l border-stone">4 min 30s</td>
+                            <!-- Utilisation de Wash (#FFF1F2) pour la colonne highlight -->
+                            <td class="p-6 text-center border-l border-stone bg-wash font-bold text-ink">2 min 10s</td>
+                        </tr>
+                        <tr class="border-b border-stone">
+                            <td class="p-6 font-medium text-ink">Taux d'erreur</td>
+                            <td class="p-6 text-center border-l border-stone text-flame font-bold">18% (Critique)</td>
+                            <td class="p-6 text-center border-l border-stone bg-wash text-ink font-bold">3% (Marginal)</td>
+                        </tr>
+                        <tr class="border-b border-stone">
+                            <td class="p-6 font-medium text-ink">Charge mentale</td>
+                            <td class="p-6 text-center border-l border-stone">Forte (Mémorisation)</td>
+                            <td class="p-6 text-center border-l border-stone bg-wash">Faible (Guidage)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-6 font-medium text-ink">Autonomie</td>
+                            <td class="p-6 text-center border-l border-stone">Support nécessaire (1/3)</td>
+                            <td class="p-6 text-center border-l border-stone bg-wash">Totale</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="absolute bottom-6 left-16 right-16 flex justify-between items-center pt-4 border-t border-stone">
+                <span class="text-xs text-graphite">We Love Users</span>
+                <span class="text-xs text-graphite">42</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. IMMERSION PHOTO -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">08. Immersion Terrain (Photos)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#FFFFFF</strong> (White)</span>
+            <span class="block">Labels: <strong>#000000</strong> (Black - pour lisibilité max)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl p-12 flex flex-col">
+            <h2 class="font-serif text-3xl text-ink mb-2">L'environnement de travail réel</h2>
+            <p class="text-graphite mb-8 max-w-2xl">Loin du bureau calme, l'outil est utilisé dans des conditions de lumière difficiles et avec des interruptions constantes.</p>
+            
+            <div class="grid grid-cols-2 gap-6 flex-grow">
+                <div class="relative rounded-brand overflow-hidden bg-stone group">
+                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Terrain 1">
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                        <span class="text-white text-xs font-bold uppercase tracking-widest">Atelier Zone B</span>
+                    </div>
+                </div>
+                <div class="grid grid-rows-2 gap-6">
+                     <div class="relative rounded-brand overflow-hidden bg-stone group">
+                        <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Terrain 2">
+                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                            <span class="text-white text-xs font-bold uppercase tracking-widest">Post-it de contournement</span>
+                        </div>
+                     </div>
+                     <div class="relative rounded-brand overflow-hidden bg-stone group">
+                        <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Terrain 3">
+                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                            <span class="text-white text-xs font-bold uppercase tracking-widest">Usage sur tablette</span>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. VIDÉO / VERBATIM -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">09. Vidéo / Preuve (Dark)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#1A1A1A</strong> (Ink)</span>
+            <span class="block">Player: <strong>#E0553D</strong> (Flame)</span>
+            <span class="block">Border: <strong>#E2E0DC</strong> (Stone)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-ink relative overflow-hidden shadow-2xl flex items-stretch">
+            
+            <!-- Video Zone -->
+            <div class="w-2/3 bg-black relative flex items-center justify-center group cursor-pointer">
+                <!-- Fake Player UI -->
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60" alt="Video thumbnail">
+                <div class="w-20 h-20 rounded-full bg-flame flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform shadow-lg">
+                    <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div class="absolute bottom-6 left-6 text-white z-10">
+                    <span class="text-xs font-bold bg-flame px-2 py-1 rounded">02:14</span>
+                    <span class="text-sm ml-2 font-medium">Séquence : Hésitation sur le CTA</span>
+                </div>
+            </div>
+
+            <!-- Context Zone -->
+            <div class="w-1/3 bg-ink p-10 flex flex-col justify-center border-l border-stone">
+                <span class="text-xs font-bold uppercase tracking-widest text-flame mb-6 block">Ce qu'il faut voir</span>
+                <p class="text-cream text-lg font-light leading-relaxed mb-8">
+                    "Regardez comment la souris oscille entre les deux boutons pendant 12 secondes. Elle lit trois fois l'intitulé avant de cliquer."
+                </p>
+                <div class="mt-auto pt-6 border-t border-stone">
+                    <!-- Utilisation de Taupe (#A8A29E) ou Stone (#E2E0DC) -->
+                    <p class="text-stone text-xs uppercase tracking-wide">Participant #3</p>
+                    <p class="text-stone font-serif text-xl">Sophie</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. HYPOTHÈSE vs RÉALITÉ -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">10. Hypothèse vs Réalité</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Gauche: <strong>#FAF9F7</strong> (Cream) + <strong>#A8A29E</strong> (Taupe)</span>
+            <span class="block">Droite: <strong>#FFFFFF</strong> (White) + <strong>#1A1A1A</strong> (Ink)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl flex">
+            <!-- Left: Hypothesis -->
+            <div class="w-1/2 bg-cream p-16 flex flex-col justify-center border-r border-stone relative">
+                <!-- Utilisation de Taupe (#A8A29E) pour le texte secondaire sur fond clair -->
+                <span class="absolute top-12 left-12 text-xs font-bold uppercase tracking-widest text-taupe">Hypothèse interne</span>
+                <h3 class="font-serif text-3xl text-taupe mb-6 line-through decoration-flame decoration-2">
+                    "Les experts métiers veulent des tableaux de bord complexes et denses."
+                </h3>
+                <div class="mt-auto">
+                    <p class="text-sm text-graphite font-medium">Croyance initiale</p>
+                </div>
+            </div>
+
+            <!-- Right: Reality -->
+            <div class="w-1/2 bg-white p-16 flex flex-col justify-center relative">
+                 <span class="absolute top-12 left-12 text-xs font-bold uppercase tracking-widest text-flame">Réalité observée</span>
+                <h3 class="font-serif text-4xl text-ink mb-6">
+                    Ils n'utilisent que 3 indicateurs clés et exportent le reste sur Excel.
+                </h3>
+                 <div class="mt-auto">
+                    <p class="text-sm text-ink font-bold">Conséquence</p>
+                    <p class="text-sm text-graphite">80% de l'écran est du bruit cognitif.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. DERNIÈRE SLIDE -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">11. Slide de Fin (Dark)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#1A1A1A</strong> (Ink)</span>
+            <span class="block">Texte: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Subtext: <strong>#E2E0DC</strong> (Stone)</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-ink relative overflow-hidden shadow-2xl flex flex-col justify-center items-center text-center p-16">
+            <h2 class="font-serif text-6xl text-cream mb-8">Merci.</h2>
+            <p class="text-2xl text-stone font-light mb-16 max-w-xl">
+                Avez-vous des questions sur les prochaines étapes de l'arbitrage ?
+            </p>
+            
+            <div class="flex gap-12 border-t border-stone pt-12">
+                <div class="text-left">
+                    <span class="block text-xs font-bold uppercase tracking-widest text-flame mb-2">Email</span>
+                    <span class="text-cream text-lg">florent@weloveusers.com</span>
+                </div>
+                <div class="text-left">
+                    <span class="block text-xs font-bold uppercase tracking-widest text-flame mb-2">Web</span>
+                    <span class="text-cream text-lg">weloveusers.com</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. QUESTION VS REPONSES (Editorial Grid) -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">12. Question vs Réponses (Editorial)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond Slide: <strong>#FAF9F7</strong> (Cream)</span>
+            <span class="block">Structure: <strong>Colonnes avec Top Border</strong> (plus léger)</span>
+            <span class="block">Couleurs: Bordures Ink / Stone / Flame</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-cream relative overflow-hidden shadow-2xl p-16 flex flex-col justify-between">
+            
+            <!-- Header: La Question -->
+            <div class="mb-8">
+                <span class="text-flame text-xs font-bold uppercase tracking-widest mb-4 block">Question de recherche</span>
+                <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight max-w-4xl">
+                    "Est-ce que l'ajout d'un chatbot va réellement réduire la charge du support client ?"
+                </h2>
+            </div>
+
+            <!-- Content Grid: 3 Colonnes Éditoriales -->
+            <div class="grid grid-cols-3 gap-12 items-start flex-grow">
+                
+                <!-- Colonne 1: Confirmé (Ink) -->
+                <div class="border-t-4 border-ink pt-6">
+                    <span class="block text-xs font-bold uppercase tracking-widest text-ink mb-3">Oui (Simple)</span>
+                    <h3 class="font-serif text-xl text-ink mb-3 leading-snug">Efficace sur le mot de passe.</h3>
+                    <p class="text-sm text-graphite font-light leading-relaxed">
+                        Sur les demandes simples (reset password), le bot filtre 80% des tickets entrants. L'adoption est immédiate car le besoin est utilitaire.
+                    </p>
+                </div>
+
+                <!-- Colonne 2: Neutre (Stone/Taupe) -->
+                <div class="border-t-4 border-stone pt-6">
+                    <span class="block text-xs font-bold uppercase tracking-widest text-taupe mb-3">Neutre (Complexe)</span>
+                    <h3 class="font-serif text-xl text-ink mb-3 leading-snug">Ignoré sur le sinistre.</h3>
+                    <p class="text-sm text-graphite font-light leading-relaxed">
+                        Dès que l'émotion monte (sinistre), l'utilisateur contourne le bot en moins de 3 secondes. Il cherche l'humain avant l'outil.
+                    </p>
+                </div>
+
+                <!-- Colonne 3: Alerte (Flame) -->
+                <div class="border-t-4 border-flame pt-6">
+                    <span class="block text-xs font-bold uppercase tracking-widest text-flame mb-3">Alerte (Risque)</span>
+                    <h3 class="font-serif text-xl text-flame mb-3 leading-snug">Effet rebond négatif.</h3>
+                    <p class="text-sm text-ink font-light leading-relaxed">
+                        L'échec du bot crée une frustration qui rallonge la durée des appels humains de +15% (temps d'apaisement nécessaire).
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-between items-center pt-4 border-t border-stone mt-auto">
+                <span class="text-xs text-graphite">We Love Users</span>
+                <span class="text-xs text-graphite">Synthèse Terrain</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 13. MATRICE DE SÉVÉRITÉ (Audit) -->
+    <section>
+        <h3 class="text-lg font-bold text-ink mb-2">13. Matrice de Sévérité (Audit)</h3>
+        <p class="text-sm text-graphite mb-6 font-mono text-xs space-y-1">
+            <span class="block">Fond: <strong>#FFFFFF</strong> (White)</span>
+            <span class="block">Couleurs: Sage, Ochre, Flame, Berry</span>
+        </p>
+        
+        <div class="w-full aspect-video bg-white relative overflow-hidden shadow-2xl p-16 flex flex-col">
+            
+            <h2 class="font-serif text-4xl text-ink mb-12">Synthèse des priorités</h2>
+
+            <div class="flex flex-col gap-6 flex-grow justify-center">
+                
+                <!-- Niveau 1: Validé (Sage) -->
+                <div class="flex items-center gap-8 group">
+                    <div class="w-48 text-right">
+                        <span class="badge-severity badge-severity-sage">Validé</span>
+                    </div>
+                    <div class="flex-grow border-l border-sage pl-6 py-1">
+                        <h4 class="font-serif text-xl text-ink mb-1">Architecture de l'information</h4>
+                        <p class="text-sm text-graphite">L'arborescence est comprise par 100% des utilisateurs testés.</p>
+                    </div>
+                </div>
+
+                <!-- Niveau 2: Mineur (Ochre) -->
+                <div class="flex items-center gap-8 group">
+                    <div class="w-48 text-right">
+                        <span class="badge-severity badge-severity-ochre">Mineur</span>
+                    </div>
+                    <div class="flex-grow border-l border-ochre pl-6 py-1">
+                        <h4 class="font-serif text-xl text-ink mb-1">Lisibilité mobile</h4>
+                        <p class="text-sm text-graphite">Certains labels sont tronqués sur iPhone SE, sans impact fonctionnel direct.</p>
+                    </div>
+                </div>
+
+                <!-- Niveau 3: Majeur (Flame) -->
+                <div class="flex items-center gap-8 group">
+                    <div class="w-48 text-right">
+                        <span class="badge-severity badge-severity-flame">Majeur</span>
+                    </div>
+                    <div class="flex-grow border-l-4 border-flame pl-6 py-1">
+                        <h4 class="font-serif text-xl text-ink mb-1">Tunnel de souscription</h4>
+                        <p class="text-sm text-graphite">L'étape 3 génère 40% d'abandon car le bouton "Suivant" est sous la ligne de flottaison.</p>
+                    </div>
+                </div>
+
+                <!-- Niveau 4: Critique (Berry) -->
+                <div class="flex items-center gap-8 group">
+                    <div class="w-48 text-right">
+                        <span class="badge-severity badge-severity-berry">Critique</span>
+                    </div>
+                    <div class="flex-grow border-l-4 border-berry pl-6 py-1">
+                        <h4 class="font-serif text-xl text-berry font-bold mb-1">Perte de données</h4>
+                        <p class="text-sm text-ink font-medium">En cas d'erreur de saisie, le formulaire se vide intégralement. Risque de churn immédiat.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="absolute bottom-6 left-16 right-16 flex justify-between items-center pt-4 border-t border-stone">
+                <span class="text-xs text-graphite">We Love Users</span>
+                <span class="text-xs text-graphite">Audit UX</span>
+            </div>
+        </div>
+    </section>
+
+</div>
+`;function a(){return e.jsx("div",{className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:t}})}export{a as BrandSlidesPage};
