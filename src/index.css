@@ -1,66 +1,225 @@
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap");
 @import "tailwindcss";
+@source "./content/internal/design-system.html";
+@source "./content/internal/slides.html";
+@source "./content/internal/working-method.html";
 
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
+  --color-cream: #faf9f7;
+  --color-ink: #1a1a1a;
+  --color-graphite: #5f5f5f;
+  --color-stone: #e2e0dc;
+  --color-flame: #e0553d;
 
-  --color-success-50: #f0fdf4;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
+  --color-taupe: #a8a29e;
+  --color-grey: #9ca3af;
+  --color-wash: #fff1f2;
+  --color-rose: #ffe4e6;
+  --color-sage: #4a7c59;
+  --color-ochre: #d9a521;
+  --color-berry: #9e2a2b;
 
-  --color-danger-50: #fef2f2;
-  --color-danger-500: #ef4444;
-  --color-danger-600: #dc2626;
-  --color-danger-700: #b91c1c;
+  --color-primary-50: #fff1f2;
+  --color-primary-100: #ffe4e6;
+  --color-primary-200: #fecdd3;
+  --color-primary-300: #fda4af;
+  --color-primary-400: #fb7185;
+  --color-primary-500: #e0553d;
+  --color-primary-600: #c94b35;
+  --color-primary-700: #a63f2d;
+  --color-primary-800: #873425;
+  --color-primary-900: #6f2c20;
 
-  --color-warning-50: #fffbeb;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
+  --color-success-50: #edf5ef;
+  --color-success-500: #4a7c59;
+  --color-success-600: #3f684b;
+  --color-success-700: #34553d;
 
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
+  --color-danger-50: #fdeeee;
+  --color-danger-500: #e0553d;
+  --color-danger-600: #c94b35;
+  --color-danger-700: #9e2a2b;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-warning-50: #fdf6e7;
+  --color-warning-500: #d9a521;
+  --color-warning-600: #b98d1b;
+
+  --color-slate-50: #faf9f7;
+  --color-slate-100: #f2f0ec;
+  --color-slate-200: #e2e0dc;
+  --color-slate-300: #cfcac3;
+  --color-slate-400: #a8a29e;
+  --color-slate-500: #7d776f;
+  --color-slate-600: #5f5f5f;
+  --color-slate-700: #3f3d3a;
+  --color-slate-800: #2d2b28;
+  --color-slate-900: #1a1a1a;
+
+  --font-sans: "Satoshi", "Avenir Next", "Segoe UI", sans-serif;
+  --font-serif: "Times New Roman", Times, "Liberation Serif", serif;
+  --radius-brand: 16px;
 }
 
-/* Base styles */
-body {
-  margin: 0;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-slate-50);
-  color: var(--color-slate-800);
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: radial-gradient(
+      1200px 900px at 10% -10%,
+      #fff5f3 0%,
+      #faf9f7 45%,
+      #faf9f7 100%
+    );
+    color: var(--color-ink);
+  }
+
+  ::selection {
+    background-color: var(--color-stone);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-flame);
+    outline-offset: 2px;
+  }
 }
 
-/* Scrollbar styling */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-brand bg-flame px-8 py-4 text-base font-bold tracking-wide text-cream shadow-sm transition-all duration-300 hover:opacity-90;
+  }
+
+  .btn-primary-sm {
+    @apply inline-flex items-center justify-center rounded-brand bg-flame px-4 py-2.5 text-sm font-medium tracking-wide text-cream shadow-sm transition-all duration-300 hover:opacity-90;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-brand border border-stone bg-transparent px-8 py-4 text-base font-bold tracking-wide text-ink transition-all duration-300 hover:border-ink;
+  }
+
+  .btn-secondary-sm {
+    @apply inline-flex items-center justify-center rounded-brand border border-stone bg-transparent px-4 py-2 text-xs font-medium uppercase tracking-wide text-ink transition-all duration-300 hover:border-ink;
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border border-stone bg-cream px-3 py-2 text-sm text-ink transition-colors outline-none placeholder:text-graphite/60 focus:border-flame focus:bg-white focus:ring-1 focus:ring-flame;
+  }
+
+  .field-select {
+    @apply w-full cursor-pointer appearance-none rounded-lg border border-stone bg-cream px-3 py-2 text-sm text-ink transition-colors outline-none focus:border-flame focus:bg-white focus:ring-1 focus:ring-flame;
+  }
+
+  .field-textarea {
+    @apply w-full resize-y rounded-lg border border-stone bg-cream px-3 py-2 text-sm text-ink transition-colors outline-none placeholder:text-graphite/60 focus:border-flame focus:bg-white focus:ring-1 focus:ring-flame;
+  }
+
+  .badge-severity {
+    @apply rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-widest;
+  }
+
+  .badge-severity-sage {
+    @apply border border-sage bg-white text-sage;
+  }
+
+  .badge-severity-ochre {
+    @apply border border-ochre bg-white text-ochre;
+  }
+
+  .badge-severity-flame {
+    @apply bg-flame text-white shadow-sm;
+  }
+
+  .badge-severity-berry {
+    @apply bg-berry text-white shadow-sm;
+  }
+
+  .feedback-success-icon {
+    @apply mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-sage/20 text-sage ring-1 ring-sage/30;
+  }
+
+  .brand-chip {
+    @apply inline-flex items-center rounded-full border border-flame px-2 py-0.5 text-[10px] font-bold tracking-widest text-flame;
+  }
+
+  .nav-link {
+    @apply block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
+  }
+
+  .nav-link-toggle {
+    @apply flex w-full items-center justify-between text-left;
+  }
+
+  .nav-link.active {
+    @apply bg-wash font-bold text-flame;
+  }
+
+  .nav-sublink {
+    @apply block rounded-md px-3 py-1.5 pl-8 text-xs font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
+  }
+
+  .nav-sublink.active {
+    @apply bg-white text-flame;
+  }
+
+  .subnav-link {
+    @apply block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
+  }
+
+  .subnav-link.active {
+    @apply bg-wash font-bold text-flame;
+  }
+
+  .subnav-back {
+    @apply mb-3 inline-flex items-center gap-1.5 border-b border-stone pb-0.5 text-sm font-medium text-flame transition-colors duration-200 hover:border-ink hover:text-ink;
+  }
+
+  .nav-item-separator {
+    @apply mt-3 border-t border-stone pt-3;
+  }
+
+  ul.list-heart {
+    @apply list-none pl-0;
+  }
+
+  ul.list-heart li {
+    @apply relative mb-3 pl-6;
+  }
+
+  ul.list-heart li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 0.75em;
+    height: 0.75em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E0553D'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
+  height: 7px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--color-slate-300);
-  border-radius: 3px;
+  background: var(--color-stone);
+  border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-slate-400);
+  background: #cfcac3;
 }

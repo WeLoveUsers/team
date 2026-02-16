@@ -1,7 +1,17 @@
 import { useState } from 'react'
 import { loginApi } from '../api'
 
-export function LoginPage({ onLogin }: { onLogin: () => void }) {
+type LoginPageProps = {
+  onLogin: () => void
+  title?: string
+  subtitle?: string
+}
+
+export function LoginPage({
+  onLogin,
+  title = 'Bienvenue sur We Love Users - Team',
+  subtitle = 'Espace questionnaires We Love Users',
+}: LoginPageProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -23,19 +33,25 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">UX Tools</h1>
-          <p className="text-sm text-slate-500 mt-1">Questionnaires UX standardisés</p>
+        <div className="text-center mb-8 space-y-3">
+          <div className="flex items-center justify-center gap-2">
+            <h1 className="font-serif text-4xl text-ink leading-none">We Love Users</h1>
+            <span className="brand-chip">TEAM</span>
+          </div>
+          <div>
+            <h2 className="text-base font-medium text-ink">{title}</h2>
+            <p className="text-sm text-graphite mt-1">{subtitle}</p>
+          </div>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4"
+          className="bg-white rounded-brand border border-stone p-6 space-y-4"
         >
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-ink mb-1">
               Email
             </label>
             <input
@@ -45,13 +61,13 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              className="field-input"
               placeholder="votre@email.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-ink mb-1">
               Mot de passe
             </label>
             <input
@@ -61,12 +77,12 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              className="field-input"
             />
           </div>
 
           {error && (
-            <div className="text-sm text-danger-600 bg-danger-50 px-3 py-2 rounded-lg">
+            <div className="text-sm text-danger-700 bg-danger-50 px-3 py-2 rounded-lg">
               {error}
             </div>
           )}
@@ -74,7 +90,7 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
+            className="w-full py-2.5 px-4 btn-primary-sm disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>

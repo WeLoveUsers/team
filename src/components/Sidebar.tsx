@@ -1,30 +1,37 @@
 import { useState, useMemo } from 'react'
 import type { Project } from '../api'
 
-type QuestionnaireId = 'sus' | 'deep' | 'umux' | 'umux_lite' | 'attrakdiff' | 'attrakdiff_abridged'
+type QuestionnaireId = 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'attrakdiff' | 'attrakdiff_abridged'
 
 const BADGE_COLORS: Record<string, string> = {
-  SUS: 'bg-blue-100 text-blue-700',
-  DEEP: 'bg-purple-100 text-purple-700',
-  UMUX: 'bg-teal-100 text-teal-700',
-  'UMUX (Lite)': 'bg-cyan-100 text-cyan-700',
-  AttrakDiff: 'bg-orange-100 text-orange-700',
-  'AttrakDiff (abrégé)': 'bg-amber-100 text-amber-700',
+  SUS: 'bg-wash text-flame',
+  DEEP: 'bg-slate-100 text-slate-700',
+  UMUX: 'bg-success-50 text-success-700',
+  'UMUX (Lite)': 'bg-slate-200 text-slate-700',
+  UEQ: 'bg-rose text-flame',
+  AttrakDiff: 'bg-warning-50 text-warning-600',
+  'AttrakDiff (abrégé)': 'bg-danger-50 text-danger-700',
 }
 
 export function computeQuestionnaireId(
   questionnaireType: string | null,
 ): QuestionnaireId | null {
   if (!questionnaireType) return null
-  const t = questionnaireType.toLowerCase()
-  if (t.includes('sus')) return 'sus'
-  if (t.includes('deep')) return 'deep'
-  if (t.includes('umux (lite') || t.includes('umux-lite') || t.includes('umux lite'))
+  const raw = questionnaireType.toLowerCase()
+  const normalized = raw
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '')
+
+  if (normalized.includes('sus')) return 'sus'
+  if (normalized.includes('deep')) return 'deep'
+  if (normalized.includes('umuxlite'))
     return 'umux_lite'
-  if (t.includes('umux')) return 'umux'
-  if (t.includes('abrégé') || t.includes('abrige') || t.includes('abridged'))
+  if (normalized.includes('umux')) return 'umux'
+  if (normalized.includes('ueq') || normalized.includes('userexperiencequestionnaire')) return 'ueq'
+  if (normalized.includes('abrige') || normalized.includes('abridged'))
     return 'attrakdiff_abridged'
-  if (t.includes('attrakdiff')) return 'attrakdiff'
+  if (normalized.includes('attrakdiff')) return 'attrakdiff'
   return null
 }
 

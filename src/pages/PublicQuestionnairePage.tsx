@@ -263,7 +263,7 @@ export function PublicQuestionnairePage() {
 
   if (statusLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="inline-block w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -271,9 +271,9 @@ export function PublicQuestionnairePage() {
 
   if (loadError || !questionnaire) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center max-w-sm">
-          <p className="text-slate-600">Questionnaire introuvable.</p>
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="bg-white rounded-brand border border-stone p-8 text-center max-w-sm">
+          <p className="text-slate-700">Questionnaire introuvable.</p>
         </div>
       </div>
     )
@@ -281,8 +281,8 @@ export function PublicQuestionnairePage() {
 
   if (projectClosed) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center max-w-sm">
+      <div className="min-h-screen bg-cream flex items-center justify-center px-4">
+        <div className="bg-white rounded-brand border border-stone p-8 text-center max-w-sm">
           <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -343,8 +343,8 @@ export function PublicQuestionnairePage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center max-w-sm">
+      <div className="min-h-screen bg-cream flex items-center justify-center px-4">
+        <div className="bg-white rounded-brand border border-stone p-8 text-center max-w-sm">
           <div className="w-14 h-14 bg-success-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-7 h-7 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -360,11 +360,15 @@ export function PublicQuestionnairePage() {
   const isDeep = questionnaireId === 'deep'
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4">
+    <div className="min-h-screen bg-cream py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-          <h1 className="text-lg font-bold text-slate-900">{questionnaire.nameFr}</h1>
+        <div className="bg-white rounded-brand border border-stone p-6 mb-6">
+          <div className="mb-3 flex items-center gap-2">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-flame">We Love Users</p>
+            <span className="brand-chip">Team</span>
+          </div>
+          <h1 className="text-3xl font-serif text-ink">{questionnaire.nameFr}</h1>
           {projectName && (
             <p className="text-sm text-primary-600 font-medium mt-1">{projectName}</p>
           )}
@@ -381,7 +385,7 @@ export function PublicQuestionnairePage() {
         </div>
 
         {/* Progress bar */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+        <div className="bg-white rounded-brand border border-stone p-4 mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-slate-500">Progression</span>
             <span className="text-xs font-medium text-slate-700">
@@ -397,7 +401,7 @@ export function PublicQuestionnairePage() {
         </div>
 
         {/* Questions */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-brand border border-stone p-6">
           {resolvedQuestions.map((q, i) => (
             <div key={q.id} id={`q-${q.id}`}>
               {q.type === 'likert' && !isDeep && (

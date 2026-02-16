@@ -12,6 +12,7 @@ import { SusStats } from './stats/SusStats'
 import { DeepStats } from './stats/DeepStats'
 import { UmuxStats } from './stats/UmuxStats'
 import { UmuxLiteStats } from './stats/UmuxLiteStats'
+import { UeqStats } from './stats/UeqStats'
 import { AttrakDiffStats } from './stats/AttrakDiffStats'
 
 import {
@@ -19,6 +20,7 @@ import {
   computeDeepStats,
   computeUmuxStats,
   computeUmuxLiteStats,
+  computeUeqStats,
   computeAttrakDiffStats,
   computeWordPairAverages,
   type Answers,
@@ -154,6 +156,8 @@ export function ProjectDetail({
         return { type: 'umux' as const, data: computeUmuxStats(answersArray) }
       case 'umux_lite':
         return { type: 'umux_lite' as const, data: computeUmuxLiteStats(answersArray) }
+      case 'ueq':
+        return { type: 'ueq' as const, data: computeUeqStats(answersArray) }
       case 'attrakdiff':
         return {
           type: 'attrakdiff' as const,
@@ -316,6 +320,7 @@ export function ProjectDetail({
               {stats.type === 'deep' && stats.data && <DeepStats stats={stats.data} />}
               {stats.type === 'umux' && stats.data && <UmuxStats stats={stats.data} />}
               {stats.type === 'umux_lite' && stats.data && <UmuxLiteStats stats={stats.data} />}
+              {stats.type === 'ueq' && stats.data && <UeqStats stats={stats.data} />}
               {(stats.type === 'attrakdiff' || stats.type === 'attrakdiff_abridged') && stats.data && questionnaire && (
                 <AttrakDiffStats
                   stats={stats.data}

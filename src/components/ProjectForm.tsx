@@ -9,6 +9,7 @@ const QUESTIONNAIRE_OPTIONS = [
   { value: 'DEEP', label: 'DEEP' },
   { value: 'UMUX', label: 'UMUX' },
   { value: 'UMUX (Lite)', label: 'UMUX (Lite)' },
+  { value: 'UEQ', label: 'UEQ' },
   { value: 'AttrakDiff', label: 'AttrakDiff' },
   { value: 'AttrakDiff (abrégé)', label: 'AttrakDiff (abrégé)' },
 ]
@@ -155,7 +156,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
           onChange={(e) => setName(e.target.value)}
           required
           className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          placeholder="Mon projet UX"
+          placeholder="Mon projet"
         />
       </div>
 

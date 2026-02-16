@@ -153,14 +153,15 @@ export async function recoverResponse(projectId: string, responseId: string): Pr
 }
 
 export async function loginApi(email: string, password: string): Promise<string> {
-  const res = await fetch(`${API_BASE_URL}/login`, {
+  const loginUrl = `${API_BASE_URL}/login`
+  const res = await fetch(loginUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   })
   if (!res.ok) {
     const text = await res.text()
-    throw new Error(`Erreur de connexion (${res.status}) : ${text}`)
+    throw new Error(`Erreur de connexion (${res.status}) [${loginUrl}] : ${text}`)
   }
   const data = (await res.json()) as { token?: string }
   if (!data.token) throw new Error('Réponse de connexion invalide (pas de token)')

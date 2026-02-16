@@ -13,15 +13,21 @@ const dataSourceCache = new Map()
  */
 function computeQuestionnaireIdFromType(questionnaireType) {
   if (!questionnaireType) return null
-  const t = questionnaireType.toLowerCase()
-  if (t.includes('sus')) return 'sus'
-  if (t.includes('deep')) return 'deep'
-  if (t.includes('umux (lite') || t.includes('umux-lite') || t.includes('umux lite'))
+  const raw = questionnaireType.toLowerCase()
+  const normalized = raw
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '')
+
+  if (normalized.includes('sus')) return 'sus'
+  if (normalized.includes('deep')) return 'deep'
+  if (normalized.includes('umuxlite'))
     return 'umux_lite'
-  if (t.includes('umux')) return 'umux'
-  if (t.includes('abrégé') || t.includes('abrige') || t.includes('abridged'))
+  if (normalized.includes('umux')) return 'umux'
+  if (normalized.includes('ueq') || normalized.includes('userexperiencequestionnaire')) return 'ueq'
+  if (normalized.includes('abrige') || normalized.includes('abridged'))
     return 'attrakdiff_abridged'
-  if (t.includes('attrakdiff')) return 'attrakdiff'
+  if (normalized.includes('attrakdiff')) return 'attrakdiff'
   return null
 }
 

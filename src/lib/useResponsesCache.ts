@@ -1,18 +1,52 @@
 import { useState, useCallback, useRef } from 'react'
 import { fetchProjectResponses, type ProjectResponse } from '../api'
 
+const RESPONSES_STALE_AFTER_MS = 60_000
+
 /**
- * Cache local des réponses par projet.
+ * Cache session des réponses par projet (scopé par token d'auth).
  *
  * Quand on navigue vers un projet déjà visité :
  * 1. Les données en cache sont affichées immédiatement
  * 2. Un refresh en arrière-plan est lancé
  * 3. Si de nouvelles données arrivent, l'affichage est mis à jour
  *
- * Le cache est purgé quand on se déconnecte (remontage du composant).
+ * Le cache est purgé explicitement à la déconnexion.
  */
+type ResponsesCacheState = {
+  token: string | null
+  byProject: Map<string, { responses: ProjectResponse[]; fetchedAt: number }>
+}
+
+let responsesCacheState: ResponsesCacheState = {
+  token: null,
+  byProject: new Map(),
+}
+
+function readAuthToken(): string | null {
+  if (typeof window === 'undefined') return null
+  return window.localStorage.getItem('authToken')
+}
+
+function getScopedResponsesStore() {
+  const token = readAuthToken()
+  if (responsesCacheState.token !== token) {
+    responsesCacheState = {
+      token,
+      byProject: new Map(),
+    }
+  }
+  return responsesCacheState.byProject
+}
+
+export function clearCachedResponses(): void {
+  responsesCacheState = {
+    token: null,
+    byProject: new Map(),
+  }
+}
+
 export function useResponsesCache() {
-  const cacheRef = useRef<Map<string, { responses: ProjectResponse[]; fetchedAt: number }>>(new Map())
   const [responses, setResponses] = useState<ProjectResponse[]>([])
   const [loading, setLoading] = useState(false)
   const [backgroundRefreshing, setBackgroundRefreshing] = useState(false)
@@ -24,12 +58,18 @@ export function useResponsesCache() {
    */
   const loadResponses = useCallback(async (projectId: string): Promise<void> => {
     currentProjectIdRef.current = projectId
-    const cached = cacheRef.current.get(projectId)
+    const store = getScopedResponsesStore()
+    const cached = store.get(projectId)
 
     if (cached) {
       // Affichage immédiat du cache
       setResponses(cached.responses)
       setLoading(false)
+
+      if (Date.now() - cached.fetchedAt < RESPONSES_STALE_AFTER_MS) {
+        setBackgroundRefreshing(false)
+        return
+      }
 
       // Refresh en arrière-plan
       setBackgroundRefreshing(true)
@@ -38,7 +78,7 @@ export function useResponsesCache() {
         // Vérifie qu'on est toujours sur le même projet
         if (currentProjectIdRef.current === projectId) {
           setResponses(fresh)
-          cacheRef.current.set(projectId, { responses: fresh, fetchedAt: Date.now() })
+          store.set(projectId, { responses: fresh, fetchedAt: Date.now() })
         }
       } catch (err) {
         console.error('Background refresh failed:', err)
@@ -57,7 +97,7 @@ export function useResponsesCache() {
         const fresh = await fetchProjectResponses(projectId)
         if (currentProjectIdRef.current === projectId) {
           setResponses(fresh)
-          cacheRef.current.set(projectId, { responses: fresh, fetchedAt: Date.now() })
+          store.set(projectId, { responses: fresh, fetchedAt: Date.now() })
         }
       } catch (err) {
         console.error('Load responses failed:', err)
@@ -84,7 +124,8 @@ export function useResponsesCache() {
       const fresh = await fetchProjectResponses(pid)
       if (currentProjectIdRef.current === pid) {
         setResponses(fresh)
-        cacheRef.current.set(pid, { responses: fresh, fetchedAt: Date.now() })
+        const store = getScopedResponsesStore()
+        store.set(pid, { responses: fresh, fetchedAt: Date.now() })
       }
     } catch (err) {
       console.error('Refresh responses failed:', err)
@@ -99,7 +140,8 @@ export function useResponsesCache() {
    * Invalide le cache pour un projet (ex: après suppression projet).
    */
   const invalidate = useCallback((projectId: string) => {
-    cacheRef.current.delete(projectId)
+    const store = getScopedResponsesStore()
+    store.delete(projectId)
   }, [])
 
   /**

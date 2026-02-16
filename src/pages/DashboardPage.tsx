@@ -1,18 +1,15 @@
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
-import { fetchProjects, type Project } from '../api'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { type Project } from '../api'
 import { Layout } from '../components/Layout'
-import { Sidebar } from '../components/Sidebar'
 import { ProjectForm } from '../components/ProjectForm'
 import { ProjectDetail } from '../components/ProjectDetail'
+import { ensureProjectsListLoaded, getCachedProjectsList, setCachedProjectsList } from '../lib/projectsListCache'
 import { useResponsesCache } from '../lib/useResponsesCache'
 import type { SyncState } from '../components/SyncIndicator'
 
-type Props = {
-  onLogout: () => void
-}
-
 // ─── Hash helpers ────────────────────────────────────────────────────
-// Format :  #project/{id}/{tab}  |  #new  |  (vide = accueil)
+// Format :  #presentation  |  #project/{id}/{tab}  |  #new
 // tab = stats | responses | settings  (défaut : stats)
 
 export type ProjectTab = 'stats' | 'responses' | 'form'
@@ -34,8 +31,11 @@ type HashState = {
   tab: ProjectTab
 }
 
-function readHash(): HashState {
-  const h = window.location.hash.replace(/^#/, '')
+function readHash(hashValue: string): HashState {
+  const h = hashValue.replace(/^#/, '')
+  if (h === '' || h === 'presentation') {
+    return { mode: 'detail', projectId: null, tab: 'stats' }
+  }
   if (h === 'new') return { mode: 'new', projectId: null, tab: 'stats' }
   if (h.startsWith('project/')) {
     const rest = h.slice('project/'.length)
@@ -51,59 +51,89 @@ function readHash(): HashState {
   return { mode: 'detail', projectId: null, tab: 'stats' }
 }
 
-function writeHash(mode: 'detail' | 'new', projectId: string | null, tab: ProjectTab) {
-  let target = ''
+function buildHash(mode: 'detail' | 'new', projectId: string | null, tab: ProjectTab): string {
   if (mode === 'new') {
-    target = '#new'
+    return '#new'
   } else if (projectId) {
     const slug = TAB_TO_SLUG[tab] ?? 'stats'
-    target = slug === 'stats'
+    return slug === 'stats'
       ? `#project/${projectId}`
       : `#project/${projectId}/${slug}`
   }
-
-  const current = window.location.hash
-  if (current === target) return
-  if (target === '' && (current === '' || current === '#')) return
-
-  window.history.replaceState(
-    null,
-    '',
-    target || window.location.pathname + window.location.search,
-  )
+  return '#presentation'
 }
 
 // ─────────────────────────────────────────────────────────────────────
 
-export function DashboardPage({ onLogout }: Props) {
+type DashboardPageProps = {
+  onSyncStateChange?: (state: SyncState) => void
+}
+
+export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
+  const location = useLocation()
+  const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [mode, setMode] = useState<'detail' | 'new'>('detail')
   const [activeTab, setActiveTab] = useState<ProjectTab>('stats')
+  const modeRef = useRef(mode)
+  const selectedProjectIdRef = useRef<string | null>(null)
+  const activeTabRef = useRef(activeTab)
 
   // État initial lu depuis le hash — résolu après le chargement des projets
-  const initialHashRef = useRef(readHash())
+  const initialHashRef = useRef(readHash(location.hash))
 
   // Cache des réponses
-  const cache = useResponsesCache()
+  const {
+    responses,
+    loading: responsesLoading,
+    backgroundRefreshing,
+    loadResponses,
+    refreshCurrent,
+    invalidate,
+    clear,
+  } = useResponsesCache()
 
   // SyncState dérivé du cache
   const syncStateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const skipNextHashSyncRef = useRef(false)
   const [syncOverride, setSyncOverride] = useState<SyncState | null>(null)
+
+  useEffect(() => {
+    modeRef.current = mode
+  }, [mode])
+
+  useEffect(() => {
+    selectedProjectIdRef.current = selectedProject?.id ?? null
+  }, [selectedProject?.id])
+
+  useEffect(() => {
+    activeTabRef.current = activeTab
+  }, [activeTab])
 
   const syncState: SyncState = useMemo(() => {
     if (syncOverride) return syncOverride
-    if (cache.loading) return 'syncing'
-    if (cache.backgroundRefreshing) return 'syncing'
+    if (responsesLoading) return 'syncing'
+    if (backgroundRefreshing) return 'syncing'
     return 'idle'
-  }, [cache.loading, cache.backgroundRefreshing, syncOverride])
+  }, [responsesLoading, backgroundRefreshing, syncOverride])
+
+  useEffect(() => {
+    onSyncStateChange?.(syncState)
+  }, [syncState, onSyncStateChange])
+
+  useEffect(() => {
+    return () => {
+      onSyncStateChange?.('idle')
+    }
+  }, [onSyncStateChange])
 
   // Affiche "saved" brièvement après la fin d'une synchro
   const prevSyncingRef = useRef(false)
   useEffect(() => {
-    const isSyncing = cache.loading || cache.backgroundRefreshing
+    const isSyncing = responsesLoading || backgroundRefreshing
     if (prevSyncingRef.current && !isSyncing) {
       setSyncOverride('saved')
       if (syncStateTimerRef.current) clearTimeout(syncStateTimerRef.current)
@@ -113,7 +143,7 @@ export function DashboardPage({ onLogout }: Props) {
       }, 2000)
     }
     prevSyncingRef.current = isSyncing
-  }, [cache.loading, cache.backgroundRefreshing])
+  }, [responsesLoading, backgroundRefreshing])
 
   // Cleanup du timer
   useEffect(() => {
@@ -128,25 +158,34 @@ export function DashboardPage({ onLogout }: Props) {
     const load = async () => {
       try {
         setLoading(true)
-        const data = await fetchProjects()
+        const applyInitialState = (data: Project[]) => {
+          const { mode: initMode, projectId, tab } = initialHashRef.current
+          if (initMode === 'new') {
+            setMode('new')
+          } else if (projectId) {
+            const found = data.find((p) => p.id === projectId)
+            if (found) {
+              setSelectedProject(found)
+              setMode('detail')
+              setActiveTab(tab)
+              loadResponses(found.id)
+            }
+          }
+        }
+
+        const cachedProjects = getCachedProjectsList()
+        if (cachedProjects) {
+          if (cancelled) return
+          setProjects(cachedProjects)
+          applyInitialState(cachedProjects)
+          return
+        }
+
+        const data = await ensureProjectsListLoaded()
         if (cancelled) return
 
         setProjects(data)
-
-        // Restaure l'état depuis le hash
-        const { mode: initMode, projectId, tab } = initialHashRef.current
-        if (initMode === 'new') {
-          setMode('new')
-        } else if (projectId) {
-          const found = data.find((p) => p.id === projectId)
-          if (found) {
-            setSelectedProject(found)
-            setMode('detail')
-            setActiveTab(tab)
-            cache.loadResponses(found.id)
-          }
-          // Si le projet n'existe plus, on reste à l'accueil (hash sera nettoyé)
-        }
+        applyInitialState(data)
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue')
       } finally {
@@ -158,36 +197,67 @@ export function DashboardPage({ onLogout }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Réagit aux changements de hash déclenchés par React Router (liens #project, back/forward)
+  useEffect(() => {
+    const { mode: newMode, projectId, tab } = readHash(location.hash)
+    const currentMode = modeRef.current
+    const currentProjectId = selectedProjectIdRef.current
+    const currentTab = activeTabRef.current
+
+    if (newMode === 'new') {
+      if (currentMode === 'new' && currentProjectId === null) return
+      skipNextHashSyncRef.current = true
+      setSelectedProject(null)
+      setMode('new')
+      clear()
+      return
+    }
+    if (projectId) {
+      const found = projects.find((p) => p.id === projectId)
+      if (found) {
+        if (currentMode === 'detail' && currentProjectId === found.id && currentTab === tab) return
+        skipNextHashSyncRef.current = true
+        setSelectedProject(found)
+        setMode('detail')
+        setActiveTab(tab)
+        loadResponses(found.id)
+      }
+      return
+    }
+    if (currentMode === 'detail' && currentProjectId === null) return
+    skipNextHashSyncRef.current = true
+    setSelectedProject(null)
+    setMode('detail')
+    clear()
+  }, [location.hash, projects, loadResponses, clear])
+
   // Synchronise le hash quand le state change
   useEffect(() => {
-    writeHash(mode, selectedProject?.id ?? null, activeTab)
-  }, [mode, selectedProject?.id, activeTab])
-
-  // Écoute les changements de hash (back/forward du navigateur)
-  useEffect(() => {
-    const onHashChange = () => {
-      const { mode: newMode, projectId, tab } = readHash()
-      if (newMode === 'new') {
-        setSelectedProject(null)
-        setMode('new')
-        cache.clear()
-      } else if (projectId) {
-        const found = projects.find((p) => p.id === projectId)
-        if (found) {
-          setSelectedProject(found)
-          setMode('detail')
-          setActiveTab(tab)
-          cache.loadResponses(found.id)
-        }
-      } else {
-        setSelectedProject(null)
-        setMode('detail')
-        cache.clear()
-      }
+    if (skipNextHashSyncRef.current) {
+      skipNextHashSyncRef.current = false
+      return
     }
-    window.addEventListener('hashchange', onHashChange)
-    return () => window.removeEventListener('hashchange', onHashChange)
-  }, [projects, cache])
+
+    const targetHash = buildHash(mode, selectedProject?.id ?? null, activeTab)
+    const currentHash = location.hash
+    const isSameHash = targetHash === currentHash
+      || (targetHash === '' && (currentHash === '' || currentHash === '#'))
+
+    if (isSameHash) return
+
+    navigate(
+      `${location.pathname}${location.search}${targetHash}`,
+      { replace: true },
+    )
+  }, [
+    mode,
+    selectedProject?.id,
+    activeTab,
+    location.pathname,
+    location.search,
+    location.hash,
+    navigate,
+  ])
 
   // Liste des dossiers existants (dédupliquée)
   const existingFolders = useMemo(() => {
@@ -198,57 +268,50 @@ export function DashboardPage({ onLogout }: Props) {
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'fr'))
   }, [projects])
 
-  const handleSelectProject = useCallback((project: Project) => {
-    setSelectedProject(project)
-    setMode('detail')
-    setActiveTab('stats')
-    cache.loadResponses(project.id)
-  }, [cache])
-
   const handleNewProject = () => {
     setSelectedProject(null)
     setMode('new')
-    cache.clear()
+    clear()
   }
 
   const handleProjectSaved = useCallback((saved: Project) => {
     setProjects((prev) => {
       const idx = prev.findIndex((p) => p.id === saved.id)
-      if (idx === -1) return [saved, ...prev]
-      const copy = [...prev]
-      copy[idx] = saved
-      return copy
+      if (idx === -1) {
+        const next = [saved, ...prev]
+        setCachedProjectsList(next)
+        return next
+      }
+      const next = [...prev]
+      next[idx] = saved
+      setCachedProjectsList(next)
+      return next
     })
     setSelectedProject(saved)
     setMode('detail')
-    cache.loadResponses(saved.id)
-  }, [cache])
+    loadResponses(saved.id)
+  }, [loadResponses])
 
   const handleProjectDeleted = useCallback(() => {
     if (selectedProject) {
-      cache.invalidate(selectedProject.id)
-      setProjects((prev) => prev.filter((p) => p.id !== selectedProject.id))
+      invalidate(selectedProject.id)
+      setProjects((prev) => {
+        const next = prev.filter((p) => p.id !== selectedProject.id)
+        setCachedProjectsList(next)
+        return next
+      })
     }
     setSelectedProject(null)
     setMode('detail')
-    cache.clear()
-  }, [selectedProject, cache])
+    clear()
+  }, [selectedProject, invalidate, clear])
 
   const handleResponsesChanged = useCallback(() => {
-    cache.refreshCurrent()
-  }, [cache])
-
-  const sidebar = (
-    <Sidebar
-      projects={projects}
-      selectedId={selectedProject?.id ?? null}
-      onSelect={handleSelectProject}
-      onNewProject={handleNewProject}
-    />
-  )
+    refreshCurrent()
+  }, [refreshCurrent])
 
   return (
-    <Layout sidebar={sidebar} onLogout={onLogout} syncState={syncState}>
+    <Layout>
       {loading ? (
         <div className="flex items-center justify-center h-full py-32">
           <div className="text-center">
@@ -278,8 +341,8 @@ export function DashboardPage({ onLogout }: Props) {
         <ProjectDetail
           key={selectedProject.id}
           project={selectedProject}
-          responses={cache.responses}
-          responsesLoading={cache.loading}
+          responses={responses}
+          responsesLoading={responsesLoading}
           onProjectUpdated={handleProjectSaved}
           onProjectDeleted={handleProjectDeleted}
           onResponsesChanged={handleResponsesChanged}
@@ -288,22 +351,29 @@ export function DashboardPage({ onLogout }: Props) {
           onTabChange={setActiveTab}
         />
       ) : (
-        <div className="flex items-center justify-center h-full py-32">
-          <div className="text-center">
-            <p className="text-sm text-slate-400 mb-3">
-              {projects.length === 0
-                ? 'Aucun projet. Créez votre premier projet.'
-                : 'Sélectionnez un projet dans la liste.'}
-            </p>
-            {projects.length === 0 && (
-              <button
-                onClick={handleNewProject}
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
-              >
-                Créer un projet
-              </button>
-            )}
+        <div className="mx-auto max-w-3xl px-6 py-14">
+          <h2 className="text-2xl font-semibold text-slate-900">Présentation</h2>
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">
+            Cette section regroupe les questionnaires UX de l&apos;équipe. Vous pouvez créer
+            un projet, suivre ses réponses et accéder aux analyses directement depuis la liste.
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            Sélectionnez un projet dans le panneau latéral pour ouvrir son détail.
+          </p>
+          <div className="mt-6">
+            <button
+              onClick={handleNewProject}
+              className="btn-primary-sm cursor-pointer"
+            >
+              Créer un projet
+            </button>
           </div>
+          {projects.length > 0 && (
+            <p className="mt-5 text-xs text-slate-400">
+              {projects.length} projet{projects.length > 1 ? 's' : ''} disponible
+              {projects.length > 1 ? 's' : ''}.
+            </p>
+          )}
         </div>
       )}
     </Layout>

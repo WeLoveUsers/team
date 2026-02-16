@@ -1,7 +1,7 @@
 /**
  * Module de statistiques porté fidèlement du Rails (app/models/stats.rb).
  * Calcule les scores, moyennes, écarts-types et intervalles de confiance
- * pour les 6 types de questionnaires UX.
+ * pour les types de questionnaires UX.
  */
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -33,6 +33,17 @@ export type UmuxLiteResult = {
   global: StatsSummary
   usability: StatsSummary
   usefulness: StatsSummary
+}
+
+export type UeqResult = {
+  n: number
+  ATT: StatsSummary
+  PERSP: StatsSummary
+  EFF: StatsSummary
+  DEP: StatsSummary
+  STIM: StatsSummary
+  NOV: StatsSummary
+  GLOBAL: StatsSummary
 }
 
 export type AttrakDiffResult = {
@@ -280,6 +291,102 @@ export function computeUmuxLiteStats(responses: Answers[]): UmuxLiteResult | nul
     usability: computeStatsSummary(usabilityScores, n),
     usefulness: computeStatsSummary(usefulnessScores, n),
   }
+}
+
+// ─── UEQ ────────────────────────────────────────────────────────────────────
+
+const UEQ_DIMENSIONS: Record<'ATT' | 'PERSP' | 'EFF' | 'DEP' | 'STIM' | 'NOV', string[]> = {
+  ATT: ['Q1', 'Q12', 'Q14', 'Q16', 'Q24', 'Q25'],
+  PERSP: ['Q2', 'Q4', 'Q13', 'Q21'],
+  EFF: ['Q9', 'Q20', 'Q22', 'Q23'],
+  DEP: ['Q8', 'Q11', 'Q17', 'Q19'],
+  STIM: ['Q5', 'Q6', 'Q7', 'Q18'],
+  NOV: ['Q3', 'Q10', 'Q15', 'Q26'],
+}
+
+const UEQ_POSITIVE_SIDE: Record<string, 'left' | 'right'> = {
+  Q1: 'right',
+  Q2: 'right',
+  Q3: 'left',
+  Q4: 'left',
+  Q5: 'left',
+  Q6: 'right',
+  Q7: 'right',
+  Q8: 'right',
+  Q9: 'left',
+  Q10: 'left',
+  Q11: 'right',
+  Q12: 'left',
+  Q13: 'right',
+  Q14: 'right',
+  Q15: 'right',
+  Q16: 'right',
+  Q17: 'left',
+  Q18: 'left',
+  Q19: 'left',
+  Q20: 'right',
+  Q21: 'left',
+  Q22: 'right',
+  Q23: 'left',
+  Q24: 'left',
+  Q25: 'left',
+  Q26: 'right',
+}
+
+function normalizeUeqValue(raw: number, itemId: string): number | null {
+  if (!Number.isFinite(raw) || raw < 1 || raw > 7) return null
+  const direction = UEQ_POSITIVE_SIDE[itemId]
+  if (!direction) return null
+  return direction === 'right' ? raw - 4 : 4 - raw
+}
+
+export function computeUeqStats(responses: Answers[]): UeqResult | null {
+  if (responses.length === 0) return null
+
+  const values: Record<'ATT' | 'PERSP' | 'EFF' | 'DEP' | 'STIM' | 'NOV' | 'GLOBAL', number[]> = {
+    ATT: [],
+    PERSP: [],
+    EFF: [],
+    DEP: [],
+    STIM: [],
+    NOV: [],
+    GLOBAL: [],
+  }
+
+  for (const a of responses) {
+    for (const [dimension, keys] of Object.entries(UEQ_DIMENSIONS) as Array<[keyof typeof UEQ_DIMENSIONS, string[]]>) {
+      for (const key of keys) {
+        const raw = a[key]
+        if (typeof raw !== 'number') continue
+        const normalized = normalizeUeqValue(raw, key)
+        if (normalized == null) continue
+        values[dimension].push(normalized)
+        values.GLOBAL.push(normalized)
+      }
+    }
+  }
+
+  const n = responses.length
+  return {
+    n,
+    ATT: values.ATT.length > 0 ? computeStatsSummary(values.ATT, n) : { ...ZERO_SUMMARY },
+    PERSP: values.PERSP.length > 0 ? computeStatsSummary(values.PERSP, n) : { ...ZERO_SUMMARY },
+    EFF: values.EFF.length > 0 ? computeStatsSummary(values.EFF, n) : { ...ZERO_SUMMARY },
+    DEP: values.DEP.length > 0 ? computeStatsSummary(values.DEP, n) : { ...ZERO_SUMMARY },
+    STIM: values.STIM.length > 0 ? computeStatsSummary(values.STIM, n) : { ...ZERO_SUMMARY },
+    NOV: values.NOV.length > 0 ? computeStatsSummary(values.NOV, n) : { ...ZERO_SUMMARY },
+    GLOBAL: values.GLOBAL.length > 0 ? computeStatsSummary(values.GLOBAL, n) : { ...ZERO_SUMMARY },
+  }
+}
+
+export const UEQ_DIMENSION_LABELS: Record<keyof typeof UEQ_DIMENSIONS | 'GLOBAL', string> = {
+  ATT: 'Attractivité',
+  PERSP: 'Clarté',
+  EFF: 'Efficacité',
+  DEP: 'Contrôlabilité',
+  STIM: 'Stimulation',
+  NOV: 'Nouveauté',
+  GLOBAL: 'Score global',
 }
 
 // ─── AttrakDiff ─────────────────────────────────────────────────────────────
