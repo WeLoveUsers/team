@@ -34,6 +34,9 @@ jobs:
           VITE_NOTION_RESPONSES_DB_ID: ${{ secrets.NOTION_RESPONSES_DB_ID }}
           VITE_API_BASE_URL: ${{ secrets.API_BASE_URL }}
 
+      - name: Copy index.html to 404.html (SPA fallback for GitHub Pages)
+        run: cp dist/index.html dist/404.html
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
