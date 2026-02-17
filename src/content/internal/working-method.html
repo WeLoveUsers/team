@@ -29,21 +29,57 @@
   .note-principle.is-open .note-principle-plus {
     transform: rotate(45deg);
   }
+
+  .note-toc-link {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-stone);
+    background: var(--color-cream);
+    color: var(--color-ink);
+    border-radius: var(--radius-brand);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .note-toc-link:hover {
+    border-color: var(--color-ink);
+    background: #fff;
+  }
+
+  .note-toc-link.is-active {
+    border-color: var(--color-flame);
+    background: var(--color-wash);
+    color: var(--color-flame);
+  }
+
+  #changement,
+  #ia,
+  #principes,
+  #implications {
+    scroll-margin-top: 7.5rem;
+  }
 </style>
 
-<article class="mx-auto max-w-4xl">
+<article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
     <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Ce qui change,<br>ce qui reste.</h1>
     <p class="text-lg text-graphite font-light max-w-2xl">À l'attention des membres du collectif.</p>
-
-    <nav class="mt-10 flex flex-wrap gap-x-5 gap-y-2" aria-label="Sommaire">
-      <a href="#changement" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Ce qui change</a>
-      <a href="#ia" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Quid de l'IA ?</a>
-      <a href="#principes" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Notre façon de travailler</a>
-      <a href="#implications" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Implications concrètes</a>
-    </nav>
   </header>
+
+  <nav class="sticky top-[-2.5rem] z-20 mb-6 mt-6 md:top-[-3rem]" aria-label="Sommaire">
+    <div class="rounded-brand border border-stone bg-white px-4 py-3">
+      <div class="flex flex-wrap gap-2">
+        <a href="#changement" class="note-toc-link">Ce qui change</a>
+        <a href="#ia" class="note-toc-link">Quid de l'IA ?</a>
+        <a href="#principes" class="note-toc-link">Notre façon de travailler</a>
+        <a href="#implications" class="note-toc-link">Implications concrètes</a>
+      </div>
+    </div>
+  </nav>
 
   <section id="intro" class="py-14 border-b border-stone">
     <p class="text-xl md:text-2xl font-light text-ink leading-relaxed mb-6">Cette note a deux objectifs. D'abord, vous mettre en contexte sur le repositionnement de We Love Users, pour que vous puissiez en comprendre la logique, et vous en saisir si vous le jugez utile. Ensuite, mettre par écrit quelque chose qui existait déjà à l'état implicite : notre façon de travailler.</p>
@@ -252,4 +288,3 @@
     <p class="text-sm text-taupe mt-1">We Love Users · Février 2026</p>
   </footer>
 </article>
-

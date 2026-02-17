@@ -1,9 +1,15 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import type { SyncState } from './components/SyncIndicator'
+import { fetchAuthMe } from './api'
 import { TeamShell } from './components/TeamShell'
+import {
+  clearCachedDocumentTemplates,
+  ensureDocumentTemplatesLoaded,
+} from './lib/documentTemplatesCache'
 import { clearCachedProjectsList, ensureProjectsListLoaded } from './lib/projectsListCache'
 import { clearCachedResponses } from './lib/useResponsesCache'
+import { clearAuthSession, readAuthSession, storeAuthSession, type AuthSession } from './lib/auth'
 
 const DashboardPage = lazy(async () => {
   const mod = await import('./pages/DashboardPage')
@@ -60,25 +66,62 @@ function SectionLoading() {
 
 function App() {
   const location = useLocation()
-  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('authToken'))
+  const [session, setSession] = useState<AuthSession | null>(() => readAuthSession())
   const [headerSyncState, setHeaderSyncState] = useState<SyncState>('idle')
+  const isLoggedIn = !!session
+  const isAdmin = session?.user.role === 'admin'
+  const sessionToken = session?.token ?? null
 
   useEffect(() => {
     if (!isLoggedIn) return
     ensureProjectsListLoaded().catch((err) => {
       console.error('Preload projects failed:', err)
     })
+    ensureDocumentTemplatesLoaded().catch((err) => {
+      console.error('Preload document templates failed:', err)
+    })
   }, [isLoggedIn])
 
-  const handleLogin = () => {
-    setIsLoggedIn(true)
+  useEffect(() => {
+    if (!sessionToken) return
+    let cancelled = false
+
+    fetchAuthMe()
+      .then((user) => {
+        if (cancelled) return
+        setSession((prev) => {
+          if (!prev || prev.token !== sessionToken) return prev
+          const next = { token: prev.token, user }
+          storeAuthSession(next)
+          return next
+        })
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.error('Session refresh failed:', err)
+        clearCachedProjectsList()
+        clearCachedDocumentTemplates()
+        clearCachedResponses()
+        clearAuthSession()
+        setSession(null)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [sessionToken])
+
+  const handleLogin = (nextSession: AuthSession) => {
+    storeAuthSession(nextSession)
+    setSession(nextSession)
   }
 
   const handleLogout = () => {
     clearCachedProjectsList()
+    clearCachedDocumentTemplates()
     clearCachedResponses()
-    localStorage.removeItem('authToken')
-    setIsLoggedIn(false)
+    clearAuthSession()
+    setSession(null)
   }
 
   if (!isLoggedIn) {
@@ -100,6 +143,7 @@ function App() {
       onLogout={handleLogout}
       fullBleed={isQuestionnairesRoute}
       headerSyncState={isQuestionnairesRoute ? headerSyncState : undefined}
+      canAccessAdministration={isAdmin}
     >
       <Suspense fallback={<SectionLoading />}>
         <Routes>
@@ -108,12 +152,16 @@ function App() {
           <Route path="/charte-graphique" element={<BrandGuidelinesPage />} />
           <Route path="/charte-graphique/slides" element={<BrandSlidesPage />} />
           <Route path="/charte-graphique/fonts" element={<BrandFontsPage />} />
-          <Route path="/modeles-documents" element={<DocumentTemplatesPage />} />
+          <Route path="/modeles-documents" element={<Navigate to="/modeles-documents/preparation" replace />} />
+          <Route path="/modeles-documents/:phase" element={<DocumentTemplatesPage />} />
           <Route
             path="/questionnaires"
             element={<DashboardPage onSyncStateChange={setHeaderSyncState} />}
           />
-          <Route path="/administration" element={<AdministrationPage />} />
+          <Route
+            path="/administration"
+            element={isAdmin ? <AdministrationPage /> : <Navigate to="/" replace />}
+          />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

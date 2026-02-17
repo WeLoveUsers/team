@@ -152,6 +152,17 @@ export function computeStatsSummary(values: number[], n: number): StatsSummary {
   if (values.length === 0 || n === 0) return { ...ZERO_SUMMARY }
 
   const m = mean(values)
+  if (n <= 1 || values.length <= 1) {
+    const roundedMean = round(m)
+    return {
+      mean: roundedMean,
+      sd: 0,
+      ci90: [roundedMean, roundedMean],
+      ci95: [roundedMean, roundedMean],
+      ci99: [roundedMean, roundedMean],
+    }
+  }
+
   const s = stdev(values, m)
   const pop = 1e100 // population infinie
 
@@ -350,39 +361,51 @@ function normalizeUeqValue(raw: number, itemId: string): number | null {
 export function computeUeqStats(responses: Answers[]): UeqResult | null {
   if (responses.length === 0) return null
 
-  const values: Record<'ATT' | 'PERSP' | 'EFF' | 'DEP' | 'STIM' | 'NOV' | 'GLOBAL', number[]> = {
+  const dimensionValues: Record<'ATT' | 'PERSP' | 'EFF' | 'DEP' | 'STIM' | 'NOV', number[]> = {
     ATT: [],
     PERSP: [],
     EFF: [],
     DEP: [],
     STIM: [],
     NOV: [],
-    GLOBAL: [],
   }
+  const globalValues: number[] = []
 
   for (const a of responses) {
+    const respondentAllItems: number[] = []
+
     for (const [dimension, keys] of Object.entries(UEQ_DIMENSIONS) as Array<[keyof typeof UEQ_DIMENSIONS, string[]]>) {
+      const respondentDimensionItems: number[] = []
+
       for (const key of keys) {
         const raw = a[key]
         if (typeof raw !== 'number') continue
         const normalized = normalizeUeqValue(raw, key)
         if (normalized == null) continue
-        values[dimension].push(normalized)
-        values.GLOBAL.push(normalized)
+        respondentDimensionItems.push(normalized)
+        respondentAllItems.push(normalized)
       }
+
+      if (respondentDimensionItems.length > 0) {
+        dimensionValues[dimension].push(mean(respondentDimensionItems))
+      }
+    }
+
+    if (respondentAllItems.length > 0) {
+      globalValues.push(mean(respondentAllItems))
     }
   }
 
-  const n = responses.length
+  const n = globalValues.length
   return {
     n,
-    ATT: values.ATT.length > 0 ? computeStatsSummary(values.ATT, n) : { ...ZERO_SUMMARY },
-    PERSP: values.PERSP.length > 0 ? computeStatsSummary(values.PERSP, n) : { ...ZERO_SUMMARY },
-    EFF: values.EFF.length > 0 ? computeStatsSummary(values.EFF, n) : { ...ZERO_SUMMARY },
-    DEP: values.DEP.length > 0 ? computeStatsSummary(values.DEP, n) : { ...ZERO_SUMMARY },
-    STIM: values.STIM.length > 0 ? computeStatsSummary(values.STIM, n) : { ...ZERO_SUMMARY },
-    NOV: values.NOV.length > 0 ? computeStatsSummary(values.NOV, n) : { ...ZERO_SUMMARY },
-    GLOBAL: values.GLOBAL.length > 0 ? computeStatsSummary(values.GLOBAL, n) : { ...ZERO_SUMMARY },
+    ATT: dimensionValues.ATT.length > 0 ? computeStatsSummary(dimensionValues.ATT, dimensionValues.ATT.length) : { ...ZERO_SUMMARY },
+    PERSP: dimensionValues.PERSP.length > 0 ? computeStatsSummary(dimensionValues.PERSP, dimensionValues.PERSP.length) : { ...ZERO_SUMMARY },
+    EFF: dimensionValues.EFF.length > 0 ? computeStatsSummary(dimensionValues.EFF, dimensionValues.EFF.length) : { ...ZERO_SUMMARY },
+    DEP: dimensionValues.DEP.length > 0 ? computeStatsSummary(dimensionValues.DEP, dimensionValues.DEP.length) : { ...ZERO_SUMMARY },
+    STIM: dimensionValues.STIM.length > 0 ? computeStatsSummary(dimensionValues.STIM, dimensionValues.STIM.length) : { ...ZERO_SUMMARY },
+    NOV: dimensionValues.NOV.length > 0 ? computeStatsSummary(dimensionValues.NOV, dimensionValues.NOV.length) : { ...ZERO_SUMMARY },
+    GLOBAL: globalValues.length > 0 ? computeStatsSummary(globalValues, globalValues.length) : { ...ZERO_SUMMARY },
   }
 }
 
@@ -403,40 +426,64 @@ const UEQ_S_DIMENSIONS: Record<'PRAG' | 'HED', string[]> = {
   HED: ['Q5', 'Q6', 'Q7', 'Q8'],
 }
 
-function normalizeUeqSValue(raw: number): number | null {
+const UEQ_S_POSITIVE_SIDE: Record<string, 'left' | 'right'> = {
+  Q1: 'right',
+  Q2: 'right',
+  Q3: 'right',
+  Q4: 'right',
+  Q5: 'right',
+  Q6: 'right',
+  Q7: 'right',
+  Q8: 'right',
+}
+
+function normalizeUeqSValue(raw: number, itemId: string): number | null {
   if (!Number.isFinite(raw) || raw < 1 || raw > 7) return null
-  // Toutes les paires UEQ-S sont orientées négatif à gauche / positif à droite.
-  return raw - 4
+  const direction = UEQ_S_POSITIVE_SIDE[itemId]
+  if (!direction) return null
+  return direction === 'right' ? raw - 4 : 4 - raw
 }
 
 export function computeUeqSStats(responses: Answers[]): UeqSResult | null {
   if (responses.length === 0) return null
 
-  const values: Record<'PRAG' | 'HED' | 'GLOBAL', number[]> = {
+  const dimensionValues: Record<'PRAG' | 'HED', number[]> = {
     PRAG: [],
     HED: [],
-    GLOBAL: [],
   }
+  const globalValues: number[] = []
 
   for (const a of responses) {
+    const respondentAllItems: number[] = []
+
     for (const [dimension, keys] of Object.entries(UEQ_S_DIMENSIONS) as Array<[keyof typeof UEQ_S_DIMENSIONS, string[]]>) {
+      const respondentDimensionItems: number[] = []
+
       for (const key of keys) {
         const raw = a[key]
         if (typeof raw !== 'number') continue
-        const normalized = normalizeUeqSValue(raw)
+        const normalized = normalizeUeqSValue(raw, key)
         if (normalized == null) continue
-        values[dimension].push(normalized)
-        values.GLOBAL.push(normalized)
+        respondentDimensionItems.push(normalized)
+        respondentAllItems.push(normalized)
       }
+
+      if (respondentDimensionItems.length > 0) {
+        dimensionValues[dimension].push(mean(respondentDimensionItems))
+      }
+    }
+
+    if (respondentAllItems.length > 0) {
+      globalValues.push(mean(respondentAllItems))
     }
   }
 
-  const n = responses.length
+  const n = globalValues.length
   return {
     n,
-    PRAG: values.PRAG.length > 0 ? computeStatsSummary(values.PRAG, n) : { ...ZERO_SUMMARY },
-    HED: values.HED.length > 0 ? computeStatsSummary(values.HED, n) : { ...ZERO_SUMMARY },
-    GLOBAL: values.GLOBAL.length > 0 ? computeStatsSummary(values.GLOBAL, n) : { ...ZERO_SUMMARY },
+    PRAG: dimensionValues.PRAG.length > 0 ? computeStatsSummary(dimensionValues.PRAG, dimensionValues.PRAG.length) : { ...ZERO_SUMMARY },
+    HED: dimensionValues.HED.length > 0 ? computeStatsSummary(dimensionValues.HED, dimensionValues.HED.length) : { ...ZERO_SUMMARY },
+    GLOBAL: globalValues.length > 0 ? computeStatsSummary(globalValues, globalValues.length) : { ...ZERO_SUMMARY },
   }
 }
 

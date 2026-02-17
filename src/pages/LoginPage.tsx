@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { loginApi } from '../api'
+import type { AuthSession } from '../lib/auth'
 
 type LoginPageProps = {
-  onLogin: () => void
+  onLogin: (session: AuthSession) => void
   title?: string
   subtitle?: string
 }
@@ -22,9 +23,8 @@ export function LoginPage({
     setError(null)
     setLoading(true)
     try {
-      const token = await loginApi(email.trim(), password)
-      localStorage.setItem('authToken', token)
-      onLogin()
+      const session = await loginApi(email.trim(), password)
+      onLogin(session)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Impossible de se connecter')
     } finally {

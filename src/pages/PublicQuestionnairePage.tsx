@@ -151,12 +151,14 @@ function BipolarQuestionView({
   value,
   onChange,
   showError,
+  hideValueLabels,
 }: {
   q: BipolarQuestion
   index: number
   value: number | null
   onChange: (v: number) => void
   showError: boolean
+  hideValueLabels: boolean
 }) {
   return (
     <div className={`py-5 ${index > 0 ? 'border-t border-slate-100' : ''}`}>
@@ -174,13 +176,14 @@ function BipolarQuestionView({
             key={v}
             type="button"
             onClick={() => onChange(v)}
+            aria-label={`Choisir ${v}`}
             className={`w-9 h-9 rounded-full border-2 text-xs font-medium transition-all cursor-pointer flex items-center justify-center ${
               value === v
                 ? 'bg-primary-600 text-white border-primary-600 shadow-sm scale-110'
                 : 'bg-white text-slate-500 border-slate-300 hover:border-primary-300 hover:bg-primary-50'
             }`}
           >
-            {v}
+            {hideValueLabels ? <span className="sr-only">{v}</span> : v}
           </button>
         ))}
       </div>
@@ -200,6 +203,7 @@ export function PublicQuestionnairePage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showValidation, setShowValidation] = useState(false)
+  const [hasStarted, setHasStarted] = useState(false)
   const [questionnaireId, setQuestionnaireId] = useState<QuestionnaireDefinition['id'] | null>(null)
   const [projectName, setProjectName] = useState<string | null>(null)
   const [productType, setProductType] = useState<string | null>(null)
@@ -303,6 +307,12 @@ export function PublicQuestionnairePage() {
     setAnswers((prev) => ({ ...prev, [id]: v }))
   }
 
+  const handleStart = () => {
+    setError(null)
+    setShowValidation(false)
+    setHasStarted(true)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
@@ -358,102 +368,113 @@ export function PublicQuestionnairePage() {
   }
 
   const isDeep = questionnaireId === 'deep'
+  const hideBipolarValueLabels = questionnaireId === 'ueq'
+    || questionnaireId === 'ueq_s'
+    || questionnaireId === 'attrakdiff'
+    || questionnaireId === 'attrakdiff_abridged'
 
   return (
     <div className="min-h-screen bg-cream py-8 px-4">
       <div className="max-w-2xl mx-auto">
-        {/* Header card */}
-        <div className="bg-white rounded-brand border border-stone p-6 mb-6">
-          <div className="mb-3 flex items-center gap-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-flame">We Love Users</p>
-            <span className="brand-chip">Team</span>
-          </div>
-          <h1 className="text-3xl font-serif text-ink">{questionnaire.nameFr}</h1>
-          {projectName && (
-            <p className="text-sm text-primary-600 font-medium mt-1">{projectName}</p>
-          )}
-          {resolvedInstructions ? (
-            <div className="text-sm text-slate-600 mt-2 whitespace-pre-line">
-              {resolvedInstructions}
+        {!hasStarted ? (
+          <div className="bg-white rounded-brand border border-stone p-6">
+            <h1 className="text-3xl font-serif text-ink">{projectName || questionnaire.nameFr}</h1>
+            <p className="text-sm text-primary-600 font-medium mt-1">{questionnaire.nameFr}</p>
+            {resolvedInstructions ? (
+              <div className="text-sm text-slate-600 mt-2 whitespace-pre-line">
+                {resolvedInstructions}
+              </div>
+            ) : (
+              <div
+                className="text-sm text-slate-600 mt-2 [&_strong]:font-semibold [&_em]:italic"
+                dangerouslySetInnerHTML={{ __html: questionnaire.descriptionHtmlFr }}
+              />
+            )}
+            <div className="mt-6 pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleStart}
+                className="btn-primary-sm w-full sm:w-auto"
+              >
+                Commencer
+              </button>
             </div>
-          ) : (
-            <div
-              className="text-sm text-slate-600 mt-2 [&_strong]:font-semibold [&_em]:italic"
-              dangerouslySetInnerHTML={{ __html: questionnaire.descriptionHtmlFr }}
-            />
-          )}
-        </div>
-
-        {/* Progress bar */}
-        <div className="bg-white rounded-brand border border-stone p-4 mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-slate-500">Progression</span>
-            <span className="text-xs font-medium text-slate-700">
-              {answeredCount} / {totalQuestions}
-            </span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary-500 rounded-full transition-all duration-300"
-              style={{ width: `${totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Questions */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-brand border border-stone p-6">
-          {resolvedQuestions.map((q, i) => (
-            <div key={q.id} id={`q-${q.id}`}>
-              {q.type === 'likert' && !isDeep && (
-                <LikertQuestionView
-                  q={q}
-                  index={i}
-                  value={answers[q.id] ?? null}
-                  onChange={(v) => handleSetAnswer(q.id, v)}
-                  showError={showValidation}
+        ) : (
+          <>
+            {/* Progress bar */}
+            <div className="sticky top-4 z-20 bg-white rounded-brand border border-stone p-4 mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-slate-500">Progression</span>
+                <span className="text-xs font-medium text-slate-700">
+                  {answeredCount} / {totalQuestions}
+                </span>
+              </div>
+              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary-500 rounded-full transition-all duration-300"
+                  style={{ width: `${totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0}%` }}
                 />
-              )}
-              {q.type === 'likert' && isDeep && (
-                <DeepLikertQuestionView
-                  q={q as LikertQuestion}
-                  index={i}
-                  value={answers[q.id] ?? null}
-                  onChange={(v) => handleSetAnswer(q.id, v)}
-                  showError={showValidation}
-                />
-              )}
-              {q.type === 'bipolar' && (
-                <BipolarQuestionView
-                  q={q}
-                  index={i}
-                  value={answers[q.id] ?? null}
-                  onChange={(v) => handleSetAnswer(q.id, v)}
-                  showError={showValidation}
-                />
-              )}
+              </div>
             </div>
-          ))}
 
-          {error && (
-            <div className="text-sm text-danger-600 bg-danger-50 px-3 py-2 rounded-lg mt-4">{error}</div>
-          )}
+            {/* Questions */}
+            <form onSubmit={handleSubmit} className="bg-white rounded-brand border border-stone p-6">
+              {resolvedQuestions.map((q, i) => (
+                <div key={q.id} id={`q-${q.id}`}>
+                  {q.type === 'likert' && !isDeep && (
+                    <LikertQuestionView
+                      q={q}
+                      index={i}
+                      value={answers[q.id] ?? null}
+                      onChange={(v) => handleSetAnswer(q.id, v)}
+                      showError={showValidation}
+                    />
+                  )}
+                  {q.type === 'likert' && isDeep && (
+                    <DeepLikertQuestionView
+                      q={q as LikertQuestion}
+                      index={i}
+                      value={answers[q.id] ?? null}
+                      onChange={(v) => handleSetAnswer(q.id, v)}
+                      showError={showValidation}
+                    />
+                  )}
+                  {q.type === 'bipolar' && (
+                    <BipolarQuestionView
+                      q={q}
+                      index={i}
+                      value={answers[q.id] ?? null}
+                      onChange={(v) => handleSetAnswer(q.id, v)}
+                      showError={showValidation}
+                      hideValueLabels={hideBipolarValueLabels}
+                    />
+                  )}
+                </div>
+              ))}
 
-          {showValidation && !allAnswered && (
-            <div className="text-sm text-warning-600 bg-warning-50 px-3 py-2 rounded-lg mt-4">
-              Veuillez répondre à toutes les questions avant d'envoyer.
-            </div>
-          )}
+              {error && (
+                <div className="text-sm text-danger-600 bg-danger-50 px-3 py-2 rounded-lg mt-4">{error}</div>
+              )}
 
-          <div className="mt-6 pt-4 border-t border-slate-100">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
-            >
-              {submitting ? 'Envoi en cours...' : 'Envoyer mes réponses'}
-            </button>
-          </div>
-        </form>
+              {showValidation && !allAnswered && (
+                <div className="text-sm text-warning-600 bg-warning-50 px-3 py-2 rounded-lg mt-4">
+                  Veuillez répondre à toutes les questions avant d'envoyer.
+                </div>
+              )}
+
+              <div className="mt-6 pt-4 border-t border-slate-100">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-primary-sm w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {submitting ? 'Envoi en cours...' : 'Envoyer mes réponses'}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </div>
   )

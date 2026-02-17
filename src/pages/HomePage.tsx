@@ -25,7 +25,7 @@ const QUICK_LINKS = [
 
 export function HomePage() {
   return (
-    <div className="space-y-12">
+    <div className="mx-auto w-full max-w-5xl space-y-12">
       <section className="rounded-brand border border-stone bg-white p-8 md:p-10">
         <p className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-flame">
           Espace interne

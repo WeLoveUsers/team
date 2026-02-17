@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Project, ProjectResponse } from '../api'
 import { deleteResponse, recoverResponse } from '../api'
 import { computeQuestionnaireId } from './Sidebar'
+import { DeleteConfirmModal } from './DeleteConfirmModal'
 import {
   computeSusScore, susGrade,
   computeUmuxScore,
@@ -66,6 +67,7 @@ const GRADE_COLORS: Record<string, string> = {
 
 export function ResponsesTable({ project, responses, onResponsesChanged }: Props) {
   const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [pendingDeletion, setPendingDeletion] = useState<ProjectResponse | null>(null)
 
   const handleDelete = async (responseId: string) => {
     setLoadingId(responseId)
@@ -93,6 +95,13 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
 
   const activeResponses = responses.filter((r) => !r.archived)
   const archivedResponses = responses.filter((r) => r.archived)
+
+  const confirmDelete = async () => {
+    if (!pendingDeletion) return
+    const responseToDelete = pendingDeletion
+    await handleDelete(responseToDelete.id)
+    setPendingDeletion(null)
+  }
 
   return (
     <div>
@@ -142,7 +151,7 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
                     </td>
                     <td className="px-3 py-2 text-right">
                       <button
-                        onClick={() => handleDelete(r.id)}
+                        onClick={() => setPendingDeletion(r)}
                         disabled={loadingId === r.id}
                         className="text-xs text-berry hover:text-berry/80 font-medium cursor-pointer disabled:opacity-50 transition-colors"
                       >
@@ -174,6 +183,16 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
             </tbody>
           </table>
         </div>
+      )}
+
+      {pendingDeletion && (
+        <DeleteConfirmModal
+          title="Supprimer la réponse"
+          message="Cette réponse sera archivée et retirée des statistiques."
+          onConfirm={confirmDelete}
+          onCancel={() => setPendingDeletion(null)}
+          loading={loadingId === pendingDeletion.id}
+        />
       )}
     </div>
   )

@@ -7,8 +7,23 @@
   "vars": {
     // Ces IDs de base Notion ne sont pas des secrets
     "NOTION_PROJECTS_DB_ID": "3039264124f280e08392db597ec52ff6",
-    "NOTION_RESPONSES_DB_ID": "3039264124f280058c29daad9ec26a6c"
+    "NOTION_RESPONSES_DB_ID": "3039264124f280058c29daad9ec26a6c",
+    "NOTION_TEMPLATES_DB_ID": "3099264124f2804196a1c478912dd393",
+    // 12h (en secondes)
+    "JWT_TTL_SECONDS": "43200",
+    // Bootstrap auto du premier admin (si table users vide).
+    "BOOTSTRAP_ADMIN_EMAIL": "f.jaouali@weloveusers.com",
+    "BOOTSTRAP_ADMIN_NAME": "Florent Jaouali",
+    "BOOTSTRAP_ADMIN_EXPIRES_AT": "2100-12-31"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "outils-wlu-auth",
+      "database_id": "d1fb449b-7673-48c0-b15e-87ff40bc9271",
+      "migrations_dir": "migrations"
+    }
+  ],
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,

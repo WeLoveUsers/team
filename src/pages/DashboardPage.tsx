@@ -78,6 +78,7 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [mode, setMode] = useState<'detail' | 'new'>('detail')
   const [activeTab, setActiveTab] = useState<ProjectTab>('stats')
+  const [hashSyncReady, setHashSyncReady] = useState(false)
   const modeRef = useRef(mode)
   const selectedProjectIdRef = useRef<string | null>(null)
   const activeTabRef = useRef(activeTab)
@@ -189,7 +190,12 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Erreur inconnue')
       } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) {
+          // Empêche l'écrasement du hash initial au premier cycle de synchro.
+          skipNextHashSyncRef.current = true
+          setHashSyncReady(true)
+          setLoading(false)
+        }
       }
     }
     load()
@@ -233,6 +239,8 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
 
   // Synchronise le hash quand le state change
   useEffect(() => {
+    if (!hashSyncReady) return
+
     if (skipNextHashSyncRef.current) {
       skipNextHashSyncRef.current = false
       return
@@ -257,6 +265,7 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
     location.search,
     location.hash,
     navigate,
+    hashSyncReady,
   ])
 
   // Liste des dossiers existants (dédupliquée)

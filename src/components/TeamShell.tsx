@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import type { Project } from '../api'
+import type { DocumentTemplate, Project } from '../api'
+import { DOCUMENT_TEMPLATE_PHASE_TO_SLUG } from '../lib/documentTemplates'
+import {
+  ensureDocumentTemplatesLoaded,
+  getCachedDocumentTemplates,
+  subscribeDocumentTemplates,
+} from '../lib/documentTemplatesCache'
 import {
   ensureProjectsListLoaded,
   getCachedProjectsList,
@@ -13,6 +19,7 @@ type TeamShellProps = {
   onLogout: () => void
   fullBleed?: boolean
   headerSyncState?: SyncState
+  canAccessAdministration?: boolean
 }
 
 type NavSubItem = {
@@ -78,14 +85,12 @@ const IconLogout = (
 /* ── Données de navigation ──────────────────────────────────────────── */
 
 const DOC_CATEGORY_LINKS: NavSubItem[] = [
-  { to: '/modeles-documents#cadrage', label: 'Cadrage' },
-  { to: '/modeles-documents#terrain', label: 'Terrain' },
-  { to: '/modeles-documents#analyse', label: 'Analyse' },
-  { to: '/modeles-documents#restitution', label: 'Restitution' },
-  { to: '/modeles-documents#operationnel', label: 'Opérationnel' },
+  { to: '/modeles-documents/preparation', label: 'Préparation', end: true },
+  { to: '/modeles-documents/passation', label: 'Passation', end: true },
+  { to: '/modeles-documents/restitution', label: 'Restitution', end: true },
 ]
 
-const NAV_ITEMS: NavItem[] = [
+const BASE_NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Accueil', end: true, icon: IconHome },
   { to: '/notre-facon-de-travailler', label: 'Notre façon de travailler', icon: IconCompass },
   { to: '/questionnaires', label: 'Questionnaires UX', icon: IconClipboard },
@@ -105,8 +110,14 @@ const NAV_ITEMS: NavItem[] = [
     icon: IconDocument,
     children: DOC_CATEGORY_LINKS,
   },
-  { to: '/administration', label: 'Administration', separatorBefore: true, icon: IconSettings },
 ]
+
+const ADMIN_NAV_ITEM: NavItem = {
+  to: '/administration',
+  label: 'Administration',
+  separatorBefore: true,
+  icon: IconSettings,
+}
 
 const NO_FOLDER = '__sans_dossier__'
 
@@ -114,8 +125,8 @@ function hasSecondLevel(item: NavItem): boolean {
   return item.to === '/questionnaires' || !!item.children?.length
 }
 
-function findParentWithSecondLevel(pathname: string): NavItem | undefined {
-  return NAV_ITEMS.find((item) => (
+function findParentWithSecondLevel(pathname: string, navItems: NavItem[]): NavItem | undefined {
+  return navItems.find((item) => (
     hasSecondLevel(item)
     && (pathname === item.to || pathname.startsWith(`${item.to}/`))
   ))
@@ -124,6 +135,7 @@ function findParentWithSecondLevel(pathname: string): NavItem | undefined {
 function getTopLevelTarget(item: NavItem): string {
   if (item.to === '/charte-graphique') return '/charte-graphique/fonts'
   if (item.to === '/questionnaires') return '/questionnaires'
+  if (item.to === '/modeles-documents') return '/modeles-documents/preparation'
   return item.to
 }
 
@@ -132,16 +144,26 @@ export function TeamShell({
   onLogout,
   fullBleed = false,
   headerSyncState,
+  canAccessAdministration = false,
 }: TeamShellProps) {
   const location = useLocation()
   const navigate = useNavigate()
-  const locationParent = findParentWithSecondLevel(location.pathname)
+  const navItems = useMemo(
+    () => (canAccessAdministration ? [...BASE_NAV_ITEMS, ADMIN_NAV_ITEM] : BASE_NAV_ITEMS),
+    [canAccessAdministration],
+  )
+  const locationParent = findParentWithSecondLevel(location.pathname, navItems)
   const [openParentTo, setOpenParentTo] = useState<string | null>(locationParent?.to ?? null)
   const initialCachedProjects = getCachedProjectsList()
+  const initialCachedDocumentTemplates = getCachedDocumentTemplates()
   const [questionnaireProjects, setQuestionnaireProjects] = useState<Project[]>(
     () => initialCachedProjects ?? [],
   )
   const [questionnairesLoading, setQuestionnairesLoading] = useState(!initialCachedProjects)
+  const [documentTemplates, setDocumentTemplates] = useState<DocumentTemplate[]>(
+    () => initialCachedDocumentTemplates ?? [],
+  )
+  const [documentTemplatesLoading, setDocumentTemplatesLoading] = useState(!initialCachedDocumentTemplates)
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(new Set())
 
   const isTopLevelItemActive = (item: NavItem) => {
@@ -198,7 +220,32 @@ export function TeamShell({
     }
   }, [])
 
-  const openParent = NAV_ITEMS.find((item) => item.to === openParentTo && hasSecondLevel(item))
+  useEffect(() => {
+    let active = true
+
+    const unsubscribe = subscribeDocumentTemplates((templates) => {
+      if (!active) return
+      setDocumentTemplates(templates ?? [])
+      setDocumentTemplatesLoading(false)
+    })
+
+    const cachedTemplates = getCachedDocumentTemplates()
+    if (!cachedTemplates) {
+      ensureDocumentTemplatesLoaded().catch((err) => {
+        console.error('Load document templates failed:', err)
+        if (active) {
+          setDocumentTemplatesLoading(false)
+        }
+      })
+    }
+
+    return () => {
+      active = false
+      unsubscribe()
+    }
+  }, [])
+
+  const openParent = navItems.find((item) => item.to === openParentTo && hasSecondLevel(item))
   const isSecondLevelOpen = !!openParent?.children
     || openParent?.to === '/questionnaires'
 
@@ -232,6 +279,18 @@ export function TeamShell({
 
     return { folders: sortedFolders, ungrouped: projectsWithoutFolder }
   }, [questionnaireProjects])
+
+  const documentTemplatesCountBySlug = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const slug of Object.values(DOCUMENT_TEMPLATE_PHASE_TO_SLUG)) {
+      counts.set(slug, 0)
+    }
+    for (const template of documentTemplates) {
+      const slug = DOCUMENT_TEMPLATE_PHASE_TO_SLUG[template.phase]
+      counts.set(slug, (counts.get(slug) ?? 0) + 1)
+    }
+    return counts
+  }, [documentTemplates])
 
   const toggleFolder = (folder: string) => {
     setCollapsedFolders((prev) => {
@@ -271,7 +330,7 @@ export function TeamShell({
             >
               <nav className="flex-1 overflow-y-auto px-3 py-4">
                 <ul className="space-y-1">
-                  {NAV_ITEMS.map((item) => (
+                  {navItems.map((item) => (
                     <li key={item.to} className={item.separatorBefore ? 'nav-item-separator' : ''}>
                       {hasSecondLevel(item) ? (
                         <button
@@ -392,7 +451,7 @@ export function TeamShell({
                               <button
                                 type="button"
                                 onClick={() => toggleFolder(folderName)}
-                                className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-taupe transition-colors hover:bg-wash hover:text-ink"
+                                className="flex w-full items-center gap-1.5 rounded-brand px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-taupe transition-colors hover:bg-wash hover:text-ink"
                               >
                                 <svg
                                   className={`h-3 w-3 shrink-0 transition-transform ${
@@ -445,7 +504,7 @@ export function TeamShell({
                             <button
                               type="button"
                               onClick={() => toggleFolder(NO_FOLDER)}
-                              className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-taupe transition-colors hover:bg-wash hover:text-ink"
+                              className="flex w-full items-center gap-1.5 rounded-brand px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-taupe transition-colors hover:bg-wash hover:text-ink"
                             >
                               <svg
                                 className={`h-3 w-3 shrink-0 transition-transform ${
@@ -511,7 +570,16 @@ export function TeamShell({
                           to={child.to}
                           className={`subnav-link ${isSubItemActive(child) ? 'active' : ''}`}
                         >
-                          {child.label}
+                          <span className="flex items-center justify-between gap-2">
+                            <span>{child.label}</span>
+                            {openParent?.to === '/modeles-documents' && (
+                              <span className={`text-[10px] ${isSubItemActive(child) ? 'text-flame' : 'text-taupe'}`}>
+                                {documentTemplatesLoading
+                                  ? '...'
+                                  : (documentTemplatesCountBySlug.get(child.to.split('/').pop() ?? '') ?? 0)}
+                              </span>
+                            )}
+                          </span>
                         </Link>
                       </li>
                     ))}

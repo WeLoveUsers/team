@@ -1,6 +1,20 @@
 import { useEffect, useRef } from 'react'
 import content from '../content/internal/working-method.html?raw'
 
+const TOC_SECTION_IDS = ['changement', 'ia', 'principes', 'implications'] as const
+
+function getClosestScrollableAncestor(element: HTMLElement): HTMLElement | null {
+  let current: HTMLElement | null = element.parentElement
+  while (current) {
+    const { overflowY } = window.getComputedStyle(current)
+    if (overflowY === 'auto' || overflowY === 'scroll') {
+      return current
+    }
+    current = current.parentElement
+  }
+  return null
+}
+
 export function WorkingMethodPage() {
   const rootRef = useRef<HTMLDivElement | null>(null)
 
@@ -58,6 +72,70 @@ export function WorkingMethodPage() {
 
     window.addEventListener('resize', onResize)
     cleanups.push(() => window.removeEventListener('resize', onResize))
+
+    const tocNav = root.querySelector<HTMLElement>('nav[aria-label="Sommaire"]')
+    const tocLinks = Array.from(
+      root.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Sommaire"] a[href^="#"]'),
+    )
+    const tocSections = TOC_SECTION_IDS
+      .map((sectionId) => document.getElementById(sectionId))
+      .filter((section): section is HTMLElement => !!section)
+
+    const setActiveTocLink = (activeSectionId: string) => {
+      tocLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${activeSectionId}`
+        link.classList.toggle('is-active', isActive)
+        if (isActive) {
+          link.setAttribute('aria-current', 'location')
+        } else {
+          link.removeAttribute('aria-current')
+        }
+      })
+    }
+
+    const scrollContainer = getClosestScrollableAncestor(root)
+    const syncActiveTocLink = () => {
+      if (tocSections.length === 0) return
+      const containerTop = scrollContainer?.getBoundingClientRect().top ?? 0
+      const navBottom = tocNav?.getBoundingClientRect().bottom ?? (containerTop + 96)
+      const probeY = navBottom + 12
+      let activeSectionId = tocSections[0].id
+
+      for (const section of tocSections) {
+        if (section.getBoundingClientRect().top <= probeY) {
+          activeSectionId = section.id
+        } else {
+          break
+        }
+      }
+
+      setActiveTocLink(activeSectionId)
+    }
+
+    if (tocLinks.length > 0 && tocSections.length > 0) {
+      setActiveTocLink(tocSections[0].id)
+    }
+
+    tocLinks.forEach((link) => {
+      const onClick = () => {
+        const targetSectionId = link.getAttribute('href')?.slice(1)
+        if (!targetSectionId) return
+        setActiveTocLink(targetSectionId)
+      }
+      link.addEventListener('click', onClick)
+      cleanups.push(() => link.removeEventListener('click', onClick))
+    })
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', syncActiveTocLink, { passive: true })
+      cleanups.push(() => scrollContainer.removeEventListener('scroll', syncActiveTocLink))
+    }
+    window.addEventListener('scroll', syncActiveTocLink, { passive: true })
+    cleanups.push(() => window.removeEventListener('scroll', syncActiveTocLink))
+    window.addEventListener('resize', syncActiveTocLink)
+    cleanups.push(() => window.removeEventListener('resize', syncActiveTocLink))
+    syncActiveTocLink()
+    requestAnimationFrame(syncActiveTocLink)
 
     return () => {
       cleanups.forEach((cleanup) => cleanup())

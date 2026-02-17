@@ -150,7 +150,7 @@
   }
 
   .nav-link {
-    @apply block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
+    @apply block rounded-brand px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
   }
 
   .nav-link-toggle {
@@ -162,7 +162,7 @@
   }
 
   .nav-sublink {
-    @apply block rounded-md px-3 py-1.5 pl-8 text-xs font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
+    @apply block rounded-brand px-3 py-1.5 pl-8 text-xs font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
   }
 
   .nav-sublink.active {
@@ -170,7 +170,7 @@
   }
 
   .subnav-link {
-    @apply block rounded-lg px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
+    @apply block rounded-brand px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-slate-100 hover:text-flame;
   }
 
   .subnav-link.active {
