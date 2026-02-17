@@ -1,8 +1,8 @@
-import{j as e}from"./charts-DKGMT1ng.js";import"./react-DGBwUpAK.js";const t=`
+import{j as e}from"./charts-nuwTBMFx.js";import"./react-DGBwUpAK.js";const t=`
 <section class="mb-12">
     <div class="border-b border-stone pb-12">
-        <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Slides</span>
-        <h1 class="font-serif text-5xl md:text-6xl text-ink mb-6">Templates de Présentation</h1>
+        <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Charte graphique</span>
+        <h1 class="font-serif text-5xl md:text-6xl text-ink mb-6">Slides (templates de présentation)</h1>
         <p class="text-xl text-graphite font-light max-w-2xl">
             Modèles de diapositives au format 16:9 pour les restitutions stratégiques.
             <br>Codes couleurs HEX solides (sans transparence) pour copier-coller facile.

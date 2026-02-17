@@ -1,4 +1,4 @@
-import{j as u}from"./charts-DKGMT1ng.js";import{r as l}from"./react-DGBwUpAK.js";const x=`
+import{j as h}from"./charts-nuwTBMFx.js";import{r as g}from"./react-DGBwUpAK.js";const k=`
 <style>
   .note-principle.is-open {
     background: var(--color-ink);
@@ -29,21 +29,57 @@ import{j as u}from"./charts-DKGMT1ng.js";import{r as l}from"./react-DGBwUpAK.js"
   .note-principle.is-open .note-principle-plus {
     transform: rotate(45deg);
   }
+
+  .note-toc-link {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-stone);
+    background: var(--color-cream);
+    color: var(--color-ink);
+    border-radius: var(--radius-brand);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .note-toc-link:hover {
+    border-color: var(--color-ink);
+    background: #fff;
+  }
+
+  .note-toc-link.is-active {
+    border-color: var(--color-flame);
+    background: var(--color-wash);
+    color: var(--color-flame);
+  }
+
+  #changement,
+  #ia,
+  #principes,
+  #implications {
+    scroll-margin-top: 7.5rem;
+  }
 </style>
 
-<article class="mx-auto max-w-4xl">
+<article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
     <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Ce qui change,<br>ce qui reste.</h1>
     <p class="text-lg text-graphite font-light max-w-2xl">À l'attention des membres du collectif.</p>
-
-    <nav class="mt-10 flex flex-wrap gap-x-5 gap-y-2" aria-label="Sommaire">
-      <a href="#changement" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Ce qui change</a>
-      <a href="#ia" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Quid de l'IA ?</a>
-      <a href="#principes" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Notre façon de travailler</a>
-      <a href="#implications" class="text-sm text-flame border-b border-stone pb-0.5 hover:text-ink hover:border-ink transition-colors">Implications concrètes</a>
-    </nav>
   </header>
+
+  <nav class="sticky top-[-2.5rem] z-20 mb-6 mt-6 md:top-[-3rem]" aria-label="Sommaire">
+    <div class="rounded-brand border border-stone bg-white px-4 py-3">
+      <div class="flex flex-wrap gap-2">
+        <a href="#changement" class="note-toc-link">Ce qui change</a>
+        <a href="#ia" class="note-toc-link">Quid de l'IA ?</a>
+        <a href="#principes" class="note-toc-link">Notre façon de travailler</a>
+        <a href="#implications" class="note-toc-link">Implications concrètes</a>
+      </div>
+    </div>
+  </nav>
 
   <section id="intro" class="py-14 border-b border-stone">
     <p class="text-xl md:text-2xl font-light text-ink leading-relaxed mb-6">Cette note a deux objectifs. D'abord, vous mettre en contexte sur le repositionnement de We Love Users, pour que vous puissiez en comprendre la logique, et vous en saisir si vous le jugez utile. Ensuite, mettre par écrit quelque chose qui existait déjà à l'état implicite : notre façon de travailler.</p>
@@ -252,5 +288,4 @@ import{j as u}from"./charts-DKGMT1ng.js";import{r as l}from"./react-DGBwUpAK.js"
     <p class="text-sm text-taupe mt-1">We Love Users · Février 2026</p>
   </footer>
 </article>
-
-`;function b(){const r=l.useRef(null);return l.useEffect(()=>{const a=r.current;if(!a)return;const s=Array.from(a.querySelectorAll(".note-principle")),i=[],p=e=>{const n=e.querySelector(".note-principle-toggle"),t=e.querySelector(".note-principle-panel");!n||!t||(e.classList.remove("is-open"),n.setAttribute("aria-expanded","false"),t.style.maxHeight="0px")},c=e=>{const n=e.querySelector(".note-principle-toggle"),t=e.querySelector(".note-principle-panel");!n||!t||(e.classList.add("is-open"),n.setAttribute("aria-expanded","true"),t.style.maxHeight=`${t.scrollHeight}px`)};s.forEach(e=>{const n=e.querySelector(".note-principle-toggle");if(!n)return;const t=()=>{const d=e.classList.contains("is-open");s.forEach(p),d||c(e)};n.addEventListener("click",t),i.push(()=>n.removeEventListener("click",t))});const o=()=>{s.forEach(e=>{if(!e.classList.contains("is-open"))return;const n=e.querySelector(".note-principle-panel");n&&(n.style.maxHeight=`${n.scrollHeight}px`)})};return window.addEventListener("resize",o),i.push(()=>window.removeEventListener("resize",o)),()=>{i.forEach(e=>e())}},[]),u.jsx("div",{ref:r,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:x}})}export{b as WorkingMethodPage};
+`,y=["changement","ia","principes","implications"];function q(l){let s=l.parentElement;for(;s;){const{overflowY:a}=window.getComputedStyle(s);if(a==="auto"||a==="scroll")return s;s=s.parentElement}return null}function C(){const l=g.useRef(null);return g.useEffect(()=>{const s=l.current;if(!s)return;const a=Array.from(s.querySelectorAll(".note-principle")),r=[],b=e=>{const n=e.querySelector(".note-principle-toggle"),t=e.querySelector(".note-principle-panel");!n||!t||(e.classList.remove("is-open"),n.setAttribute("aria-expanded","false"),t.style.maxHeight="0px")},f=e=>{const n=e.querySelector(".note-principle-toggle"),t=e.querySelector(".note-principle-panel");!n||!t||(e.classList.add("is-open"),n.setAttribute("aria-expanded","true"),t.style.maxHeight=`${t.scrollHeight}px`)};a.forEach(e=>{const n=e.querySelector(".note-principle-toggle");if(!n)return;const t=()=>{const p=e.classList.contains("is-open");a.forEach(b),p||f(e)};n.addEventListener("click",t),r.push(()=>n.removeEventListener("click",t))});const x=()=>{a.forEach(e=>{if(!e.classList.contains("is-open"))return;const n=e.querySelector(".note-principle-panel");n&&(n.style.maxHeight=`${n.scrollHeight}px`)})};window.addEventListener("resize",x),r.push(()=>window.removeEventListener("resize",x));const v=s.querySelector('nav[aria-label="Sommaire"]'),d=Array.from(s.querySelectorAll('nav[aria-label="Sommaire"] a[href^="#"]')),o=y.map(e=>document.getElementById(e)).filter(e=>!!e),u=e=>{d.forEach(n=>{const t=n.getAttribute("href")===`#${e}`;n.classList.toggle("is-active",t),t?n.setAttribute("aria-current","location"):n.removeAttribute("aria-current")})},c=q(s),i=()=>{if(o.length===0)return;const e=c?.getBoundingClientRect().top??0,t=(v?.getBoundingClientRect().bottom??e+96)+12;let p=o[0].id;for(const m of o)if(m.getBoundingClientRect().top<=t)p=m.id;else break;u(p)};return d.length>0&&o.length>0&&u(o[0].id),d.forEach(e=>{const n=()=>{const t=e.getAttribute("href")?.slice(1);t&&u(t)};e.addEventListener("click",n),r.push(()=>e.removeEventListener("click",n))}),c&&(c.addEventListener("scroll",i,{passive:!0}),r.push(()=>c.removeEventListener("scroll",i))),window.addEventListener("scroll",i,{passive:!0}),r.push(()=>window.removeEventListener("scroll",i)),window.addEventListener("resize",i),r.push(()=>window.removeEventListener("resize",i)),i(),requestAnimationFrame(i),()=>{r.forEach(e=>e())}},[]),h.jsx("div",{ref:l,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:k}})}export{C as WorkingMethodPage};

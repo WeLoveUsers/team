@@ -1,7 +1,7 @@
-import{j as e}from"./charts-DKGMT1ng.js";import"./react-DGBwUpAK.js";const t=`
+import{j as e}from"./charts-nuwTBMFx.js";import"./react-DGBwUpAK.js";const t=`
 <section class="mb-20">
     <div class="border-b border-stone pb-12">
-        <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Documentation</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Charte graphique</span>
         <h1 class="font-serif text-5xl md:text-6xl text-ink mb-6">Design System</h1>
         <p class="text-xl text-graphite font-light max-w-2xl">
             Référentiel visuel des éléments constitutifs de l'identité numérique de We Love Users.
