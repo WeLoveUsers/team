@@ -39,7 +39,7 @@ const LIKERT_5_SUS: LikertScaleOption[] = [
 const LIKERT_6_DEEP: LikertScaleOption[] = [
   { value: 1, labelFr: 'Pas du tout d\'accord' },
   { value: 2, labelFr: 'Plutôt pas d\'accord' },
-  { value: 3, labelFr: 'Plutôt en désaccord' },
+  { value: 3, labelFr: 'Ni d\'accord ni pas d\'accord' },
   { value: 4, labelFr: 'Plutôt d\'accord' },
   { value: 5, labelFr: 'Tout à fait d\'accord' },
   // 0 = Non applicable (géré séparément dans l’UI)
@@ -47,11 +47,11 @@ const LIKERT_6_DEEP: LikertScaleOption[] = [
 
 const LIKERT_7_UMUX: LikertScaleOption[] = [
   { value: 0, labelFr: 'Pas du tout d\'accord' },
-  { value: 1, labelFr: '...' },
-  { value: 2, labelFr: '...' },
+  { value: 1, labelFr: 'Pas d\'accord' },
+  { value: 2, labelFr: 'Plutôt pas d\'accord' },
   { value: 3, labelFr: 'Ni d\'accord ni pas d\'accord' },
-  { value: 4, labelFr: '...' },
-  { value: 5, labelFr: '...' },
+  { value: 4, labelFr: 'Plutôt d\'accord' },
+  { value: 5, labelFr: 'D\'accord' },
   { value: 6, labelFr: 'Tout à fait d\'accord' },
 ]
 
@@ -374,43 +374,42 @@ const ATTRAKDIFF: QuestionnaireDefinition = {
   descriptionHtmlFr:
     'Questionnaire différentiel bipolaire pour mesurer l’expérience utilisateur (qualités pragmatiques, hédoniques, attractivité globale).',
   questions: [
-    { id: 'QP1', type: 'bipolar', leftFr: 'Technique', rightFr: 'Humain', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP2', type: 'bipolar', leftFr: 'Compliqué', rightFr: 'Simple', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP3', type: 'bipolar', leftFr: 'Pas pratique', rightFr: 'Pratique', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP4', type: 'bipolar', leftFr: 'Fastidieux', rightFr: 'Efficace', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP5', type: 'bipolar', leftFr: 'Imprévisible', rightFr: 'Prévisible', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP6', type: 'bipolar', leftFr: 'Confus', rightFr: 'Clair', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP7', type: 'bipolar', leftFr: 'Incontrôlable', rightFr: 'Maîtrisable', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-
+    // Ordre de passation FR (AttrakDiff2 - Lallemand/Gronier).
+    { id: 'QP1', type: 'bipolar', leftFr: 'Humain', rightFr: 'Technique', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'QHI1', type: 'bipolar', leftFr: 'M’isole', rightFr: 'Me sociabilise', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QHI2', type: 'bipolar', leftFr: 'Amateur', rightFr: 'Professionnel', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QHI3', type: 'bipolar', leftFr: 'De mauvais goût', rightFr: 'De bon goût', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT1', type: 'bipolar', leftFr: 'Plaisant', rightFr: 'Déplaisant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QHS1', type: 'bipolar', leftFr: 'Original', rightFr: 'Conventionnel', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP2', type: 'bipolar', leftFr: 'Simple', rightFr: 'Compliqué', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QHI2', type: 'bipolar', leftFr: 'Professionnel', rightFr: 'Amateur', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT2', type: 'bipolar', leftFr: 'Laid', rightFr: 'Beau', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP3', type: 'bipolar', leftFr: 'Pratique', rightFr: 'Pas pratique', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT3', type: 'bipolar', leftFr: 'Agréable', rightFr: 'Désagréable', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP4', type: 'bipolar', leftFr: 'Fastidieux', rightFr: 'Efficace', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+
+    { id: 'QHI3', type: 'bipolar', leftFr: 'De bon goût', rightFr: 'De mauvais goût', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP5', type: 'bipolar', leftFr: 'Prévisible', rightFr: 'Imprévisible', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'QHI4', type: 'bipolar', leftFr: 'Bas de gamme', rightFr: 'Haut de gamme', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'QHI5', type: 'bipolar', leftFr: 'M’exclut', rightFr: 'M’intègre', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     {
       id: 'QHI6',
       type: 'bipolar',
-      leftFr: 'Me sépare des autres',
-      rightFr: 'Me rapproche des autres',
+      leftFr: 'Me rapproche des autres',
+      rightFr: 'Me sépare des autres',
       scaleValues: [-3, -2, -1, 0, 1, 2, 3],
     },
     { id: 'QHI7', type: 'bipolar', leftFr: 'Non présentable', rightFr: 'Présentable', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-
-    { id: 'QHS1', type: 'bipolar', leftFr: 'Conventionnel', rightFr: 'Original', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT4', type: 'bipolar', leftFr: 'Rebutant', rightFr: 'Attirant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'QHS2', type: 'bipolar', leftFr: 'Sans imagination', rightFr: 'Créatif', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QHS3', type: 'bipolar', leftFr: 'Prudent', rightFr: 'Audacieux', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QHS4', type: 'bipolar', leftFr: 'Conservateur', rightFr: 'Novateur', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT5', type: 'bipolar', leftFr: 'Bon', rightFr: 'Mauvais', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP6', type: 'bipolar', leftFr: 'Confus', rightFr: 'Clair', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT6', type: 'bipolar', leftFr: 'Repoussant', rightFr: 'Attrayant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QHS3', type: 'bipolar', leftFr: 'Audacieux', rightFr: 'Prudent', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QHS4', type: 'bipolar', leftFr: 'Novateur', rightFr: 'Conservateur', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'QHS5', type: 'bipolar', leftFr: 'Ennuyeux', rightFr: 'Captivant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'QHS6', type: 'bipolar', leftFr: 'Peu exigeant', rightFr: 'Challenging', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QHS7', type: 'bipolar', leftFr: 'Commun', rightFr: 'Nouveau', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-
-    { id: 'ATT1', type: 'bipolar', leftFr: 'Déplaisant', rightFr: 'Plaisant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'ATT2', type: 'bipolar', leftFr: 'Laid', rightFr: 'Beau', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'ATT3', type: 'bipolar', leftFr: 'Désagréable', rightFr: 'Agréable', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'ATT4', type: 'bipolar', leftFr: 'Rebutant', rightFr: 'Attirant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'ATT5', type: 'bipolar', leftFr: 'Mauvais', rightFr: 'Bon', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'ATT6', type: 'bipolar', leftFr: 'Repoussant', rightFr: 'Attrayant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'ATT7', type: 'bipolar', leftFr: 'Décourageant', rightFr: 'Motivant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'ATT7', type: 'bipolar', leftFr: 'Motivant', rightFr: 'Décourageant', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QHS7', type: 'bipolar', leftFr: 'Nouveau', rightFr: 'Commun', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP7', type: 'bipolar', leftFr: 'Incontrôlable', rightFr: 'Maîtrisable', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
   ],
 }
 
@@ -421,21 +420,21 @@ const ATTRAKDIFF_ABRIGED: QuestionnaireDefinition = {
     'Version abrégée d’AttrakDiff (10 paires de mots) couvrant les qualités pragmatiques, hédoniques et l’attractivité globale.',
   questions: [
     // ATT2, ATT5, QP2, QP3, QP5, QP6, QHS2, QHS5, QHI3, QHI4
-    { id: 'QP2', type: 'bipolar', leftFr: 'Compliqué', rightFr: 'Simple', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP2', type: 'bipolar', leftFr: 'Simple', rightFr: 'Compliqué', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     { id: 'ATT2', type: 'bipolar', leftFr: 'Laid', rightFr: 'Beau', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
-    { id: 'QP3', type: 'bipolar', leftFr: 'Pas pratique', rightFr: 'Pratique', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
+    { id: 'QP3', type: 'bipolar', leftFr: 'Pratique', rightFr: 'Pas pratique', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },
     {
       id: 'QHI3',
       type: 'bipolar',
-      leftFr: 'De mauvais goût',
-      rightFr: 'De bon goût',
+      leftFr: 'De bon goût',
+      rightFr: 'De mauvais goût',
       scaleValues: [-3, -2, -1, 0, 1, 2, 3],
     },
     {
       id: 'QP5',
       type: 'bipolar',
-      leftFr: 'Imprévisible',
-      rightFr: 'Prévisible',
+      leftFr: 'Prévisible',
+      rightFr: 'Imprévisible',
       scaleValues: [-3, -2, -1, 0, 1, 2, 3],
     },
     {
@@ -455,8 +454,8 @@ const ATTRAKDIFF_ABRIGED: QuestionnaireDefinition = {
     {
       id: 'ATT5',
       type: 'bipolar',
-      leftFr: 'Mauvais',
-      rightFr: 'Bon',
+      leftFr: 'Bon',
+      rightFr: 'Mauvais',
       scaleValues: [-3, -2, -1, 0, 1, 2, 3],
     },
     { id: 'QP6', type: 'bipolar', leftFr: 'Confus', rightFr: 'Clair', scaleValues: [-3, -2, -1, 0, 1, 2, 3] },

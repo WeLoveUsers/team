@@ -230,7 +230,9 @@ export function computeSusStats(responses: Answers[]): SusResult | null {
 
 // ─── DEEP ───────────────────────────────────────────────────────────────────
 
-const DEEP_GROUPS: Record<string, string[]> = {
+type DeepGroup = 'G1' | 'G2' | 'G3' | 'G4' | 'G5' | 'G6'
+
+const DEEP_GROUPS: Record<DeepGroup, string[]> = {
   G1: ['Q1', 'Q2', 'Q3', 'Q4'],
   G2: ['Q5', 'Q6', 'Q7'],
   G3: ['Q8', 'Q9', 'Q10'],
@@ -239,7 +241,7 @@ const DEEP_GROUPS: Record<string, string[]> = {
   G6: ['Q17', 'Q18', 'Q19'],
 }
 
-export const DEEP_GROUP_LABELS: Record<string, string> = {
+export const DEEP_GROUP_LABELS: Record<DeepGroup, string> = {
   G1: 'Contenu percu',
   G2: 'Structure / AI',
   G3: 'Navigation',
@@ -248,43 +250,88 @@ export const DEEP_GROUP_LABELS: Record<string, string> = {
   G6: 'Guidage visuel',
 }
 
+const DEEP_REVERSED_ITEMS = new Set(['Q12', 'Q15'])
+
+function normalizeDeepValue(raw: unknown, itemId: string): number | null {
+  if (typeof raw !== 'number' || !Number.isFinite(raw)) return null
+  if (raw === 0) return null // 0 = Non applicable
+  if (raw < 1 || raw > 5) return null
+  return DEEP_REVERSED_ITEMS.has(itemId) ? 6 - raw : raw
+}
+
 export function computeDeepStats(responses: Answers[]): DeepResult | null {
   if (responses.length === 0) return null
 
-  const values: Record<string, number[]> = { G1: [], G2: [], G3: [], G4: [], G5: [], G6: [] }
-
-  for (const a of responses) {
-    for (const [group, questions] of Object.entries(DEEP_GROUPS)) {
-      for (const q of questions) {
-        const v = a[q]
-        if (typeof v === 'number' && v > 0) {
-          values[group].push(v)
-        }
-      }
-    }
+  const values: Record<DeepGroup, number[]> = {
+    G1: [],
+    G2: [],
+    G3: [],
+    G4: [],
+    G5: [],
+    G6: [],
   }
 
-  const n = responses.length
+  let n = 0
+
+  for (const a of responses) {
+    let hasAtLeastOneValue = false
+
+    for (const [group, questions] of Object.entries(DEEP_GROUPS) as Array<[DeepGroup, string[]]>) {
+      const rowValues: number[] = []
+
+      for (const q of questions) {
+        const normalized = normalizeDeepValue(a[q], q)
+        if (normalized == null) continue
+        rowValues.push(normalized)
+      }
+
+      if (rowValues.length > 0) {
+        values[group].push(mean(rowValues))
+        hasAtLeastOneValue = true
+      }
+    }
+
+    if (hasAtLeastOneValue) n++
+  }
+
+  if (n === 0) return null
+
   return {
     n,
-    G1: values.G1.length > 0 ? computeStatsSummary(values.G1, n) : { ...ZERO_SUMMARY },
-    G2: values.G2.length > 0 ? computeStatsSummary(values.G2, n) : { ...ZERO_SUMMARY },
-    G3: values.G3.length > 0 ? computeStatsSummary(values.G3, n) : { ...ZERO_SUMMARY },
-    G4: values.G4.length > 0 ? computeStatsSummary(values.G4, n) : { ...ZERO_SUMMARY },
-    G5: values.G5.length > 0 ? computeStatsSummary(values.G5, n) : { ...ZERO_SUMMARY },
-    G6: values.G6.length > 0 ? computeStatsSummary(values.G6, n) : { ...ZERO_SUMMARY },
+    G1: values.G1.length > 0 ? computeStatsSummary(values.G1, values.G1.length) : { ...ZERO_SUMMARY },
+    G2: values.G2.length > 0 ? computeStatsSummary(values.G2, values.G2.length) : { ...ZERO_SUMMARY },
+    G3: values.G3.length > 0 ? computeStatsSummary(values.G3, values.G3.length) : { ...ZERO_SUMMARY },
+    G4: values.G4.length > 0 ? computeStatsSummary(values.G4, values.G4.length) : { ...ZERO_SUMMARY },
+    G5: values.G5.length > 0 ? computeStatsSummary(values.G5, values.G5.length) : { ...ZERO_SUMMARY },
+    G6: values.G6.length > 0 ? computeStatsSummary(values.G6, values.G6.length) : { ...ZERO_SUMMARY },
   }
 }
 
 // ─── UMUX ───────────────────────────────────────────────────────────────────
 
 export function computeUmuxScore(answers: Answers): number {
-  return (100 * ((answers.Q1 ?? 0) + (answers.Q2 ?? 0) + (answers.Q3 ?? 0) + (answers.Q4 ?? 0))) / 24
+  const q1 = answers.Q1
+  const q2 = answers.Q2
+  const q3 = answers.Q3
+  const q4 = answers.Q4
+  if ([q1, q2, q3, q4].some((v) => typeof v !== 'number' || Number.isNaN(v) || (v as number) < 0 || (v as number) > 6)) return 0
+  // UMUX (échelle 0-6): Q2 et Q4 sont inversés.
+  return (100 * (q1 + (6 - q2) + q3 + (6 - q4))) / 24
 }
 
 export function computeUmuxStats(responses: Answers[]): UmuxResult | null {
   if (responses.length === 0) return null
-  const scores = responses.map(computeUmuxScore)
+
+  const scores: number[] = []
+  for (const a of responses) {
+    const keys = ['Q1', 'Q2', 'Q3', 'Q4']
+    if (keys.some((k) => typeof a[k] !== 'number' || Number.isNaN(a[k]) || (a[k] as number) < 0 || (a[k] as number) > 6)) {
+      continue
+    }
+    scores.push(computeUmuxScore(a))
+  }
+  if (scores.length === 0) return null
+
   const summary = computeStatsSummary(scores, scores.length)
   return { ...summary, n: scores.length }
 }
@@ -292,17 +339,34 @@ export function computeUmuxStats(responses: Answers[]): UmuxResult | null {
 // ─── UMUX-Lite ──────────────────────────────────────────────────────────────
 
 export function computeUmuxLiteScore(answers: Answers): number {
-  return (100 * ((answers.Q1 ?? 0) + (answers.Q3 ?? 0))) / 12
+  const q1 = answers.Q1
+  const q3 = answers.Q3
+  if ([q1, q3].some((v) => typeof v !== 'number' || Number.isNaN(v) || (v as number) < 0 || (v as number) > 6)) return 0
+  // UMUX-Lite standard (échelle 0-6) avec les 2 items positifs de cette app (Q1 et Q3).
+  return (100 * (q1 + q3)) / 12
 }
 
 export function computeUmuxLiteStats(responses: Answers[]): UmuxLiteResult | null {
   if (responses.length === 0) return null
 
-  const globalScores = responses.map(computeUmuxLiteScore)
-  const usabilityScores = responses.map((a) => (100 / 6) * (a.Q3 ?? 0))
-  const usefulnessScores = responses.map((a) => (100 / 6) * (a.Q1 ?? 0))
+  const globalScores: number[] = []
+  const usabilityScores: number[] = []
+  const usefulnessScores: number[] = []
 
-  const n = responses.length
+  for (const a of responses) {
+    const q1 = a.Q1
+    const q3 = a.Q3
+    if ([q1, q3].some((v) => typeof v !== 'number' || Number.isNaN(v) || (v as number) < 0 || (v as number) > 6)) {
+      continue
+    }
+    globalScores.push(computeUmuxLiteScore(a))
+    usabilityScores.push((100 / 6) * q3)
+    usefulnessScores.push((100 / 6) * q1)
+  }
+
+  if (globalScores.length === 0) return null
+
+  const n = globalScores.length
   return {
     n,
     global: computeStatsSummary(globalScores, n),
@@ -509,6 +573,30 @@ const ATTRAKDIFF_ABRIDGED_KEYS = {
   ATT: ['ATT2', 'ATT5'],
 }
 
+// Items inversés selon la passation FR (AttrakDiff2 - Lallemand/Gronier).
+const ATTRAKDIFF_REVERSED_ITEMS = new Set([
+  'QP1',
+  'ATT1',
+  'QHS1',
+  'QP2',
+  'QHI2',
+  'QP3',
+  'ATT3',
+  'QHI3',
+  'QP5',
+  'QHI6',
+  'ATT5',
+  'QHS3',
+  'QHS4',
+  'ATT7',
+  'QHS7',
+])
+
+function normalizeAttrakDiffValue(raw: unknown, itemId: string): number | null {
+  if (typeof raw !== 'number' || !Number.isFinite(raw) || raw < -3 || raw > 3) return null
+  return ATTRAKDIFF_REVERSED_ITEMS.has(itemId) ? -raw : raw
+}
+
 export function computeAttrakDiffStats(
   responses: Answers[],
   abridged = false,
@@ -516,25 +604,54 @@ export function computeAttrakDiffStats(
   if (responses.length === 0) return null
 
   const keys = abridged ? ATTRAKDIFF_ABRIDGED_KEYS : ATTRAKDIFF_FULL_KEYS
-  const values: Record<string, number[]> = { QP: [], QHS: [], QHI: [], ATT: [], QH: [] }
-
-  for (const a of responses) {
-    for (const k of keys.QP) values.QP.push(a[k] ?? 0)
-    for (const k of keys.QHS) values.QHS.push(a[k] ?? 0)
-    for (const k of keys.QHI) values.QHI.push(a[k] ?? 0)
-    for (const k of keys.ATT) values.ATT.push(a[k] ?? 0)
-    for (const k of keys.QHS) values.QH.push(a[k] ?? 0)
-    for (const k of keys.QHI) values.QH.push(a[k] ?? 0)
+  const values: Record<'QP' | 'QHS' | 'QHI' | 'ATT' | 'QH', number[]> = {
+    QP: [],
+    QHS: [],
+    QHI: [],
+    ATT: [],
+    QH: [],
   }
 
-  const n = responses.length
+  for (const a of responses) {
+    const qpRow: number[] = []
+    const qhsRow: number[] = []
+    const qhiRow: number[] = []
+    const attRow: number[] = []
+
+    for (const k of keys.QP) {
+      const normalized = normalizeAttrakDiffValue(a[k], k)
+      if (normalized != null) qpRow.push(normalized)
+    }
+    for (const k of keys.QHS) {
+      const normalized = normalizeAttrakDiffValue(a[k], k)
+      if (normalized != null) qhsRow.push(normalized)
+    }
+    for (const k of keys.QHI) {
+      const normalized = normalizeAttrakDiffValue(a[k], k)
+      if (normalized != null) qhiRow.push(normalized)
+    }
+    for (const k of keys.ATT) {
+      const normalized = normalizeAttrakDiffValue(a[k], k)
+      if (normalized != null) attRow.push(normalized)
+    }
+
+    if (qpRow.length > 0) values.QP.push(mean(qpRow))
+    if (qhsRow.length > 0) values.QHS.push(mean(qhsRow))
+    if (qhiRow.length > 0) values.QHI.push(mean(qhiRow))
+    if (attRow.length > 0) values.ATT.push(mean(attRow))
+
+    const qhRow = [...qhsRow, ...qhiRow]
+    if (qhRow.length > 0) values.QH.push(mean(qhRow))
+  }
+
+  const n = Math.max(values.QP.length, values.QHS.length, values.QHI.length, values.ATT.length)
   return {
     n,
-    QP: computeStatsSummary(values.QP, n),
-    QHS: computeStatsSummary(values.QHS, n),
-    QHI: computeStatsSummary(values.QHI, n),
-    ATT: computeStatsSummary(values.ATT, n),
-    QH: computeStatsSummary(values.QH, n),
+    QP: values.QP.length > 0 ? computeStatsSummary(values.QP, values.QP.length) : { ...ZERO_SUMMARY },
+    QHS: values.QHS.length > 0 ? computeStatsSummary(values.QHS, values.QHS.length) : { ...ZERO_SUMMARY },
+    QHI: values.QHI.length > 0 ? computeStatsSummary(values.QHI, values.QHI.length) : { ...ZERO_SUMMARY },
+    ATT: values.ATT.length > 0 ? computeStatsSummary(values.ATT, values.ATT.length) : { ...ZERO_SUMMARY },
+    QH: values.QH.length > 0 ? computeStatsSummary(values.QH, values.QH.length) : { ...ZERO_SUMMARY },
   }
 }
 

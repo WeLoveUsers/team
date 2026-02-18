@@ -1,5 +1,3 @@
-# Modifier l'UI répondant
-
 # Fonctions
 - IA
     - Contextes d'IA
