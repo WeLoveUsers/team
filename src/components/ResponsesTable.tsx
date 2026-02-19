@@ -48,6 +48,17 @@ type ActiveRow = {
   metrics: MetricMap
 }
 
+function toTimestamp(value: string): number {
+  const ts = Date.parse(value)
+  return Number.isNaN(ts) ? 0 : ts
+}
+
+function sortByCreatedTimeDesc(a: ProjectResponse, b: ProjectResponse): number {
+  const delta = toTimestamp(b.createdTime) - toTimestamp(a.createdTime)
+  if (delta !== 0) return delta
+  return a.id.localeCompare(b.id)
+}
+
 function readAnswer(answers: Answers, key: string): number | null {
   const value = answers[key]
   if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return null
@@ -274,8 +285,14 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
   }
 
   const qid = computeQuestionnaireId(project.questionnaireType)
-  const activeResponses = responses.filter((r) => !r.archived)
-  const archivedResponses = responses.filter((r) => r.archived)
+  const activeResponses = useMemo(
+    () => responses.filter((r) => !r.archived).sort(sortByCreatedTimeDesc),
+    [responses],
+  )
+  const archivedResponses = useMemo(
+    () => responses.filter((r) => r.archived).sort(sortByCreatedTimeDesc),
+    [responses],
+  )
   const metricColumns = useMemo(() => getMetricColumns(qid), [qid])
   const metricColumnCount = metricColumns.length > 0 ? metricColumns.length : 1
   const activeRows = useMemo<ActiveRow[]>(() => (
