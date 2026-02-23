@@ -7,7 +7,7 @@ function getClosestScrollableAncestor(element: HTMLElement): HTMLElement | null 
   let current: HTMLElement | null = element.parentElement
   while (current) {
     const { overflowY } = window.getComputedStyle(current)
-    if (overflowY === 'auto' || overflowY === 'scroll') {
+    if (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') {
       return current
     }
     current = current.parentElement
@@ -138,6 +138,95 @@ export function WorkingMethodPage() {
     requestAnimationFrame(syncActiveTocLink)
 
     return () => {
+      cleanups.forEach((cleanup) => cleanup())
+    }
+  }, [])
+
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+
+    const tocNav = root.querySelector<HTMLElement>('nav[aria-label="Sommaire"]')
+    const tocLinks = Array.from(
+      root.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Sommaire"] a[href^="#"]'),
+    )
+    if (tocLinks.length === 0) return
+
+    const tocSections = TOC_SECTION_IDS
+      .map((sectionId) => {
+        const section = document.getElementById(sectionId)
+        return section instanceof HTMLElement && root.contains(section) ? section : null
+      })
+      .filter((section): section is HTMLElement => !!section)
+    if (tocSections.length === 0) return
+
+    const cleanups: Array<() => void> = []
+
+    const setActiveTocLink = (activeSectionId: string) => {
+      tocLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${activeSectionId}`
+        link.classList.toggle('is-active', isActive)
+        if (isActive) {
+          link.setAttribute('aria-current', 'location')
+        } else {
+          link.removeAttribute('aria-current')
+        }
+      })
+    }
+
+    const scrollContainer = getClosestScrollableAncestor(root)
+    const syncActiveTocLink = () => {
+      const containerTop = scrollContainer?.getBoundingClientRect().top ?? 0
+      const navHeight = tocNav?.offsetHeight ?? 0
+      const probeY = containerTop + navHeight + 16
+      let activeSectionId = tocSections[0].id
+
+      for (const section of tocSections) {
+        if (section.getBoundingClientRect().top <= probeY) {
+          activeSectionId = section.id
+        } else {
+          break
+        }
+      }
+
+      setActiveTocLink(activeSectionId)
+    }
+
+    let rafId: number | null = null
+    const queueSync = () => {
+      if (rafId !== null) return
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+        syncActiveTocLink()
+      })
+    }
+
+    setActiveTocLink(tocSections[0].id)
+    queueSync()
+
+    tocLinks.forEach((link) => {
+      const onClick = () => {
+        const targetSectionId = link.getAttribute('href')?.slice(1)
+        if (!targetSectionId) return
+        setActiveTocLink(targetSectionId)
+      }
+      link.addEventListener('click', onClick)
+      cleanups.push(() => link.removeEventListener('click', onClick))
+    })
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', queueSync, { passive: true })
+      cleanups.push(() => scrollContainer.removeEventListener('scroll', queueSync))
+    }
+    window.addEventListener('scroll', queueSync, { passive: true })
+    cleanups.push(() => window.removeEventListener('scroll', queueSync))
+    window.addEventListener('resize', queueSync)
+    cleanups.push(() => window.removeEventListener('resize', queueSync))
+
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+      }
       cleanups.forEach((cleanup) => cleanup())
     }
   }, [])
