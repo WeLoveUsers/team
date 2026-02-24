@@ -209,11 +209,6 @@
     background-color: var(--color-ink) !important;
     border-color: var(--color-ink) !important;
   }
-
-  .note-principle.is-open .note-principle-label {
-    color: var(--color-cream) !important;
-  }
-
   .note-principle.is-open .note-principle-title {
     color: var(--color-cream) !important;
   }
@@ -222,21 +217,8 @@
     color: var(--color-cream) !important;
   }
 
-  .note-principle.is-open .note-principle-icon,
-  .note-principle.is-open .note-principle-plus {
+  .note-principle.is-open .note-principle-icon {
     color: var(--color-cream) !important;
-  }
-
-  .note-principle-plus {
-    transition: transform 0.25s ease, color 0.25s ease;
-  }
-
-  .note-principle.is-open .note-principle-plus {
-    transform: rotate(45deg);
-  }
-
-  .note-principle-toggle {
-    cursor: pointer;
   }
 
   .note-toc-link {
