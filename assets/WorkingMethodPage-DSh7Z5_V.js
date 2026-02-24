@@ -1,76 +1,10 @@
-import{j as k}from"./charts-nuwTBMFx.js";import{r as b}from"./react-DGBwUpAK.js";const q=`
-<style>
-  .note-principle.is-open {
-    background: var(--color-ink);
-    border-color: var(--color-ink);
-  }
-
-  .note-principle.is-open .note-principle-label {
-    color: #a8a29e;
-  }
-
-  .note-principle.is-open .note-principle-title {
-    color: var(--color-cream);
-  }
-
-  .note-principle.is-open .note-principle-body {
-    color: #d6d1c8;
-  }
-
-  .note-principle.is-open .note-principle-icon,
-  .note-principle.is-open .note-principle-plus {
-    color: #ffd7ce;
-  }
-
-  .note-principle-plus {
-    transition: transform 0.25s ease, color 0.25s ease;
-  }
-
-  .note-principle.is-open .note-principle-plus {
-    transform: rotate(45deg);
-  }
-
-  .note-toc-link {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--color-stone);
-    background: var(--color-cream);
-    color: var(--color-ink);
-    border-radius: var(--radius-brand);
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-  }
-
-  .note-toc-link:hover {
-    border-color: var(--color-ink);
-    background: #fff;
-  }
-
-  .note-toc-link.is-active {
-    border-color: var(--color-flame);
-    background: var(--color-wash);
-    color: var(--color-flame);
-  }
-
-  #changement,
-  #ia,
-  #principes,
-  #implications {
-    scroll-margin-top: 7.5rem;
-  }
-</style>
-
-<article class="w-full">
+import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js";const q=`<article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
     <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Ce qui change,<br>ce qui reste.</h1>
     <p class="text-lg text-graphite font-light max-w-2xl">À l'attention des membres du collectif.</p>
   </header>
 
-  <!--
   <nav class="sticky top-[-2.5rem] z-20 mb-6 mt-6 md:top-[-3rem]" aria-label="Sommaire">
     <div class="rounded-brand border border-stone bg-white px-4 py-3">
       <div class="flex flex-wrap gap-2">
@@ -81,14 +15,13 @@ import{j as k}from"./charts-nuwTBMFx.js";import{r as b}from"./react-DGBwUpAK.js"
       </div>
     </div>
   </nav>
-  -->
 
   <section id="intro" class="py-14 border-b border-stone">
     <p class="text-xl md:text-2xl font-light text-ink leading-relaxed mb-6">Cette note a deux objectifs. D'abord, vous mettre en contexte sur le repositionnement de We Love Users, pour que vous puissiez en comprendre la logique, et vous en saisir si vous le jugez utile. Ensuite, mettre par écrit quelque chose qui existait déjà à l'état implicite : notre façon de travailler.</p>
     <p class="text-base text-graphite leading-relaxed">Ce n'est pas un règlement intérieur. C'est une tentative de nommer ce que nous savons déjà, pour que ça reste vrai même quand nous ne travaillons pas ensemble dans la même pièce.</p>
   </section>
 
-  <section id="changement" class="py-14 border-b border-stone">
+  <section id="changement" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui change</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Un nouveau cadre pour une valeur ancienne</h2>
     <p class="text-base text-graphite leading-relaxed mb-4">Je repositionne We Love Users en Cabinet de Conseil en Sécurité Décisionnelle, spécialisé dans les écosystèmes de produits et services numériques complexes.</p>
@@ -108,7 +41,7 @@ import{j as k}from"./charts-nuwTBMFx.js";import{r as b}from"./react-DGBwUpAK.js"
     <p class="text-base text-graphite leading-relaxed mt-6">Ce glissement change la façon dont les missions sont cadrées en amont, pas la façon dont elles sont menées sur le terrain.</p>
   </section>
 
-  <section id="ia" class="py-14 border-b border-stone">
+  <section id="ia" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce que ça change pour notre pratique</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Quid de l'IA ?</h2>
     <p class="text-base text-graphite leading-relaxed">L'IA est déjà dans nos outils, et elle va y rester. La question n'est pas de savoir si c'est pertinent de l'utiliser, mais comment l'utiliser sans perdre ce qui fait la valeur de notre travail.</p>
@@ -133,7 +66,7 @@ import{j as k}from"./charts-nuwTBMFx.js";import{r as b}from"./react-DGBwUpAK.js"
     </div>
   </section>
 
-  <section id="principes" class="py-14 border-b border-stone">
+  <section id="principes" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui reste</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Notre façon de travailler</h2>
     <p class="text-base text-graphite leading-relaxed">Ce qui suit n'est pas nouveau. C'est une tentative de nommer ce qui guide déjà notre travail. Cliquez sur chaque principe pour le développer.</p>
@@ -266,7 +199,7 @@ import{j as k}from"./charts-nuwTBMFx.js";import{r as b}from"./react-DGBwUpAK.js"
     </div>
   </section>
 
-  <section id="implications" class="py-14 border-b border-stone">
+  <section id="implications" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Implications concrètes</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Ce que ça change pour vous</h2>
     <p class="text-base text-graphite leading-relaxed">En termes de pratique terrain : pas grand-chose. Vous continuez à mener les études en autonomie, selon votre jugement professionnel. Deux points méritent néanmoins votre attention.</p>
@@ -290,4 +223,4 @@ import{j as k}from"./charts-nuwTBMFx.js";import{r as b}from"./react-DGBwUpAK.js"
     <p class="text-sm text-taupe mt-1">We Love Users · Février 2026</p>
   </footer>
 </article>
-`,h=["changement","ia","principes","implications"];function y(x){let r=x.parentElement;for(;r;){const{overflowY:c}=window.getComputedStyle(r);if(c==="auto"||c==="scroll"||c==="overlay")return r;r=r.parentElement}return null}function C(){const x=b.useRef(null);return b.useEffect(()=>{const r=x.current;if(!r)return;const c=Array.from(r.querySelectorAll(".note-principle")),a=[],d=e=>{const n=e.querySelector(".note-principle-toggle"),i=e.querySelector(".note-principle-panel");!n||!i||(e.classList.remove("is-open"),n.setAttribute("aria-expanded","false"),i.style.maxHeight="0px")},p=e=>{const n=e.querySelector(".note-principle-toggle"),i=e.querySelector(".note-principle-panel");!n||!i||(e.classList.add("is-open"),n.setAttribute("aria-expanded","true"),i.style.maxHeight=`${i.scrollHeight}px`)};c.forEach(e=>{const n=e.querySelector(".note-principle-toggle");if(!n)return;const i=()=>{const f=e.classList.contains("is-open");c.forEach(d),f||p(e)};n.addEventListener("click",i),a.push(()=>n.removeEventListener("click",i))});const u=()=>{c.forEach(e=>{if(!e.classList.contains("is-open"))return;const n=e.querySelector(".note-principle-panel");n&&(n.style.maxHeight=`${n.scrollHeight}px`)})};window.addEventListener("resize",u),a.push(()=>window.removeEventListener("resize",u));const m=r.querySelector('nav[aria-label="Sommaire"]'),g=Array.from(r.querySelectorAll('nav[aria-label="Sommaire"] a[href^="#"]')),o=h.map(e=>document.getElementById(e)).filter(e=>!!e),l=e=>{g.forEach(n=>{const i=n.getAttribute("href")===`#${e}`;n.classList.toggle("is-active",i),i?n.setAttribute("aria-current","location"):n.removeAttribute("aria-current")})},s=y(r),t=()=>{if(o.length===0)return;const e=s?.getBoundingClientRect().top??0,i=(m?.getBoundingClientRect().bottom??e+96)+12;let f=o[0].id;for(const v of o)if(v.getBoundingClientRect().top<=i)f=v.id;else break;l(f)};return g.length>0&&o.length>0&&l(o[0].id),g.forEach(e=>{const n=()=>{const i=e.getAttribute("href")?.slice(1);i&&l(i)};e.addEventListener("click",n),a.push(()=>e.removeEventListener("click",n))}),s&&(s.addEventListener("scroll",t,{passive:!0}),a.push(()=>s.removeEventListener("scroll",t))),window.addEventListener("scroll",t,{passive:!0}),a.push(()=>window.removeEventListener("scroll",t)),window.addEventListener("resize",t),a.push(()=>window.removeEventListener("resize",t)),t(),requestAnimationFrame(t),()=>{a.forEach(e=>e())}},[]),b.useEffect(()=>{const r=x.current;if(!r)return;const c=r.querySelector('nav[aria-label="Sommaire"]'),a=Array.from(r.querySelectorAll('nav[aria-label="Sommaire"] a[href^="#"]'));if(a.length===0)return;const d=h.map(s=>{const t=document.getElementById(s);return t instanceof HTMLElement&&r.contains(t)?t:null}).filter(s=>!!s);if(d.length===0)return;const p=[],u=s=>{a.forEach(t=>{const e=t.getAttribute("href")===`#${s}`;t.classList.toggle("is-active",e),e?t.setAttribute("aria-current","location"):t.removeAttribute("aria-current")})},m=y(r),g=()=>{const s=m?.getBoundingClientRect().top??0,t=c?.offsetHeight??0,e=s+t+16;let n=d[0].id;for(const i of d)if(i.getBoundingClientRect().top<=e)n=i.id;else break;u(n)};let o=null;const l=()=>{o===null&&(o=requestAnimationFrame(()=>{o=null,g()}))};return u(d[0].id),l(),a.forEach(s=>{const t=()=>{const e=s.getAttribute("href")?.slice(1);e&&u(e)};s.addEventListener("click",t),p.push(()=>s.removeEventListener("click",t))}),m&&(m.addEventListener("scroll",l,{passive:!0}),p.push(()=>m.removeEventListener("scroll",l))),window.addEventListener("scroll",l,{passive:!0}),p.push(()=>window.removeEventListener("scroll",l)),window.addEventListener("resize",l),p.push(()=>window.removeEventListener("resize",l)),()=>{o!==null&&cancelAnimationFrame(o),p.forEach(s=>s())}},[]),k.jsx("div",{ref:x,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:q}})}export{C as WorkingMethodPage};
+`,C={itemSelector:".note-principle",toggleSelector:".note-principle-toggle",panelSelector:".note-principle-panel",openClass:"is-open",singleOpen:!0},L={navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeAriaCurrent:"location",activeOffset:12,smoothScroll:!0};function S(a){let s=a.parentElement;for(;s;){const{overflowY:n}=window.getComputedStyle(s);if(n==="auto"||n==="scroll"||n==="overlay")return s;s=s.parentElement}return null}function y(a){const s=a.getAttribute("href");if(!s||!s.startsWith("#"))return null;const n=s.slice(1).trim();if(!n)return null;try{return decodeURIComponent(n)}catch{return n}}function E(a,s={}){const n={...C,...s},l=Array.from(a.querySelectorAll(n.itemSelector)).map(e=>{const t=e.querySelector(n.toggleSelector),g=e.querySelector(n.panelSelector);return!t||!g?null:{card:e,button:t,panel:g}}).filter(e=>!!e);if(l.length===0)return()=>{};const u=[],x=new Map(l.map(e=>[e.card,e])),d=e=>{const t=x.get(e);t&&(e.classList.remove(n.openClass),t.button.setAttribute("aria-expanded","false"),t.panel.style.maxHeight="0px")},b=e=>{const t=x.get(e);t&&(e.classList.add(n.openClass),t.button.setAttribute("aria-expanded","true"),t.panel.style.maxHeight=`${t.panel.scrollHeight}px`)},m=()=>{l.forEach(({card:e,panel:t})=>{e.classList.contains(n.openClass)&&(t.style.maxHeight=`${t.scrollHeight}px`)})};return l.forEach(({card:e,button:t})=>{d(e);const g=()=>{const f=e.classList.contains(n.openClass);if(n.singleOpen)l.forEach(({card:p})=>d(p));else if(f){d(e);return}f||b(e)};t.addEventListener("click",g),u.push(()=>t.removeEventListener("click",g))}),window.addEventListener("resize",m),u.push(()=>window.removeEventListener("resize",m)),()=>{u.forEach(e=>e())}}function A(a,s={}){const n={...L,...s},l=a.querySelector(n.navSelector);if(!l)return()=>{};const u=Array.from(l.querySelectorAll(n.linkSelector));if(u.length===0)return()=>{};const x=new Map,d=[];if(u.forEach(r=>{const i=y(r);if(!i)return;const o=document.getElementById(i);o instanceof HTMLElement&&a.contains(o)&&(x.has(i)||(x.set(i,o),d.push(o)))}),d.length===0)return()=>{};const b=S(a),m=[],e=r=>{u.forEach(i=>{const c=y(i)===r;i.classList.toggle(n.activeClass,c),c?i.setAttribute("aria-current",n.activeAriaCurrent):i.removeAttribute("aria-current")})},t=()=>{const r=b?.getBoundingClientRect().top??0,o=(l.getBoundingClientRect().bottom||r+96)+n.activeOffset;let c=d[0].id;for(const h of d)if(h.getBoundingClientRect().top<=o)c=h.id;else break;e(c)},g=(r,i)=>{const o=x.get(r);o&&o.scrollIntoView({behavior:i,block:"start",inline:"nearest"})};let f=null;const p=()=>{f===null&&(f=window.requestAnimationFrame(()=>{f=null,t()}))};u.forEach(r=>{const i=o=>{const c=y(r);if(!c||!x.has(c))return;o.preventDefault(),e(c),g(c,n.smoothScroll?"smooth":"auto");const h=`#${c}`;window.location.hash!==h&&window.history.replaceState(window.history.state,"",`${window.location.pathname}${window.location.search}${h}`),p()};r.addEventListener("click",i),m.push(()=>r.removeEventListener("click",i))}),b&&(b.addEventListener("scroll",p,{passive:!0}),m.push(()=>b.removeEventListener("scroll",p))),window.addEventListener("scroll",p,{passive:!0}),m.push(()=>window.removeEventListener("scroll",p)),window.addEventListener("resize",p),m.push(()=>window.removeEventListener("resize",p));const v=window.location.hash?decodeURIComponent(window.location.hash.slice(1)):"";return v&&x.has(v)?(e(v),window.requestAnimationFrame(()=>g(v,"auto"))):e(d[0].id),p(),()=>{f!==null&&window.cancelAnimationFrame(f),m.forEach(r=>r())}}function O(){const a=k.useRef(null);return k.useEffect(()=>{const s=a.current;if(!s)return;const n=[E(s,{itemSelector:".note-principle",toggleSelector:".note-principle-toggle",panelSelector:".note-principle-panel",openClass:"is-open",singleOpen:!0}),A(s,{navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeOffset:12,smoothScroll:!0})];return()=>{n.forEach(l=>l())}},[]),w.jsx("div",{ref:a,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:q}})}export{O as WorkingMethodPage};
