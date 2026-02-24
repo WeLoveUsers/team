@@ -1,68 +1,3 @@
-
-<style>
-  .note-principle.is-open {
-    background: var(--color-ink);
-    border-color: var(--color-ink);
-  }
-
-  .note-principle.is-open .note-principle-label {
-    color: #a8a29e;
-  }
-
-  .note-principle.is-open .note-principle-title {
-    color: var(--color-cream);
-  }
-
-  .note-principle.is-open .note-principle-body {
-    color: #d6d1c8;
-  }
-
-  .note-principle.is-open .note-principle-icon,
-  .note-principle.is-open .note-principle-plus {
-    color: #ffd7ce;
-  }
-
-  .note-principle-plus {
-    transition: transform 0.25s ease, color 0.25s ease;
-  }
-
-  .note-principle.is-open .note-principle-plus {
-    transform: rotate(45deg);
-  }
-
-  .note-toc-link {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid var(--color-stone);
-    background: var(--color-cream);
-    color: var(--color-ink);
-    border-radius: var(--radius-brand);
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-  }
-
-  .note-toc-link:hover {
-    border-color: var(--color-ink);
-    background: #fff;
-  }
-
-  .note-toc-link.is-active {
-    border-color: var(--color-flame);
-    background: var(--color-wash);
-    color: var(--color-flame);
-  }
-
-  #changement,
-  #ia,
-  #principes,
-  #implications {
-    scroll-margin-top: 7.5rem;
-  }
-</style>
-
 <article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
@@ -70,7 +5,6 @@
     <p class="text-lg text-graphite font-light max-w-2xl">À l'attention des membres du collectif.</p>
   </header>
 
-  <!--
   <nav class="sticky top-[-2.5rem] z-20 mb-6 mt-6 md:top-[-3rem]" aria-label="Sommaire">
     <div class="rounded-brand border border-stone bg-white px-4 py-3">
       <div class="flex flex-wrap gap-2">
@@ -81,14 +15,13 @@
       </div>
     </div>
   </nav>
-  -->
 
   <section id="intro" class="py-14 border-b border-stone">
     <p class="text-xl md:text-2xl font-light text-ink leading-relaxed mb-6">Cette note a deux objectifs. D'abord, vous mettre en contexte sur le repositionnement de We Love Users, pour que vous puissiez en comprendre la logique, et vous en saisir si vous le jugez utile. Ensuite, mettre par écrit quelque chose qui existait déjà à l'état implicite : notre façon de travailler.</p>
     <p class="text-base text-graphite leading-relaxed">Ce n'est pas un règlement intérieur. C'est une tentative de nommer ce que nous savons déjà, pour que ça reste vrai même quand nous ne travaillons pas ensemble dans la même pièce.</p>
   </section>
 
-  <section id="changement" class="py-14 border-b border-stone">
+  <section id="changement" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui change</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Un nouveau cadre pour une valeur ancienne</h2>
     <p class="text-base text-graphite leading-relaxed mb-4">Je repositionne We Love Users en Cabinet de Conseil en Sécurité Décisionnelle, spécialisé dans les écosystèmes de produits et services numériques complexes.</p>
@@ -108,7 +41,7 @@
     <p class="text-base text-graphite leading-relaxed mt-6">Ce glissement change la façon dont les missions sont cadrées en amont, pas la façon dont elles sont menées sur le terrain.</p>
   </section>
 
-  <section id="ia" class="py-14 border-b border-stone">
+  <section id="ia" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce que ça change pour notre pratique</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Quid de l'IA ?</h2>
     <p class="text-base text-graphite leading-relaxed">L'IA est déjà dans nos outils, et elle va y rester. La question n'est pas de savoir si c'est pertinent de l'utiliser, mais comment l'utiliser sans perdre ce qui fait la valeur de notre travail.</p>
@@ -133,7 +66,7 @@
     </div>
   </section>
 
-  <section id="principes" class="py-14 border-b border-stone">
+  <section id="principes" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui reste</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Notre façon de travailler</h2>
     <p class="text-base text-graphite leading-relaxed">Ce qui suit n'est pas nouveau. C'est une tentative de nommer ce qui guide déjà notre travail. Cliquez sur chaque principe pour le développer.</p>
@@ -266,7 +199,7 @@
     </div>
   </section>
 
-  <section id="implications" class="py-14 border-b border-stone">
+  <section id="implications" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Implications concrètes</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Ce que ça change pour vous</h2>
     <p class="text-base text-graphite leading-relaxed">En termes de pratique terrain : pas grand-chose. Vous continuez à mener les études en autonomie, selon votre jugement professionnel. Deux points méritent néanmoins votre attention.</p>

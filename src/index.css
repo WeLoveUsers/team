@@ -204,6 +204,69 @@
     background-repeat: no-repeat;
     background-size: contain;
   }
+
+  .note-principle.is-open {
+    background-color: var(--color-ink) !important;
+    border-color: var(--color-ink) !important;
+  }
+
+  .note-principle.is-open .note-principle-label {
+    color: var(--color-cream) !important;
+  }
+
+  .note-principle.is-open .note-principle-title {
+    color: var(--color-cream) !important;
+  }
+
+  .note-principle.is-open .note-principle-body {
+    color: var(--color-cream) !important;
+  }
+
+  .note-principle.is-open .note-principle-icon,
+  .note-principle.is-open .note-principle-plus {
+    color: var(--color-cream) !important;
+  }
+
+  .note-principle-plus {
+    transition: transform 0.25s ease, color 0.25s ease;
+  }
+
+  .note-principle.is-open .note-principle-plus {
+    transform: rotate(45deg);
+  }
+
+  .note-principle-toggle {
+    cursor: pointer;
+  }
+
+  .note-toc-link {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-stone);
+    background: var(--color-cream);
+    color: var(--color-ink);
+    border-radius: var(--radius-brand);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .note-toc-link:hover {
+    border-color: var(--color-ink);
+    background: #fff;
+  }
+
+  .note-toc-link.is-active {
+    border-color: var(--color-flame);
+    background: var(--color-wash);
+    color: var(--color-flame);
+  }
+
+  .note-anchor-section {
+    scroll-margin-top: 7.5rem;
+  }
 }
 
 ::-webkit-scrollbar {
