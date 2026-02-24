@@ -69,11 +69,11 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
   <section id="principes" class="note-anchor-section py-14 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-5">Ce qui reste</p>
     <h2 class="font-serif text-3xl md:text-4xl text-ink leading-tight mb-6">Notre façon de travailler</h2>
-    <p class="text-base text-graphite leading-relaxed">Ce qui suit n'est pas nouveau. C'est une tentative de nommer ce qui guide déjà notre travail. Cliquez sur chaque principe pour le développer.</p>
+    <p class="text-base text-graphite leading-relaxed">Ce qui suit n'est pas nouveau. C'est une tentative de nommer ce qui guide déjà notre travail.</p>
 
     <div id="principes-grid" class="grid md:grid-cols-2 gap-4 mt-8">
-      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
-        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+      <article class="note-principle is-open border border-ink rounded-brand bg-ink">
+        <div class="note-principle-toggle w-full text-left p-6 flex items-start gap-4">
           <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="18" cy="10" r="4"/>
             <line x1="18" y1="14" x2="18" y2="30"/>
@@ -82,18 +82,18 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
             <line x1="26" y1="18" x2="28" y2="18"/>
           </svg>
           <span class="flex-1">
-            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 1</span>
-            <span class="note-principle-title font-serif text-lg leading-snug text-ink">La fidélité au terrain, au-delà du brief</span>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame block mb-2">Principe 1</span>
+            <span class="note-principle-title block font-serif text-lg leading-snug text-ink">La fidélité au terrain, au-delà du brief</span>
           </span>
-          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
-        </button>
-        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          
+        </div>
+        <div class="note-principle-panel">
           <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">L'étude répond à la commande. Le rapport restitue le terrain. Ces deux choses ne sont pas identiques, et c'est tant mieux. Ce qu'un participant révèle spontanément a autant de valeur que ce qui était cherché. Un insight hors périmètre mais significatif appartient au rapport, clairement identifié comme tel.</p>
         </div>
       </article>
 
-      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
-        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+      <article class="note-principle is-open border border-ink rounded-brand bg-ink">
+        <div class="note-principle-toggle w-full text-left p-6 flex items-start gap-4">
           <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="18" y2="14"/>
             <path d="M18 14 L10 24"/>
@@ -104,18 +104,18 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
             <circle cx="26" cy="27" r="2.5"/>
           </svg>
           <span class="flex-1">
-            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 2</span>
-            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Interpréter sans réduire la complexité</span>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame block mb-2">Principe 2</span>
+            <span class="note-principle-title block font-serif text-lg leading-snug text-ink">Interpréter sans réduire la complexité</span>
           </span>
-          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
-        </button>
-        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          
+        </div>
+        <div class="note-principle-panel">
           <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Face à un verbatim ambigu ou une observation contradictoire, ne pas trancher arbitrairement. Exposer les interprétations possibles et ce qu'elles impliquent chacune. C'est une forme d'honnêteté intellectuelle, et ça donne au commanditaire les moyens de décider, plutôt que de lui imposer une conclusion.</p>
         </div>
       </article>
 
-      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
-        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+      <article class="note-principle is-open border border-ink rounded-brand bg-ink">
+        <div class="note-principle-toggle w-full text-left p-6 flex items-start gap-4">
           <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="13" cy="15" r="6"/>
             <line x1="11" y1="15" x2="15" y2="15"/>
@@ -125,18 +125,18 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
             <line x1="23" y1="23" x2="27" y2="23"/>
           </svg>
           <span class="flex-1">
-            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 3</span>
-            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Observer à plusieurs échelles</span>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame block mb-2">Principe 3</span>
+            <span class="note-principle-title block font-serif text-lg leading-snug text-ink">Observer à plusieurs échelles</span>
           </span>
-          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
-        </button>
-        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          
+        </div>
+        <div class="note-principle-panel">
           <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Un même sujet mérite d'être regardé au microscope et au télescope. Au microscope : l'interaction précise, le verbatim exact, la friction dans un geste. Au télescope : le parcours global, le contexte organisationnel, la logique d'usage dans la durée. Ces deux lectures ne se contredisent pas, elles se complètent.</p>
         </div>
       </article>
 
-      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
-        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+      <article class="note-principle is-open border border-ink rounded-brand bg-ink">
+        <div class="note-principle-toggle w-full text-left p-6 flex items-start gap-4">
           <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="10" y="14" width="18" height="14" rx="1.5"/>
             <path d="M13 14 V11 a1.5 1.5 0 0 1 1.5-1.5 h9 A1.5 1.5 0 0 1 25 11 v3"/>
@@ -144,18 +144,18 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
             <line x1="14" y1="23" x2="19" y2="23"/>
           </svg>
           <span class="flex-1">
-            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 4</span>
-            <span class="note-principle-title font-serif text-lg leading-snug text-ink">La forme est au service du lecteur</span>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame block mb-2">Principe 4</span>
+            <span class="note-principle-title block font-serif text-lg leading-snug text-ink">La forme est au service du lecteur</span>
           </span>
-          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
-        </button>
-        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          
+        </div>
+        <div class="note-principle-panel">
           <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Un livrable doit fonctionner pour plusieurs lecteurs aux besoins différents. Le directeur qui lit en diagonale, le designer qui cherche les détails d'interaction, le product manager qui veut les recommandations. La structure, la densité, la hiérarchie de l'information, tout ça se décide en pensant à qui va lire.</p>
         </div>
       </article>
 
-      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
-        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+      <article class="note-principle is-open border border-ink rounded-brand bg-ink">
+        <div class="note-principle-toggle w-full text-left p-6 flex items-start gap-4">
           <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="7" x2="18" y2="29"/>
             <line x1="18" y1="13" x2="10" y2="17"/>
@@ -165,18 +165,18 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
             <line x1="14" y1="29" x2="22" y2="29"/>
           </svg>
           <span class="flex-1">
-            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 5</span>
-            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Livrer engage une responsabilité</span>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame block mb-2">Principe 5</span>
+            <span class="note-principle-title block font-serif text-lg leading-snug text-ink">Livrer engage une responsabilité</span>
           </span>
-          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
-        </button>
-        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          
+        </div>
+        <div class="note-principle-panel">
           <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Un rapport n'est pas produit pour clore une mission : il va influencer des décisions, parfois à des niveaux hiérarchiques que nous n'avons pas rencontrés. Ça implique de la rigueur sur ce qu'on affirme, comment on le dit, et ce qu'on choisit de mettre en avant. Les autres équipes, les autres niveaux, parfois l'utilisateur final, sont des bénéficiaires indirects.</p>
         </div>
       </article>
 
-      <article class="note-principle border border-stone rounded-brand bg-cream transition-colors duration-300">
-        <button type="button" class="note-principle-toggle w-full text-left p-6 flex items-start gap-4" aria-expanded="false">
+      <article class="note-principle is-open border border-ink rounded-brand bg-ink">
+        <div class="note-principle-toggle w-full text-left p-6 flex items-start gap-4">
           <svg class="note-principle-icon w-9 h-9 shrink-0 mt-0.5 text-flame" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="18" r="5"/>
             <circle cx="25" cy="18" r="5"/>
@@ -187,12 +187,12 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
             <line x1="22" y1="8" x2="28" y2="8"/>
           </svg>
           <span class="flex-1">
-            <span class="note-principle-label block text-[11px] font-bold uppercase tracking-[0.2em] text-taupe mb-1">Principe 6</span>
-            <span class="note-principle-title font-serif text-lg leading-snug text-ink">Une collaboration entre pairs</span>
+            <span class="text-xs font-bold uppercase tracking-[0.2em] text-flame block mb-2">Principe 6</span>
+            <span class="note-principle-title block font-serif text-lg leading-snug text-ink">Une collaboration entre pairs</span>
           </span>
-          <span class="note-principle-plus text-xl text-taupe leading-none mt-1">+</span>
-        </button>
-        <div class="note-principle-panel max-h-0 overflow-hidden transition-all duration-300 ease-out">
+          
+        </div>
+        <div class="note-principle-panel">
           <p class="note-principle-body px-6 pb-6 text-sm text-graphite leading-relaxed">Je confie des missions sans expliquer comment faire votre métier. Je transmets un cadre et une vision, pas des règles. Ce n'est pas de la sous-traitance, c'est une coopération entre professionnels. Ce mode de fonctionnement n'est possible que si chacun se sent libre de signaler un doute, de questionner un cadrage, ou de remonter quelque chose d'inattendu.</p>
         </div>
       </article>
@@ -223,4 +223,4 @@ import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js"
     <p class="text-sm text-taupe mt-1">We Love Users · Février 2026</p>
   </footer>
 </article>
-`,C={itemSelector:".note-principle",toggleSelector:".note-principle-toggle",panelSelector:".note-principle-panel",openClass:"is-open",singleOpen:!0},L={navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeAriaCurrent:"location",activeOffset:12,smoothScroll:!0};function S(a){let s=a.parentElement;for(;s;){const{overflowY:n}=window.getComputedStyle(s);if(n==="auto"||n==="scroll"||n==="overlay")return s;s=s.parentElement}return null}function y(a){const s=a.getAttribute("href");if(!s||!s.startsWith("#"))return null;const n=s.slice(1).trim();if(!n)return null;try{return decodeURIComponent(n)}catch{return n}}function E(a,s={}){const n={...C,...s},l=Array.from(a.querySelectorAll(n.itemSelector)).map(e=>{const t=e.querySelector(n.toggleSelector),g=e.querySelector(n.panelSelector);return!t||!g?null:{card:e,button:t,panel:g}}).filter(e=>!!e);if(l.length===0)return()=>{};const u=[],x=new Map(l.map(e=>[e.card,e])),d=e=>{const t=x.get(e);t&&(e.classList.remove(n.openClass),t.button.setAttribute("aria-expanded","false"),t.panel.style.maxHeight="0px")},b=e=>{const t=x.get(e);t&&(e.classList.add(n.openClass),t.button.setAttribute("aria-expanded","true"),t.panel.style.maxHeight=`${t.panel.scrollHeight}px`)},m=()=>{l.forEach(({card:e,panel:t})=>{e.classList.contains(n.openClass)&&(t.style.maxHeight=`${t.scrollHeight}px`)})};return l.forEach(({card:e,button:t})=>{d(e);const g=()=>{const f=e.classList.contains(n.openClass);if(n.singleOpen)l.forEach(({card:p})=>d(p));else if(f){d(e);return}f||b(e)};t.addEventListener("click",g),u.push(()=>t.removeEventListener("click",g))}),window.addEventListener("resize",m),u.push(()=>window.removeEventListener("resize",m)),()=>{u.forEach(e=>e())}}function A(a,s={}){const n={...L,...s},l=a.querySelector(n.navSelector);if(!l)return()=>{};const u=Array.from(l.querySelectorAll(n.linkSelector));if(u.length===0)return()=>{};const x=new Map,d=[];if(u.forEach(r=>{const i=y(r);if(!i)return;const o=document.getElementById(i);o instanceof HTMLElement&&a.contains(o)&&(x.has(i)||(x.set(i,o),d.push(o)))}),d.length===0)return()=>{};const b=S(a),m=[],e=r=>{u.forEach(i=>{const c=y(i)===r;i.classList.toggle(n.activeClass,c),c?i.setAttribute("aria-current",n.activeAriaCurrent):i.removeAttribute("aria-current")})},t=()=>{const r=b?.getBoundingClientRect().top??0,o=(l.getBoundingClientRect().bottom||r+96)+n.activeOffset;let c=d[0].id;for(const h of d)if(h.getBoundingClientRect().top<=o)c=h.id;else break;e(c)},g=(r,i)=>{const o=x.get(r);o&&o.scrollIntoView({behavior:i,block:"start",inline:"nearest"})};let f=null;const p=()=>{f===null&&(f=window.requestAnimationFrame(()=>{f=null,t()}))};u.forEach(r=>{const i=o=>{const c=y(r);if(!c||!x.has(c))return;o.preventDefault(),e(c),g(c,n.smoothScroll?"smooth":"auto");const h=`#${c}`;window.location.hash!==h&&window.history.replaceState(window.history.state,"",`${window.location.pathname}${window.location.search}${h}`),p()};r.addEventListener("click",i),m.push(()=>r.removeEventListener("click",i))}),b&&(b.addEventListener("scroll",p,{passive:!0}),m.push(()=>b.removeEventListener("scroll",p))),window.addEventListener("scroll",p,{passive:!0}),m.push(()=>window.removeEventListener("scroll",p)),window.addEventListener("resize",p),m.push(()=>window.removeEventListener("resize",p));const v=window.location.hash?decodeURIComponent(window.location.hash.slice(1)):"";return v&&x.has(v)?(e(v),window.requestAnimationFrame(()=>g(v,"auto"))):e(d[0].id),p(),()=>{f!==null&&window.cancelAnimationFrame(f),m.forEach(r=>r())}}function O(){const a=k.useRef(null);return k.useEffect(()=>{const s=a.current;if(!s)return;const n=[E(s,{itemSelector:".note-principle",toggleSelector:".note-principle-toggle",panelSelector:".note-principle-panel",openClass:"is-open",singleOpen:!0}),A(s,{navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeOffset:12,smoothScroll:!0})];return()=>{n.forEach(l=>l())}},[]),w.jsx("div",{ref:a,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:q}})}export{O as WorkingMethodPage};
+`,C={navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeAriaCurrent:"location",activeOffset:12,smoothScroll:!0};function L(a){let t=a.parentElement;for(;t;){const{overflowY:e}=window.getComputedStyle(t);if(e==="auto"||e==="scroll"||e==="overlay")return t;t=t.parentElement}return null}function v(a){const t=a.getAttribute("href");if(!t||!t.startsWith("#"))return null;const e=t.slice(1).trim();if(!e)return null;try{return decodeURIComponent(e)}catch{return e}}function S(a,t={}){const e={...C,...t},l=a.querySelector(e.navSelector);if(!l)return()=>{};const m=Array.from(l.querySelectorAll(e.linkSelector));if(m.length===0)return()=>{};const c=new Map,p=[];if(m.forEach(s=>{const n=v(s);if(!n)return;const i=document.getElementById(n);i instanceof HTMLElement&&a.contains(i)&&(c.has(n)||(c.set(n,i),p.push(i)))}),p.length===0)return()=>{};const g=L(a),d=[],f=s=>{m.forEach(n=>{const r=v(n)===s;n.classList.toggle(e.activeClass,r),r?n.setAttribute("aria-current",e.activeAriaCurrent):n.removeAttribute("aria-current")})},y=()=>{const s=g?.getBoundingClientRect().top??0,i=(l.getBoundingClientRect().bottom||s+96)+e.activeOffset;let r=p[0].id;for(const x of p)if(x.getBoundingClientRect().top<=i)r=x.id;else break;f(r)},h=(s,n)=>{const i=c.get(s);i&&i.scrollIntoView({behavior:n,block:"start",inline:"nearest"})};let u=null;const o=()=>{u===null&&(u=window.requestAnimationFrame(()=>{u=null,y()}))};m.forEach(s=>{const n=i=>{const r=v(s);if(!r||!c.has(r))return;i.preventDefault(),f(r),h(r,e.smoothScroll?"smooth":"auto");const x=`#${r}`;window.location.hash!==x&&window.history.replaceState(window.history.state,"",`${window.location.pathname}${window.location.search}${x}`),o()};s.addEventListener("click",n),d.push(()=>s.removeEventListener("click",n))}),g&&(g.addEventListener("scroll",o,{passive:!0}),d.push(()=>g.removeEventListener("scroll",o))),window.addEventListener("scroll",o,{passive:!0}),d.push(()=>window.removeEventListener("scroll",o)),window.addEventListener("resize",o),d.push(()=>window.removeEventListener("resize",o));const b=window.location.hash?decodeURIComponent(window.location.hash.slice(1)):"";return b&&c.has(b)?(f(b),window.requestAnimationFrame(()=>h(b,"auto"))):f(p[0].id),o(),()=>{u!==null&&window.cancelAnimationFrame(u),d.forEach(s=>s())}}function I(){const a=k.useRef(null);return k.useEffect(()=>{const t=a.current;if(!t)return;const e=[S(t,{navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeOffset:12,smoothScroll:!0})];return()=>{e.forEach(l=>l())}},[]),w.jsx("div",{ref:a,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:q}})}export{I as WorkingMethodPage};
