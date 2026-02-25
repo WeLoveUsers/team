@@ -12,45 +12,54 @@ export function BrandFontsPage() {
         </p>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-brand border border-stone bg-white p-6">
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-flame">Sans principale</p>
-          <h2 className="mb-2 font-serif text-2xl text-ink">Satoshi</h2>
-          <p className="text-sm leading-relaxed text-graphite">
-            Police sans-serif officielle pour l&apos;app, les textes UI et la majorité des contenus.
+      <section className="space-y-8">
+        {/* Sans-serif : Satoshi + Urbanist */}
+        <article className="rounded-brand border border-stone bg-white p-8">
+          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-flame">Sans-serif</p>
+          <h2 className="mb-4 font-serif text-3xl text-ink">Satoshi</h2>
+          <p className="max-w-3xl text-sm leading-relaxed text-graphite">
+            Police sans-serif officielle de la charte. Elle est utilisée pour l&apos;app,
+            les textes UI et la majorité des contenus.
           </p>
           <a
             href={FONTSHARE_SATOSHI_URL}
             target="_blank"
             rel="noreferrer"
-            className="mt-5 inline-flex items-center text-sm font-medium text-flame hover:underline"
+            className="mt-4 inline-flex items-center text-sm font-medium text-flame hover:underline"
           >
-            Télécharger Satoshi
+            Télécharger Satoshi (Fontshare) &rarr;
           </a>
+
+          <div className="mt-6 border-t border-stone pt-6">
+            <div className="flex items-baseline gap-3">
+              <h3 className="text-lg font-medium text-ink">Urbanist</h3>
+              <span className="rounded-full bg-wash px-2.5 py-0.5 text-xs font-medium text-flame">
+                Alternative Google Docs
+              </span>
+            </div>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-graphite">
+              Satoshi n&apos;est pas disponible dans Google Docs. Dans ce contexte, on
+              utilise Urbanist comme police de substitution&nbsp;: elle partage les mêmes
+              proportions géométriques et offre un rendu très proche.
+            </p>
+            <a
+              href={GOOGLE_URBANIST_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex items-center text-sm font-medium text-flame hover:underline"
+            >
+              Ouvrir Urbanist (Google Fonts) &rarr;
+            </a>
+          </div>
         </article>
 
-        <article className="rounded-brand border border-stone bg-white p-6">
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-flame">Serif titre</p>
-          <h2 className="mb-2 font-serif text-2xl text-ink">Times New Roman</h2>
-          <p className="text-sm leading-relaxed text-graphite">
+        {/* Serif : Times New Roman */}
+        <article className="rounded-brand border border-stone bg-white p-8">
+          <p className="mb-3 text-xs font-bold uppercase tracking-widest text-flame">Serif</p>
+          <h2 className="mb-4 font-serif text-3xl text-ink">Times New Roman</h2>
+          <p className="max-w-3xl text-sm leading-relaxed text-graphite">
             Police serif de référence pour les titres éditoriaux et la hiérarchie de lecture.
           </p>
-        </article>
-
-        <article className="rounded-brand border border-stone bg-white p-6">
-          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-flame">Alternative Docs</p>
-          <h2 className="mb-2 font-serif text-2xl text-ink">Urbanist</h2>
-          <p className="text-sm leading-relaxed text-graphite">
-            À utiliser dans Google Docs quand Satoshi n&apos;est pas disponible.
-          </p>
-          <a
-            href={GOOGLE_URBANIST_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 inline-flex items-center text-sm font-medium text-flame hover:underline"
-          >
-            Ouvrir Urbanist (Google Fonts)
-          </a>
         </article>
       </section>
     </div>
