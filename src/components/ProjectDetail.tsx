@@ -17,6 +17,8 @@ import { UeqSStats } from './stats/UeqSStats'
 import { AttrakDiffStats } from './stats/AttrakDiffStats'
 
 import {
+  ATTRAKDIFF_DIMENSION_LABELS,
+  DEEP_GROUP_LABELS,
   computeSusStats,
   computeDeepStats,
   computeUmuxStats,
@@ -25,7 +27,10 @@ import {
   computeUeqSStats,
   computeAttrakDiffStats,
   computeWordPairAverages,
+  UEQ_DIMENSION_LABELS,
+  UEQ_S_DIMENSION_LABELS,
   type Answers,
+  type StatsSummary,
 } from '../lib/stats'
 
 type ProjectTab = 'stats' | 'responses' | 'form'
@@ -55,35 +60,493 @@ function parsePayload(r: ProjectResponse): { questionnaireId?: string; answers?:
   }
 }
 
-function exportCsv(project: Project, responses: ProjectResponse[]) {
-  const qid = computeQuestionnaireId(project.questionnaireType)
-  if (!qid) return
+type ExportCell = string | number | boolean | null
 
-  const rows: string[][] = []
-  const activeResponses = responses.filter((r) => !r.archived)
+type ExportSheet = {
+  name: string
+  rows: ExportCell[][]
+}
 
-  for (const r of activeResponses) {
-    const payload = parsePayload(r)
-    if (!payload?.answers) continue
+type ResponseMetricValue = number | string | null
 
-    if (rows.length === 0) {
-      const header = ['Date', ...Object.keys(payload.answers)]
-      rows.push(header)
-    }
+type ResponseMetricColumn = {
+  key: string
+  label: string
+  decimals?: number
+  kind?: 'grade' | 'integer'
+}
 
-    const date = new Date(r.createdTime).toLocaleString('fr-FR')
-    const values = Object.values(payload.answers).map((v) => String(v ?? ''))
-    rows.push([date, ...values])
+function sanitizeFileName(value: string): string {
+  const trimmed = value.trim()
+  const safe = trimmed
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9_-]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+  return safe || 'export'
+}
+
+function normalizeSheetName(value: string, used: Set<string>): string {
+  const cleaned = value.replace(/[\[\]:*?/\\]+/g, ' ').trim()
+  const base = (cleaned || 'Feuille').slice(0, 31)
+  if (!used.has(base)) {
+    used.add(base)
+    return base
   }
 
-  if (rows.length === 0) return
+  let index = 2
+  while (index < 1000) {
+    const suffix = `_${index}`
+    const candidate = `${base.slice(0, 31 - suffix.length)}${suffix}`
+    if (!used.has(candidate)) {
+      used.add(candidate)
+      return candidate
+    }
+    index += 1
+  }
 
-  const csv = rows.map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(';')).join('\n')
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' })
+  const fallback = `Feuille_${Date.now()}`
+  used.add(fallback)
+  return fallback
+}
+
+function toTimestamp(value: string): number {
+  const ts = Date.parse(value)
+  return Number.isNaN(ts) ? 0 : ts
+}
+
+function sortByCreatedTimeDesc(a: ProjectResponse, b: ProjectResponse): number {
+  const delta = toTimestamp(b.createdTime) - toTimestamp(a.createdTime)
+  if (delta !== 0) return delta
+  return a.id.localeCompare(b.id)
+}
+
+function readAnswer(answers: Answers, key: string): number | null {
+  const value = answers[key]
+  if (typeof value !== 'number' || Number.isNaN(value) || !Number.isFinite(value)) return null
+  return value
+}
+
+function getResponseMetricColumns(qid: ReturnType<typeof computeQuestionnaireId>): ResponseMetricColumn[] {
+  switch (qid) {
+    case 'sus':
+      return [
+        { key: 'score', label: 'Score SUS', decimals: 1 },
+        { key: 'grade', label: 'Note', kind: 'grade' },
+        ...Array.from({ length: 10 }, (_, i) => ({ key: `Q${i + 1}`, label: `Q${i + 1}`, kind: 'integer' as const })),
+      ]
+    case 'deep':
+      return [
+        { key: 'naCount', label: 'N/A', kind: 'integer' },
+        { key: 'G1', label: 'G1', decimals: 2 },
+        { key: 'G2', label: 'G2', decimals: 2 },
+        { key: 'G3', label: 'G3', decimals: 2 },
+        { key: 'G4', label: 'G4', decimals: 2 },
+        { key: 'G5', label: 'G5', decimals: 2 },
+        { key: 'G6', label: 'G6', decimals: 2 },
+      ]
+    case 'umux':
+      return [
+        { key: 'score', label: 'Score UMUX', decimals: 1 },
+        { key: 'Q1', label: 'Q1', kind: 'integer' },
+        { key: 'Q2', label: 'Q2', kind: 'integer' },
+        { key: 'Q3', label: 'Q3', kind: 'integer' },
+        { key: 'Q4', label: 'Q4', kind: 'integer' },
+      ]
+    case 'umux_lite':
+      return [
+        { key: 'global', label: 'Global', decimals: 1 },
+        { key: 'usefulness', label: 'Utilité', decimals: 1 },
+        { key: 'usability', label: 'Utilisabilité', decimals: 1 },
+        { key: 'Q1', label: 'Q1', kind: 'integer' },
+        { key: 'Q3', label: 'Q3', kind: 'integer' },
+      ]
+    case 'ueq':
+      return [
+        { key: 'GLOBAL', label: 'Global', decimals: 2 },
+        { key: 'ATT', label: 'ATT', decimals: 2 },
+        { key: 'PERSP', label: 'PERSP', decimals: 2 },
+        { key: 'EFF', label: 'EFF', decimals: 2 },
+        { key: 'DEP', label: 'DEP', decimals: 2 },
+        { key: 'STIM', label: 'STIM', decimals: 2 },
+        { key: 'NOV', label: 'NOV', decimals: 2 },
+      ]
+    case 'ueq_s':
+      return [
+        { key: 'GLOBAL', label: 'Global', decimals: 2 },
+        { key: 'PRAG', label: 'PRAG', decimals: 2 },
+        { key: 'HED', label: 'HED', decimals: 2 },
+      ]
+    case 'attrakdiff':
+    case 'attrakdiff_abridged':
+      return [
+        { key: 'QP', label: 'QP', decimals: 2 },
+        { key: 'QHS', label: 'QHS', decimals: 2 },
+        { key: 'QHI', label: 'QHI', decimals: 2 },
+        { key: 'ATT', label: 'ATT', decimals: 2 },
+        { key: 'QH', label: 'QH', decimals: 2 },
+      ]
+    default:
+      return [{ key: 'answered', label: 'Réponses', kind: 'integer' }]
+  }
+}
+
+function buildResponseMetrics(
+  qid: ReturnType<typeof computeQuestionnaireId>,
+  answers: Answers | null,
+): Record<string, ResponseMetricValue> {
+  if (!answers) return {}
+
+  switch (qid) {
+    case 'sus': {
+      const stats = computeSusStats([answers])
+      const metrics: Record<string, ResponseMetricValue> = {}
+      for (let i = 1; i <= 10; i += 1) {
+        metrics[`Q${i}`] = readAnswer(answers, `Q${i}`)
+      }
+      if (stats) {
+        metrics.score = stats.mean
+        metrics.grade = stats.grade
+      }
+      return metrics
+    }
+    case 'deep': {
+      const stats = computeDeepStats([answers])
+      const naCount = Array.from({ length: 19 }, (_, i) => readAnswer(answers, `Q${i + 1}`)).filter((v) => v === 0).length
+      const metrics: Record<string, ResponseMetricValue> = { naCount }
+      if (stats) {
+        metrics.G1 = stats.G1.mean
+        metrics.G2 = stats.G2.mean
+        metrics.G3 = stats.G3.mean
+        metrics.G4 = stats.G4.mean
+        metrics.G5 = stats.G5.mean
+        metrics.G6 = stats.G6.mean
+      }
+      return metrics
+    }
+    case 'umux': {
+      const stats = computeUmuxStats([answers])
+      return {
+        score: stats?.mean ?? null,
+        Q1: readAnswer(answers, 'Q1'),
+        Q2: readAnswer(answers, 'Q2'),
+        Q3: readAnswer(answers, 'Q3'),
+        Q4: readAnswer(answers, 'Q4'),
+      }
+    }
+    case 'umux_lite': {
+      const stats = computeUmuxLiteStats([answers])
+      return {
+        global: stats?.global.mean ?? null,
+        usefulness: stats?.usefulness.mean ?? null,
+        usability: stats?.usability.mean ?? null,
+        Q1: readAnswer(answers, 'Q1'),
+        Q3: readAnswer(answers, 'Q3'),
+      }
+    }
+    case 'ueq': {
+      const stats = computeUeqStats([answers])
+      if (!stats) return {}
+      return {
+        GLOBAL: stats.GLOBAL.mean,
+        ATT: stats.ATT.mean,
+        PERSP: stats.PERSP.mean,
+        EFF: stats.EFF.mean,
+        DEP: stats.DEP.mean,
+        STIM: stats.STIM.mean,
+        NOV: stats.NOV.mean,
+      }
+    }
+    case 'ueq_s': {
+      const stats = computeUeqSStats([answers])
+      if (!stats) return {}
+      return {
+        GLOBAL: stats.GLOBAL.mean,
+        PRAG: stats.PRAG.mean,
+        HED: stats.HED.mean,
+      }
+    }
+    case 'attrakdiff': {
+      const stats = computeAttrakDiffStats([answers], false)
+      if (!stats) return {}
+      return {
+        QP: stats.QP.mean,
+        QHS: stats.QHS.mean,
+        QHI: stats.QHI.mean,
+        ATT: stats.ATT.mean,
+        QH: stats.QH.mean,
+      }
+    }
+    case 'attrakdiff_abridged': {
+      const stats = computeAttrakDiffStats([answers], true)
+      if (!stats) return {}
+      return {
+        QP: stats.QP.mean,
+        QHS: stats.QHS.mean,
+        QHI: stats.QHI.mean,
+        ATT: stats.ATT.mean,
+        QH: stats.QH.mean,
+      }
+    }
+    default:
+      return { answered: Object.keys(answers).length }
+  }
+}
+
+function formatMetricValue(value: ResponseMetricValue, column: ResponseMetricColumn): ExportCell {
+  if (value == null) return null
+  if (typeof value === 'number') {
+    if (column.kind === 'integer') return Math.round(value)
+    if (typeof column.decimals === 'number') return Number(value.toFixed(column.decimals))
+    return Number(value.toFixed(2))
+  }
+  return value
+}
+
+function toDisplayText(value: ExportCell): string {
+  if (value == null) return ''
+  if (typeof value === 'number') return Number.isFinite(value) ? String(value) : ''
+  if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
+  return value
+}
+
+function getHeaderWidthOverride(header: string): number | null {
+  const normalized = header.toLowerCase()
+  if (normalized === '#') return 6
+  if (normalized.includes('date')) return 20
+  if (normalized.includes('id réponse') || normalized.includes('id reponse')) return 38
+  if (normalized.includes('statut')) return 12
+  if (normalized.includes('paire de mots')) return 52
+  if (/^q\d+$/i.test(header)) return 8
+  if (['qp', 'qhs', 'qhi', 'att', 'qh', 'att', 'persp', 'eff', 'dep', 'stim', 'nov', 'prag', 'hed'].includes(normalized)) return 10
+  return null
+}
+
+function buildColumnWidths(rows: ExportCell[][]): Array<{ wch: number }> {
+  const colCount = rows.reduce((max, row) => Math.max(max, row.length), 0)
+  const widths: Array<{ wch: number }> = []
+
+  for (let col = 0; col < colCount; col += 1) {
+    let maxLen = 0
+    for (const row of rows) {
+      const text = toDisplayText(row[col] ?? null)
+      const len = [...text].length
+      if (len > maxLen) maxLen = len
+    }
+
+    const header = toDisplayText(rows[0]?.[col] ?? null)
+    const headerOverride = header ? getHeaderWidthOverride(header) : null
+    const padded = Math.min(60, Math.max(8, maxLen + 2))
+    widths.push({ wch: headerOverride != null ? Math.max(padded, headerOverride) : padded })
+  }
+
+  return widths
+}
+
+function statsRow(label: string, summary: StatsSummary): ExportCell[] {
+  return [
+    label,
+    summary.mean,
+    summary.sd,
+    summary.ci90[0],
+    summary.ci90[1],
+    summary.ci95[0],
+    summary.ci95[1],
+    summary.ci99[0],
+    summary.ci99[1],
+  ]
+}
+
+async function exportWorkbook(
+  project: Project,
+  responses: ProjectResponse[],
+  qid: ReturnType<typeof computeQuestionnaireId>,
+  questionnaire: ReturnType<typeof getQuestionnaireById>,
+  stats: {
+    type: 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged'
+    data: unknown
+    wordPairs?: Record<string, number>
+  } | null,
+) {
+  if (!qid) return
+
+  const sortedResponses = [...responses].sort(sortByCreatedTimeDesc)
+  const activeResponses = sortedResponses.filter((r) => !r.archived)
+  const archivedResponses = sortedResponses.filter((r) => r.archived)
+  if (activeResponses.length === 0) return
+
+  const sheetResults: ExportCell[][] = [
+    ['Projet', project.name || '(Sans titre)'],
+    ['Questionnaire', project.questionnaireType || ''],
+    ['Réponses actives', activeResponses.length],
+    ['Réponses archivées', archivedResponses.length],
+    [],
+  ]
+
+  const summaryHeader: ExportCell[] = ['Dimension', 'Moyenne', 'Écart-type', 'IC90 min', 'IC90 max', 'IC95 min', 'IC95 max', 'IC99 min', 'IC99 max']
+
+  if (stats?.data) {
+    sheetResults.push(summaryHeader)
+    switch (stats.type) {
+      case 'sus': {
+        const sus = stats.data as ReturnType<typeof computeSusStats>
+        if (sus) {
+          sheetResults.push(statsRow('Score SUS', sus))
+          sheetResults.push(['Note', sus.grade])
+        }
+        break
+      }
+      case 'deep': {
+        const deep = stats.data as ReturnType<typeof computeDeepStats>
+        if (deep) {
+          ;(['G1', 'G2', 'G3', 'G4', 'G5', 'G6'] as const).forEach((key) => {
+            sheetResults.push(statsRow(DEEP_GROUP_LABELS[key], deep[key]))
+          })
+        }
+        break
+      }
+      case 'umux': {
+        const umux = stats.data as ReturnType<typeof computeUmuxStats>
+        if (umux) sheetResults.push(statsRow('Score UMUX', umux))
+        break
+      }
+      case 'umux_lite': {
+        const lite = stats.data as ReturnType<typeof computeUmuxLiteStats>
+        if (lite) {
+          sheetResults.push(statsRow('Score global', lite.global))
+          sheetResults.push(statsRow('Utilité (Q1)', lite.usefulness))
+          sheetResults.push(statsRow('Utilisabilité (Q3)', lite.usability))
+        }
+        break
+      }
+      case 'ueq': {
+        const ueq = stats.data as ReturnType<typeof computeUeqStats>
+        if (ueq) {
+          sheetResults.push(statsRow(UEQ_DIMENSION_LABELS.GLOBAL, ueq.GLOBAL))
+          ;(['ATT', 'PERSP', 'EFF', 'DEP', 'STIM', 'NOV'] as const).forEach((key) => {
+            sheetResults.push(statsRow(UEQ_DIMENSION_LABELS[key], ueq[key]))
+          })
+        }
+        break
+      }
+      case 'ueq_s': {
+        const ueqs = stats.data as ReturnType<typeof computeUeqSStats>
+        if (ueqs) {
+          sheetResults.push(statsRow(UEQ_S_DIMENSION_LABELS.GLOBAL, ueqs.GLOBAL))
+          ;(['PRAG', 'HED'] as const).forEach((key) => {
+            sheetResults.push(statsRow(UEQ_S_DIMENSION_LABELS[key], ueqs[key]))
+          })
+        }
+        break
+      }
+      case 'attrakdiff':
+      case 'attrakdiff_abridged': {
+        const attrak = stats.data as ReturnType<typeof computeAttrakDiffStats>
+        if (attrak) {
+          ;(['QP', 'QHS', 'QHI', 'ATT', 'QH'] as const).forEach((key) => {
+            sheetResults.push(statsRow(ATTRAKDIFF_DIMENSION_LABELS[key], attrak[key]))
+          })
+        }
+        if (stats.wordPairs && questionnaire) {
+          sheetResults.push([])
+          sheetResults.push(['Paire de mots', 'Moyenne'])
+          for (const question of questionnaire.questions) {
+            if (question.type !== 'bipolar') continue
+            const score = stats.wordPairs[question.id]
+            if (typeof score !== 'number') continue
+            sheetResults.push([`${question.leftFr} ↔ ${question.rightFr}`, Number(score.toFixed(2))])
+          }
+        }
+        break
+      }
+      default:
+        break
+    }
+  } else {
+    sheetResults.push(['Aucune statistique disponible.'])
+  }
+
+  const metricColumns = getResponseMetricColumns(qid)
+  const sheetResponses: ExportCell[][] = [
+    ['#', ...metricColumns.map((c) => c.label), 'Date', 'ID réponse', 'Statut'],
+  ]
+
+  activeResponses.forEach((response, index) => {
+    const payload = parsePayload(response)
+    const metrics = buildResponseMetrics(qid, payload?.answers ?? null)
+    sheetResponses.push([
+      index + 1,
+      ...metricColumns.map((column) => formatMetricValue(metrics[column.key] ?? null, column)),
+      new Date(response.createdTime).toLocaleString('fr-FR'),
+      response.id,
+      'Active',
+    ])
+  })
+
+  archivedResponses.forEach((response, index) => {
+    sheetResponses.push([
+      activeResponses.length + index + 1,
+      ...metricColumns.map(() => null),
+      new Date(response.createdTime).toLocaleString('fr-FR'),
+      response.id,
+      'Archivée',
+    ])
+  })
+
+  const rawQuestionKeys = questionnaire?.questions.map((q) => q.id) ?? []
+  const fallbackKeys = new Set<string>()
+  activeResponses.forEach((response) => {
+    const payload = parsePayload(response)
+    if (!payload?.answers) return
+    Object.keys(payload.answers).forEach((key) => fallbackKeys.add(key))
+  })
+  const questionKeys = rawQuestionKeys.length > 0 ? rawQuestionKeys : Array.from(fallbackKeys).sort((a, b) => a.localeCompare(b, 'fr'))
+
+  const sheetRaw: ExportCell[][] = [
+    ['Date', 'ID réponse', ...questionKeys],
+  ]
+
+  activeResponses.forEach((response) => {
+    const payload = parsePayload(response)
+    const answers = payload?.answers ?? {}
+    sheetRaw.push([
+      new Date(response.createdTime).toLocaleString('fr-FR'),
+      response.id,
+      ...questionKeys.map((key) => {
+        const value = answers[key]
+        return typeof value === 'number' && Number.isFinite(value) ? value : null
+      }),
+    ])
+  })
+
+  const sheets: ExportSheet[] = [
+    { name: 'Résultats', rows: sheetResults },
+    { name: 'Réponses', rows: sheetResponses },
+    { name: 'Données brutes', rows: sheetRaw },
+  ]
+
+  const XLSX = await import('xlsx')
+  const workbook = XLSX.utils.book_new()
+  const usedNames = new Set<string>()
+  for (const sheet of sheets) {
+    const name = normalizeSheetName(sheet.name, usedNames)
+    const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows)
+    worksheet['!cols'] = buildColumnWidths(sheet.rows)
+    XLSX.utils.book_append_sheet(workbook, worksheet, name)
+  }
+
+  const fileData = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+    compression: true,
+  })
+  const blob = new Blob([fileData], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${project.name?.replace(/[^a-zA-Z0-9]/g, '_') || 'export'}_reponses.csv`
+  a.download = `${sanitizeFileName(project.name || 'export')}_export.xlsx`
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -109,7 +572,7 @@ export function ProjectDetail({
   const [copied, setCopied] = useState(false)
 
   const qid = computeQuestionnaireId(project.questionnaireType)
-  const questionnaire = qid ? getQuestionnaireById(qid) : null
+  const questionnaire = qid ? getQuestionnaireById(qid) : undefined
   const activeResponses = responses.filter((r) => !r.archived)
 
   const isOpen = project.status === 'Ouvert'
@@ -203,15 +666,15 @@ export function ProjectDetail({
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <h2 className="text-xl font-bold text-ink">{project.name || '(Sans titre)'}</h2>
-          {activeResponses.length > 0 && (
+          {activeResponses.length > 0 && qid && (
             <button
-              onClick={() => exportCsv(project, responses)}
+              onClick={() => { void exportWorkbook(project, responses, qid, questionnaire, stats) }}
               className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 shrink-0 transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              Exporter CSV
+              Exporter Excel
             </button>
           )}
         </div>
