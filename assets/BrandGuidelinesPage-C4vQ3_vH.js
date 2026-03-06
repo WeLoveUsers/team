@@ -1,4 +1,4 @@
-import{j as e}from"./charts-nuwTBMFx.js";import"./react-DGBwUpAK.js";const t=`
+import{j as e}from"./charts-CsFW7Ur_.js";import"./react-BW2pKjaD.js";const t=`
 <section class="mb-20">
     <div class="border-b border-stone pb-12">
         <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Charte graphique</span>

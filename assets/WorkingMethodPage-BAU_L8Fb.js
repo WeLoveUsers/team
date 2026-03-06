@@ -1,4 +1,4 @@
-import{j as w}from"./charts-nuwTBMFx.js";import{r as k}from"./react-DGBwUpAK.js";const q=`<article class="w-full">
+import{j as w}from"./charts-CsFW7Ur_.js";import{r as k}from"./react-BW2pKjaD.js";const q=`<article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
     <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Ce qui change,<br>ce qui reste.</h1>
