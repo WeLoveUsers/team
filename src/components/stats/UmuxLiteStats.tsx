@@ -31,13 +31,15 @@ export function UmuxLiteStats({ stats }: { stats: UmuxLiteResult }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div data-export="kpi" className="grid grid-cols-3 gap-3">
         <StatsCard label="Score global" summary={stats.global} unit="/ 100" ciLevel={ciLevel} colorClass="text-primary-600" />
         <StatsCard label="Utilisabilité (Q3)" summary={stats.usability} unit="/ 100" ciLevel={ciLevel} colorClass="text-teal-600" />
         <StatsCard label="Utilité (Q1)" summary={stats.usefulness} unit="/ 100" ciLevel={ciLevel} colorClass="text-purple-600" />
       </div>
 
-      <ScoreGauge score={stats.global.mean} max={100} label="Score global UMUX-Lite" />
+      <div data-export="chart">
+        <ScoreGauge score={stats.global.mean} max={100} label="Score global UMUX-Lite" />
+      </div>
     </div>
   )
 }

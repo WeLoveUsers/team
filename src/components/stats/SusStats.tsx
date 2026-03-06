@@ -22,7 +22,7 @@ export function SusStats({ stats }: { stats: SusResult }) {
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div data-export="kpi" className="grid grid-cols-3 gap-3">
         <div className="bg-white rounded-lg border border-slate-200 p-4">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Score moyen</p>
           <p className="text-3xl font-bold text-primary-600">{stats.mean.toFixed(1)}</p>
@@ -64,7 +64,9 @@ export function SusStats({ stats }: { stats: SusResult }) {
         </div>
       </div>
 
-      <SusGauge score={stats.mean} grade={stats.grade} />
+      <div data-export="chart">
+        <SusGauge score={stats.mean} grade={stats.grade} />
+      </div>
     </div>
   )
 }

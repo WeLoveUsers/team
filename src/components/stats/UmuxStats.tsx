@@ -15,7 +15,7 @@ export function UmuxStats({ stats }: { stats: UmuxResult }) {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div data-export="kpi" className="grid grid-cols-2 gap-3">
         <div className="bg-white rounded-lg border border-slate-200 p-4">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Score moyen</p>
           <p className="text-3xl font-bold text-primary-600">{stats.mean.toFixed(1)}</p>
@@ -49,7 +49,9 @@ export function UmuxStats({ stats }: { stats: UmuxResult }) {
         </div>
       </div>
 
-      <ScoreGauge score={stats.mean} max={100} label="Score UMUX" />
+      <div data-export="chart">
+        <ScoreGauge score={stats.mean} max={100} label="Score UMUX" />
+      </div>
     </div>
   )
 }

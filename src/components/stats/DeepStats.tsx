@@ -42,7 +42,7 @@ export function DeepStats({ stats }: { stats: DeepResult }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div data-export="kpi" className="grid grid-cols-3 gap-3">
         {groups.map((g, i) => (
           <StatsCard
             key={g}
@@ -55,7 +55,9 @@ export function DeepStats({ stats }: { stats: DeepResult }) {
         ))}
       </div>
 
-      <DeepRadarChart stats={stats} />
+      <div data-export="chart">
+        <DeepRadarChart stats={stats} />
+      </div>
     </div>
   )
 }

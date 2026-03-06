@@ -52,7 +52,7 @@ export function AttrakDiffStats({ stats, wordPairs, questionnaire, abridged }: P
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-3">
+      <div data-export="kpi" className="grid grid-cols-5 gap-3">
         {dims.map((d) => (
           <StatsCard
             key={d}
@@ -64,7 +64,7 @@ export function AttrakDiffStats({ stats, wordPairs, questionnaire, abridged }: P
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div data-export="chart" className="grid grid-cols-2 gap-4">
         <AttrakDiffPortfolioChart qp={stats.QP.mean} qh={stats.QH.mean} />
         <AttrakDiffWordPairsChart wordPairs={wordPairs} questionnaire={questionnaire} />
       </div>

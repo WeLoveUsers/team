@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
+import type { Row as ExcelRow, Border as ExcelBorder } from 'exceljs'
 import type { Project, ProjectResponse } from '../api'
 import { deleteProject, updateProject } from '../api'
 import { ProjectForm } from './ProjectForm'
@@ -47,6 +48,16 @@ type Props = {
   onTabChange?: (tab: ProjectTab) => void
 }
 
+type ComputedStats =
+  | { type: 'sus'; data: ReturnType<typeof computeSusStats> }
+  | { type: 'deep'; data: ReturnType<typeof computeDeepStats> }
+  | { type: 'umux'; data: ReturnType<typeof computeUmuxStats> }
+  | { type: 'umux_lite'; data: ReturnType<typeof computeUmuxLiteStats> }
+  | { type: 'ueq'; data: ReturnType<typeof computeUeqStats> }
+  | { type: 'ueq_s'; data: ReturnType<typeof computeUeqSStats> }
+  | { type: 'attrakdiff'; data: ReturnType<typeof computeAttrakDiffStats>; wordPairs: Record<string, number> }
+  | { type: 'attrakdiff_abridged'; data: ReturnType<typeof computeAttrakDiffStats>; wordPairs: Record<string, number> }
+
 function parsePayload(r: ProjectResponse): { questionnaireId?: string; answers?: Answers } | null {
   const anyProps = r.properties as Record<string, unknown>
   const payloadProp = anyProps?.Payload as { rich_text?: Array<{ plain_text?: string }> } | undefined
@@ -61,11 +72,6 @@ function parsePayload(r: ProjectResponse): { questionnaireId?: string; answers?:
 }
 
 type ExportCell = string | number | boolean | null
-
-type ExportSheet = {
-  name: string
-  rows: ExportCell[][]
-}
 
 type ResponseMetricValue = number | string | null
 
@@ -303,46 +309,6 @@ function formatMetricValue(value: ResponseMetricValue, column: ResponseMetricCol
   return value
 }
 
-function toDisplayText(value: ExportCell): string {
-  if (value == null) return ''
-  if (typeof value === 'number') return Number.isFinite(value) ? String(value) : ''
-  if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE'
-  return value
-}
-
-function getHeaderWidthOverride(header: string): number | null {
-  const normalized = header.toLowerCase()
-  if (normalized === '#') return 6
-  if (normalized.includes('date')) return 20
-  if (normalized.includes('id réponse') || normalized.includes('id reponse')) return 38
-  if (normalized.includes('statut')) return 12
-  if (normalized.includes('paire de mots')) return 52
-  if (/^q\d+$/i.test(header)) return 8
-  if (['qp', 'qhs', 'qhi', 'att', 'qh', 'att', 'persp', 'eff', 'dep', 'stim', 'nov', 'prag', 'hed'].includes(normalized)) return 10
-  return null
-}
-
-function buildColumnWidths(rows: ExportCell[][]): Array<{ wch: number }> {
-  const colCount = rows.reduce((max, row) => Math.max(max, row.length), 0)
-  const widths: Array<{ wch: number }> = []
-
-  for (let col = 0; col < colCount; col += 1) {
-    let maxLen = 0
-    for (const row of rows) {
-      const text = toDisplayText(row[col] ?? null)
-      const len = [...text].length
-      if (len > maxLen) maxLen = len
-    }
-
-    const header = toDisplayText(rows[0]?.[col] ?? null)
-    const headerOverride = header ? getHeaderWidthOverride(header) : null
-    const padded = Math.min(60, Math.max(8, maxLen + 2))
-    widths.push({ wch: headerOverride != null ? Math.max(padded, headerOverride) : padded })
-  }
-
-  return widths
-}
-
 function statsRow(label: string, summary: StatsSummary): ExportCell[] {
   return [
     label,
@@ -357,16 +323,21 @@ function statsRow(label: string, summary: StatsSummary): ExportCell[] {
   ]
 }
 
+function downloadBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 async function exportWorkbook(
   project: Project,
   responses: ProjectResponse[],
   qid: ReturnType<typeof computeQuestionnaireId>,
   questionnaire: ReturnType<typeof getQuestionnaireById>,
-  stats: {
-    type: 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged'
-    data: unknown
-    wordPairs?: Record<string, number>
-  } | null,
+  stats: ComputedStats | null,
 ) {
   if (!qid) return
 
@@ -519,36 +490,217 @@ async function exportWorkbook(
     ])
   })
 
-  const sheets: ExportSheet[] = [
-    { name: 'Résultats', rows: sheetResults },
-    { name: 'Réponses', rows: sheetResponses },
-    { name: 'Données brutes', rows: sheetRaw },
-  ]
+  // --- Build workbook with ExcelJS + brand styling ---
+  const ExcelJS = await import('exceljs')
+  const workbook = new ExcelJS.Workbook()
+  workbook.creator = 'Team We Love Users'
+  workbook.created = new Date()
 
-  const XLSX = await import('xlsx')
-  const workbook = XLSX.utils.book_new()
-  const usedNames = new Set<string>()
-  for (const sheet of sheets) {
-    const name = normalizeSheetName(sheet.name, usedNames)
-    const worksheet = XLSX.utils.aoa_to_sheet(sheet.rows)
-    worksheet['!cols'] = buildColumnWidths(sheet.rows)
-    XLSX.utils.book_append_sheet(workbook, worksheet, name)
+  const BRAND = {
+    flame: 'FFE0553D',
+    ink: 'FF1A1A1A',
+    cream: 'FFFAF9F7',
+    stone: 'FFE2E0DC',
+    white: 'FFFFFFFF',
+    sage: 'FF4A7C59',
+    taupe: 'FFA8A29E',
   }
 
-  const fileData = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array',
-    compression: true,
+  const thinBorder: ExcelBorder = { style: 'thin', color: { argb: BRAND.stone } }
+  const borderAll = { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder }
+
+  function applyHeaderStyle(row: ExcelRow, colCount: number) {
+    for (let c = 1; c <= colCount; c++) {
+      const cell = row.getCell(c)
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 10 }
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: BRAND.flame } }
+      cell.border = borderAll
+      cell.alignment = { vertical: 'middle', horizontal: 'center' }
+    }
+  }
+
+  function applyDataRowStyle(row: ExcelRow, colCount: number, index: number) {
+    const bg = index % 2 === 0 ? BRAND.white : BRAND.cream
+    for (let c = 1; c <= colCount; c++) {
+      const cell = row.getCell(c)
+      cell.font = { color: { argb: BRAND.ink }, size: 10 }
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: bg } }
+      cell.border = borderAll
+      cell.alignment = { vertical: 'middle' }
+    }
+  }
+
+  // ---- Sheet 1: Résultats ----
+  const usedNames = new Set<string>()
+  const wsResults = workbook.addWorksheet(normalizeSheetName('Résultats', usedNames))
+
+  // Title
+  wsResults.mergeCells('A1:I1')
+  const titleCell = wsResults.getCell('A1')
+  titleCell.value = project.name || '(Sans titre)'
+  titleCell.font = { size: 16, bold: true, color: { argb: BRAND.ink } }
+  titleCell.alignment = { vertical: 'middle' }
+  wsResults.getRow(1).height = 30
+
+  // Subtitle
+  wsResults.mergeCells('A2:I2')
+  const subtitleCell = wsResults.getCell('A2')
+  subtitleCell.value = `${project.questionnaireType || 'N/A'}  |  n = ${activeResponses.length}  |  Archivées : ${archivedResponses.length}`
+  subtitleCell.font = { size: 11, color: { argb: BRAND.taupe } }
+
+  // Stats data starts at row 4
+  let currentRow = 4
+  if (stats?.data) {
+    const headerRow = wsResults.getRow(currentRow)
+    summaryHeader.forEach((h, i) => { headerRow.getCell(i + 1).value = h as string })
+    applyHeaderStyle(headerRow, summaryHeader.length)
+    currentRow++
+
+    const statsDataRows = sheetResults.slice(sheetResults.indexOf(summaryHeader) + 1)
+    statsDataRows.forEach((rowData, idx) => {
+      if (rowData.length === 0) { currentRow++; return }
+      const row = wsResults.getRow(currentRow)
+      // Check if this is a sub-header (e.g. "Paire de mots")
+      const isSubHeader = rowData.length === 2 && typeof rowData[0] === 'string' && typeof rowData[1] === 'string' && rowData[1] === 'Moyenne'
+      rowData.forEach((val, i) => {
+        const cell = row.getCell(i + 1)
+        cell.value = val as string | number
+        if (typeof val === 'number') cell.numFmt = '0.00'
+      })
+      if (isSubHeader) {
+        applyHeaderStyle(row, rowData.length)
+      } else {
+        applyDataRowStyle(row, rowData.length, idx)
+        row.getCell(1).font = { bold: true, color: { argb: BRAND.ink }, size: 10 }
+      }
+      currentRow++
+    })
+  }
+
+  wsResults.columns = [
+    { width: 28 }, { width: 12 }, { width: 12 },
+    { width: 12 }, { width: 12 }, { width: 12 },
+    { width: 12 }, { width: 12 }, { width: 12 },
+  ]
+
+  // ---- Sheet 2: Réponses ----
+  const wsResp = workbook.addWorksheet(normalizeSheetName('Réponses', usedNames))
+  const respColCount = sheetResponses[0]?.length ?? 0
+
+  sheetResponses.forEach((rowData, idx) => {
+    const row = wsResp.addRow(rowData)
+    if (idx === 0) {
+      applyHeaderStyle(row, respColCount)
+    } else {
+      applyDataRowStyle(row, respColCount, idx - 1)
+      // Colour "Active" / "Archivée" status cell
+      const statusCell = row.getCell(respColCount)
+      if (statusCell.value === 'Active') {
+        statusCell.font = { bold: true, color: { argb: BRAND.sage }, size: 10 }
+      } else if (statusCell.value === 'Archivée') {
+        statusCell.font = { italic: true, color: { argb: BRAND.taupe }, size: 10 }
+      }
+      // Bold the # column
+      row.getCell(1).font = { bold: true, color: { argb: BRAND.ink }, size: 10 }
+    }
   })
-  const blob = new Blob([fileData], {
+
+  // Auto column widths for responses
+  const respHeaders = sheetResponses[0] ?? []
+  wsResp.columns = respHeaders.map((h) => {
+    const label = String(h ?? '')
+    const norm = label.toLowerCase()
+    if (norm === '#') return { width: 6 }
+    if (norm.includes('date')) return { width: 20 }
+    if (norm.includes('id')) return { width: 38 }
+    if (norm.includes('statut')) return { width: 12 }
+    if (/^q\d+$/i.test(label)) return { width: 8 }
+    return { width: Math.min(18, Math.max(10, label.length + 4)) }
+  })
+
+  // ---- Sheet 3: Données brutes ----
+  const wsRaw = workbook.addWorksheet(normalizeSheetName('Données brutes', usedNames))
+  const rawColCount = sheetRaw[0]?.length ?? 0
+
+  sheetRaw.forEach((rowData, idx) => {
+    const row = wsRaw.addRow(rowData)
+    if (idx === 0) {
+      // Stone header for raw data
+      for (let c = 1; c <= rawColCount; c++) {
+        const cell = row.getCell(c)
+        cell.font = { bold: true, color: { argb: BRAND.ink }, size: 10 }
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: BRAND.stone } }
+        cell.border = borderAll
+        cell.alignment = { vertical: 'middle', horizontal: 'center' }
+      }
+    } else {
+      for (let c = 1; c <= rawColCount; c++) {
+        const cell = row.getCell(c)
+        cell.font = { color: { argb: BRAND.ink }, size: 10 }
+        cell.border = borderAll
+      }
+    }
+  })
+
+  const rawHeaders = sheetRaw[0] ?? []
+  wsRaw.columns = rawHeaders.map((h) => {
+    const label = String(h ?? '')
+    if (label.toLowerCase().includes('date')) return { width: 20 }
+    if (label.toLowerCase().includes('id')) return { width: 38 }
+    return { width: 10 }
+  })
+
+  // ---- Export ----
+  const buffer = await workbook.xlsx.writeBuffer()
+  const blob = new Blob([buffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `${sanitizeFileName(project.name || 'export')}_export.xlsx`
-  a.click()
-  URL.revokeObjectURL(url)
+  downloadBlob(blob, `${sanitizeFileName(project.name || 'export')}_export.xlsx`)
+}
+
+async function exportStatsPng(
+  projectName: string,
+  statsContainer: HTMLDivElement,
+): Promise<void> {
+  const { toBlob } = await import('html-to-image')
+  const safeName = sanitizeFileName(projectName || 'export')
+  const opts = { pixelRatio: 2, backgroundColor: undefined as string | undefined }
+
+  // Force all Chart.js canvases to finish animations before capture
+  const canvases = statsContainer.querySelectorAll('canvas')
+  if (canvases.length > 0) {
+    const { Chart } = await import('chart.js')
+    for (const canvas of canvases) {
+      const chart = Chart.getChart(canvas)
+      if (chart) {
+        chart.stop()
+        chart.render()
+      }
+    }
+  }
+
+  const kpiSections = statsContainer.querySelectorAll<HTMLElement>('[data-export="kpi"]')
+  const chartSections = statsContainer.querySelectorAll<HTMLElement>('[data-export="chart"]')
+
+  let fileIndex = 1
+  for (const el of kpiSections) {
+    const blob = await toBlob(el, opts)
+    if (blob) {
+      downloadBlob(blob, `${safeName}_kpi_${fileIndex}.png`)
+      fileIndex++
+    }
+  }
+  for (const el of chartSections) {
+    const blob = await toBlob(el, opts)
+    if (blob) {
+      downloadBlob(blob, `${safeName}_chart_${fileIndex}.png`)
+      fileIndex++
+    }
+  }
+
+  if (fileIndex === 1) {
+    throw new Error('Aucune section exportable trouvée')
+  }
 }
 
 export function ProjectDetail({
@@ -570,6 +722,8 @@ export function ProjectDetail({
   const setActiveTab = onTabChange ?? setInternalTab
   const [togglingStatus, setTogglingStatus] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [visualExporting, setVisualExporting] = useState<'png' | null>(null)
+  const statsContainerRef = useRef<HTMLDivElement>(null)
 
   const qid = computeQuestionnaireId(project.questionnaireType)
   const questionnaire = qid ? getQuestionnaireById(qid) : undefined
@@ -608,7 +762,7 @@ export function ProjectDetail({
       .map((p) => p.answers)
   }, [activeResponses])
 
-  const stats = useMemo(() => {
+  const stats = useMemo<ComputedStats | null>(() => {
     if (!qid || answersArray.length === 0) return null
 
     switch (qid) {
@@ -641,6 +795,19 @@ export function ProjectDetail({
     }
   }, [qid, answersArray])
 
+  const handleExportPng = async () => {
+    if (!qid || visualExporting || !statsContainerRef.current) return
+    setVisualExporting('png')
+    try {
+      await exportStatsPng(project.name, statsContainerRef.current)
+    } catch (err) {
+      console.error(err)
+      window.alert("Impossible de générer l'export PNG.")
+    } finally {
+      setVisualExporting(null)
+    }
+  }
+
   const handleDelete = async () => {
     setDeleting(true)
     try {
@@ -667,15 +834,27 @@ export function ProjectDetail({
         <div className="flex items-start justify-between">
           <h2 className="text-xl font-bold text-ink">{project.name || '(Sans titre)'}</h2>
           {activeResponses.length > 0 && qid && (
-            <button
-              onClick={() => { void exportWorkbook(project, responses, qid, questionnaire, stats) }}
-              className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 shrink-0 transition-colors"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Exporter Excel
-            </button>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => { void exportWorkbook(project, responses, qid, questionnaire, stats) }}
+                className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exporter Excel
+              </button>
+              <button
+                onClick={() => { void handleExportPng() }}
+                disabled={visualExporting !== null}
+                className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-wait"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                {visualExporting === 'png' ? 'Export PNG...' : 'Exporter PNG'}
+              </button>
+            </div>
           )}
         </div>
 
@@ -768,8 +947,7 @@ export function ProjectDetail({
       </div>
 
       {/* Tab content */}
-      {activeTab === 'stats' && (
-        <div>
+      <div ref={statsContainerRef} className={activeTab !== 'stats' ? 'hidden' : undefined}>
           {responsesLoading ? (
             <p className="text-sm text-taupe py-8">Chargement des résultats...</p>
           ) : !stats?.data ? (
@@ -798,8 +976,7 @@ export function ProjectDetail({
               )}
             </>
           )}
-        </div>
-      )}
+      </div>
 
       {activeTab === 'responses' && (
         <div>
