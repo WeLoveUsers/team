@@ -13,7 +13,7 @@ const AUTH_ROLES = ['admin', 'team']
 const AUTH_STATUSES = ['active', 'suspended']
 const DEFAULT_JWT_TTL_SECONDS = 60 * 60 * 12
 const DOCUMENT_TEMPLATE_PHASES = ['Préparation', 'Passation', 'Restitution']
-const DOCUMENT_TEMPLATE_TYPES = ['Google Doc', 'Google Slide', 'Google Sheet', 'Google Form']
+const DOCUMENT_TEMPLATE_TYPES = ['Google Doc', 'Google Slide', 'Google Sheet', 'Google Form', 'Dossier']
 const DOCUMENT_TEMPLATE_PHASE_BY_NORMALIZED = {
   preparation: 'Préparation',
   passation: 'Passation',
@@ -41,6 +41,9 @@ const DOCUMENT_TEMPLATE_TYPE_BY_NORMALIZED = {
   form: 'Google Form',
   formulaire: 'Google Form',
   googlequestionnaire: 'Google Form',
+  dossier: 'Dossier',
+  folder: 'Dossier',
+  googlefolder: 'Dossier',
 }
 
 let bootstrapAdminPromise = null

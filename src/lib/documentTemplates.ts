@@ -11,6 +11,7 @@ export const DOCUMENT_TEMPLATE_TYPES = [
   'Google Slide',
   'Google Sheet',
   'Google Form',
+  'Dossier',
 ] as const
 
 export type DocumentTemplateType = (typeof DOCUMENT_TEMPLATE_TYPES)[number]
