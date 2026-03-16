@@ -349,6 +349,7 @@ export function DashboardPage({ onSyncStateChange }: DashboardPageProps = {}) {
           responsesLoading={responsesLoading}
           onProjectUpdated={handleProjectSaved}
           onProjectDeleted={handleProjectDeleted}
+          onProjectCloned={handleProjectSaved}
           onResponsesChanged={handleResponsesChanged}
           existingFolders={existingFolders}
           activeTab={activeTab}

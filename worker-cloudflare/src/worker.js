@@ -1318,6 +1318,261 @@ async function handleRecoverResponse(request, env, projectId, responseId) {
   return jsonResponse({ ok: true })
 }
 
+// ─── Clone Project ──────────────────────────────────────────────────────────
+
+async function handleCloneProject(request, env, projectId) {
+  const auth = await requireAuth(request, env)
+  if (!auth.ok) return auth.response
+
+  if (request.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405)
+  }
+
+  const projectsDbId = env.NOTION_PROJECTS_DB_ID
+  const responsesDbId = env.NOTION_RESPONSES_DB_ID
+  if (!env.NOTION_API_KEY || !projectsDbId) {
+    return jsonResponse({ error: 'Configuration manquante' }, 500)
+  }
+
+  let body = {}
+  try {
+    body = await request.json()
+  } catch {
+    // body optionnel
+  }
+
+  const cloneResponses = body?.cloneResponses === true
+
+  // 1. Fetch the source project
+  const srcRes = await fetch(`${NOTION_ENDPOINT}/pages/${projectId}`, {
+    headers: {
+      Authorization: `Bearer ${env.NOTION_API_KEY}`,
+      'Notion-Version': NOTION_VERSION,
+    },
+  })
+
+  if (!srcRes.ok) {
+    const text = await srcRes.text()
+    return jsonResponse({ error: 'Projet source introuvable', notionStatus: srcRes.status, notionBody: text }, 404)
+  }
+
+  const srcPage = await srcRes.json()
+  const src = mapProjectPage(srcPage)
+
+  // 2. Create cloned project with new token and name suffix
+  const dataSourceId = await getDataSourceIdForDatabase(projectsDbId, env)
+  const newToken = crypto.randomUUID().replace(/-/g, '').slice(0, 12)
+
+  const notionBody = {
+    parent: { type: 'data_source_id', data_source_id: dataSourceId },
+    properties: {
+      Name: { title: [{ text: { content: `${src.name} (copie)` } }] },
+      'Public token': { rich_text: [{ text: { content: newToken } }] },
+    },
+  }
+
+  if (src.questionnaireType) {
+    notionBody.properties['Questionnaire type'] = { select: { name: src.questionnaireType } }
+  }
+  if (src.status) {
+    notionBody.properties.Status = { select: { name: 'Fermé' } }
+  }
+  if (src.folder) {
+    notionBody.properties.Folder = { select: { name: src.folder } }
+  }
+  if (src.productType) {
+    notionBody.properties['Product type'] = { select: { name: src.productType } }
+  }
+  if (src.productName) {
+    notionBody.properties['Product name'] = { rich_text: [{ text: { content: src.productName } }] }
+  }
+  if (src.instructions) {
+    notionBody.properties.Instructions = { rich_text: [{ text: { content: src.instructions } }] }
+  }
+
+  const createRes = await fetch(`${NOTION_ENDPOINT}/pages`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.NOTION_API_KEY}`,
+      'Notion-Version': NOTION_VERSION,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(notionBody),
+  })
+
+  if (!createRes.ok) {
+    const text = await createRes.text()
+    return jsonResponse({ error: 'Erreur création projet cloné', notionStatus: createRes.status, notionBody: text }, 502)
+  }
+
+  const newPage = await createRes.json()
+  const newProject = mapProjectPage(newPage)
+
+  // 3. Optionally clone responses
+  let clonedResponseCount = 0
+  if (cloneResponses && responsesDbId) {
+    // Fetch source responses
+    const respDataSourceId = await getDataSourceIdForDatabase(responsesDbId, env)
+    const respRes = await fetch(`${NOTION_ENDPOINT}/data_sources/${respDataSourceId}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.NOTION_API_KEY}`,
+        'Notion-Version': NOTION_VERSION,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        page_size: 100,
+        filter: { property: 'Project', relation: { contains: projectId } },
+      }),
+    })
+
+    if (respRes.ok) {
+      const respData = await respRes.json()
+      const sourceResponses = (respData.results || []).filter((p) => !p.archived)
+
+      for (const srcResp of sourceResponses) {
+        const payloadText = srcResp.properties?.Payload?.rich_text?.map((t) => t.plain_text || '').join('') || ''
+        const questionnaire = srcResp.properties?.Questionnaire?.select?.name || null
+        const tags = (srcResp.properties?.Tags?.multi_select || []).map((t) => t.name)
+
+        const newRespBody = {
+          parent: { type: 'data_source_id', data_source_id: respDataSourceId },
+          properties: {
+            Project: { relation: [{ id: newPage.id }] },
+            Payload: { rich_text: payloadText ? [{ text: { content: payloadText } }] : [] },
+          },
+        }
+
+        if (questionnaire) {
+          newRespBody.properties.Questionnaire = { select: { name: questionnaire } }
+        }
+        if (tags.length > 0) {
+          newRespBody.properties.Tags = { multi_select: tags.map((name) => ({ name })) }
+        }
+
+        const crRes = await fetch(`${NOTION_ENDPOINT}/pages`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${env.NOTION_API_KEY}`,
+            'Notion-Version': NOTION_VERSION,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newRespBody),
+        })
+
+        if (crRes.ok) clonedResponseCount++
+      }
+    }
+  }
+
+  return jsonResponse({ project: newProject, clonedResponses: clonedResponseCount }, 201)
+}
+
+// ─── Response Tags ──────────────────────────────────────────────────────────
+
+async function handleUpdateResponseTags(request, env, projectId, responseId) {
+  const auth = await requireAuth(request, env)
+  if (!auth.ok) return auth.response
+
+  if (request.method !== 'PUT') {
+    return jsonResponse({ error: 'Method not allowed' }, 405)
+  }
+
+  let body
+  try {
+    body = await request.json()
+  } catch {
+    return jsonResponse({ error: 'Corps JSON invalide' }, 400)
+  }
+
+  const { tags } = body || {}
+  if (!Array.isArray(tags) || !tags.every((t) => typeof t === 'string' && t.trim())) {
+    return jsonResponse({ error: 'tags doit être un tableau de chaînes non vides' }, 400)
+  }
+
+  const uniqueTags = [...new Set(tags.map((t) => t.trim()))]
+
+  const res = await fetch(`${NOTION_ENDPOINT}/pages/${responseId}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${env.NOTION_API_KEY}`,
+      'Notion-Version': NOTION_VERSION,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      properties: {
+        Tags: { multi_select: uniqueTags.map((name) => ({ name })) },
+      },
+    }),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    console.error('Notion update tags error', res.status, text)
+    return jsonResponse(
+      { error: 'Erreur lors de la mise à jour des tags', notionStatus: res.status, notionBody: text },
+      502,
+    )
+  }
+
+  return jsonResponse({ ok: true })
+}
+
+async function handleBatchUpdateTags(request, env, projectId) {
+  const auth = await requireAuth(request, env)
+  if (!auth.ok) return auth.response
+
+  if (request.method !== 'PUT') {
+    return jsonResponse({ error: 'Method not allowed' }, 405)
+  }
+
+  let body
+  try {
+    body = await request.json()
+  } catch {
+    return jsonResponse({ error: 'Corps JSON invalide' }, 400)
+  }
+
+  const { responseIds, tags } = body || {}
+  if (!Array.isArray(responseIds) || responseIds.length === 0) {
+    return jsonResponse({ error: 'responseIds doit être un tableau non vide' }, 400)
+  }
+  if (!Array.isArray(tags) || !tags.every((t) => typeof t === 'string' && t.trim())) {
+    return jsonResponse({ error: 'tags doit être un tableau de chaînes non vides' }, 400)
+  }
+
+  const uniqueTags = [...new Set(tags.map((t) => t.trim()))]
+  const errors = []
+
+  for (const responseId of responseIds) {
+    const res = await fetch(`${NOTION_ENDPOINT}/pages/${responseId}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${env.NOTION_API_KEY}`,
+        'Notion-Version': NOTION_VERSION,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        properties: {
+          Tags: { multi_select: uniqueTags.map((name) => ({ name })) },
+        },
+      }),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      console.error(`Notion batch tag error for ${responseId}`, res.status, text)
+      errors.push({ responseId, status: res.status })
+    }
+  }
+
+  if (errors.length > 0) {
+    return jsonResponse({ ok: false, errors, updated: responseIds.length - errors.length }, 207)
+  }
+
+  return jsonResponse({ ok: true, updated: responseIds.length })
+}
+
 // ─── Public ─────────────────────────────────────────────────────────────────
 
 async function handlePublicSubmit(request, env) {
@@ -1841,7 +2096,7 @@ async function handleAdminUserRoute(request, env, userId) {
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,POST,PATCH,DELETE,OPTIONS',
+  'Access-Control-Allow-Methods': 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 }
 
@@ -1908,6 +2163,24 @@ export default {
         if (request.method === 'POST') {
           return handleCreateProject(request, env)
         }
+      }
+
+      // /projects/:id/clone
+      const cloneMatch = url.pathname.match(/^\/projects\/([^/]+)\/clone$/)
+      if (cloneMatch) {
+        return handleCloneProject(request, env, cloneMatch[1])
+      }
+
+      // /projects/:id/responses/batch-tags
+      const batchTagsMatch = url.pathname.match(/^\/projects\/([^/]+)\/responses\/batch-tags$/)
+      if (batchTagsMatch) {
+        return handleBatchUpdateTags(request, env, batchTagsMatch[1])
+      }
+
+      // /projects/:id/responses/:responseId/tags
+      const tagsMatch = url.pathname.match(/^\/projects\/([^/]+)\/responses\/([^/]+)\/tags$/)
+      if (tagsMatch) {
+        return handleUpdateResponseTags(request, env, tagsMatch[1], tagsMatch[2])
       }
 
       // /projects/:id/responses/:responseId/recover

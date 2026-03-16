@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
 import type { Row as ExcelRow, Border as ExcelBorder } from 'exceljs'
 import type { Project, ProjectResponse } from '../api'
-import { deleteProject, updateProject } from '../api'
+import { deleteProject, updateProject, cloneProject } from '../api'
 import { ProjectForm } from './ProjectForm'
 import { ResponsesTable } from './ResponsesTable'
 import { DeleteConfirmModal } from './DeleteConfirmModal'
@@ -42,6 +42,7 @@ type Props = {
   responsesLoading: boolean
   onProjectUpdated: (project: Project) => void
   onProjectDeleted: () => void
+  onProjectCloned?: (project: Project) => void
   onResponsesChanged: () => void
   existingFolders?: string[]
   activeTab?: ProjectTab
@@ -703,12 +704,40 @@ async function exportStatsPng(
   }
 }
 
+function StatsRenderer({
+  stats,
+  questionnaire,
+}: {
+  stats: ComputedStats
+  questionnaire: ReturnType<typeof getQuestionnaireById> | undefined
+}) {
+  return (
+    <>
+      {stats.type === 'sus' && stats.data && <SusStats stats={stats.data} />}
+      {stats.type === 'deep' && stats.data && <DeepStats stats={stats.data} />}
+      {stats.type === 'umux' && stats.data && <UmuxStats stats={stats.data} />}
+      {stats.type === 'umux_lite' && stats.data && <UmuxLiteStats stats={stats.data} />}
+      {stats.type === 'ueq' && stats.data && <UeqStats stats={stats.data} />}
+      {stats.type === 'ueq_s' && stats.data && <UeqSStats stats={stats.data} />}
+      {(stats.type === 'attrakdiff' || stats.type === 'attrakdiff_abridged') && stats.data && questionnaire && (
+        <AttrakDiffStats
+          stats={stats.data}
+          wordPairs={(stats as { wordPairs: Record<string, number> }).wordPairs}
+          questionnaire={questionnaire}
+          abridged={stats.type === 'attrakdiff_abridged'}
+        />
+      )}
+    </>
+  )
+}
+
 export function ProjectDetail({
   project,
   responses,
   responsesLoading,
   onProjectUpdated,
   onProjectDeleted,
+  onProjectCloned,
   onResponsesChanged,
   existingFolders = [],
   activeTab: controlledTab,
@@ -716,6 +745,9 @@ export function ProjectDetail({
 }: Props) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [showCloneModal, setShowCloneModal] = useState(false)
+  const [cloneWithResponses, setCloneWithResponses] = useState(false)
+  const [cloning, setCloning] = useState(false)
   const [internalTab, setInternalTab] = useState<ProjectTab>('stats')
 
   const activeTab = controlledTab ?? internalTab
@@ -725,9 +757,22 @@ export function ProjectDetail({
   const [visualExporting, setVisualExporting] = useState<'png' | null>(null)
   const statsContainerRef = useRef<HTMLDivElement>(null)
 
+  // Tag filtering
+  const [tagFilter, setTagFilter] = useState<string | null>(null)
+  const [compareTag, setCompareTag] = useState<string | null>(null)
+
   const qid = computeQuestionnaireId(project.questionnaireType)
   const questionnaire = qid ? getQuestionnaireById(qid) : undefined
   const activeResponses = responses.filter((r) => !r.archived)
+
+  // All unique tags
+  const allTags = useMemo(() => {
+    const set = new Set<string>()
+    for (const r of activeResponses) {
+      for (const tag of r.tags) set.add(tag)
+    }
+    return Array.from(set).sort()
+  }, [activeResponses])
 
   const isOpen = project.status === 'Ouvert'
   const publicUrl = project.publicToken
@@ -755,45 +800,63 @@ export function ProjectDetail({
     })
   }
 
-  const answersArray = useMemo(() => {
-    return activeResponses
+  // Helper to extract answers from responses
+  const getAnswersFromResponses = (resps: typeof activeResponses) =>
+    resps
       .map(parsePayload)
       .filter((p): p is { questionnaireId: string; answers: Answers } => !!p?.answers)
       .map((p) => p.answers)
-  }, [activeResponses])
 
-  const stats = useMemo<ComputedStats | null>(() => {
-    if (!qid || answersArray.length === 0) return null
+  // Filtered responses based on tag selection
+  const filteredResponses = useMemo(() => {
+    if (!tagFilter) return activeResponses
+    return activeResponses.filter((r) => r.tags.includes(tagFilter))
+  }, [activeResponses, tagFilter])
 
+  const compareResponses = useMemo(() => {
+    if (!compareTag) return []
+    return activeResponses.filter((r) => r.tags.includes(compareTag))
+  }, [activeResponses, compareTag])
+
+  const answersArray = useMemo(() => getAnswersFromResponses(filteredResponses), [filteredResponses])
+  const compareAnswersArray = useMemo(() => getAnswersFromResponses(compareResponses), [compareResponses])
+
+  function computeStatsFromAnswers(answers: Answers[]): ComputedStats | null {
+    if (!qid || answers.length === 0) return null
     switch (qid) {
       case 'sus':
-        return { type: 'sus' as const, data: computeSusStats(answersArray) }
+        return { type: 'sus' as const, data: computeSusStats(answers) }
       case 'deep':
-        return { type: 'deep' as const, data: computeDeepStats(answersArray) }
+        return { type: 'deep' as const, data: computeDeepStats(answers) }
       case 'umux':
-        return { type: 'umux' as const, data: computeUmuxStats(answersArray) }
+        return { type: 'umux' as const, data: computeUmuxStats(answers) }
       case 'umux_lite':
-        return { type: 'umux_lite' as const, data: computeUmuxLiteStats(answersArray) }
+        return { type: 'umux_lite' as const, data: computeUmuxLiteStats(answers) }
       case 'ueq':
-        return { type: 'ueq' as const, data: computeUeqStats(answersArray) }
+        return { type: 'ueq' as const, data: computeUeqStats(answers) }
       case 'ueq_s':
-        return { type: 'ueq_s' as const, data: computeUeqSStats(answersArray) }
+        return { type: 'ueq_s' as const, data: computeUeqSStats(answers) }
       case 'attrakdiff':
         return {
           type: 'attrakdiff' as const,
-          data: computeAttrakDiffStats(answersArray, false),
-          wordPairs: computeWordPairAverages(answersArray, false),
+          data: computeAttrakDiffStats(answers, false),
+          wordPairs: computeWordPairAverages(answers, false),
         }
       case 'attrakdiff_abridged':
         return {
           type: 'attrakdiff_abridged' as const,
-          data: computeAttrakDiffStats(answersArray, true),
-          wordPairs: computeWordPairAverages(answersArray, true),
+          data: computeAttrakDiffStats(answers, true),
+          wordPairs: computeWordPairAverages(answers, true),
         }
       default:
         return null
     }
-  }, [qid, answersArray])
+  }
+
+  const stats = useMemo<ComputedStats | null>(() => computeStatsFromAnswers(answersArray), [qid, answersArray])
+  const compareStats = useMemo<ComputedStats | null>(() => computeStatsFromAnswers(compareAnswersArray), [qid, compareAnswersArray])
+
+  const isComparing = tagFilter !== null && compareTag !== null
 
   const handleExportPng = async () => {
     if (!qid || visualExporting || !statsContainerRef.current) return
@@ -821,6 +884,20 @@ export function ProjectDetail({
     }
   }
 
+  const handleClone = async () => {
+    setCloning(true)
+    try {
+      const result = await cloneProject(project.id, cloneWithResponses)
+      setShowCloneModal(false)
+      setCloneWithResponses(false)
+      onProjectCloned?.(result.project)
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setCloning(false)
+    }
+  }
+
   const tabs = [
     { id: 'stats' as const, label: 'Résultats' },
     { id: 'responses' as const, label: `Réponses (${activeResponses.length})` },
@@ -833,8 +910,18 @@ export function ProjectDetail({
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <h2 className="text-xl font-bold text-ink">{project.name || '(Sans titre)'}</h2>
-          {activeResponses.length > 0 && qid && (
             <div className="flex items-center gap-3 shrink-0">
+              <button
+                onClick={() => setShowCloneModal(true)}
+                className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Cloner
+              </button>
+          {activeResponses.length > 0 && qid && (
+            <>
               <button
                 onClick={() => { void exportWorkbook(project, responses, qid, questionnaire, stats) }}
                 className="text-xs text-flame hover:text-ink font-medium cursor-pointer flex items-center gap-1 transition-colors"
@@ -854,8 +941,9 @@ export function ProjectDetail({
                 </svg>
                 {visualExporting === 'png' ? 'Export PNG...' : 'Exporter PNG'}
               </button>
-            </div>
+            </>
           )}
+            </div>
         </div>
 
         <div className="flex items-center gap-2.5 mt-2 flex-wrap">
@@ -948,33 +1036,128 @@ export function ProjectDetail({
 
       {/* Tab content */}
       <div ref={statsContainerRef} className={activeTab !== 'stats' ? 'hidden' : undefined}>
+          {/* Tag filter bar */}
+          {allTags.length > 0 && !responsesLoading && (
+            <div className="mb-6 p-3 bg-wash rounded-brand border border-stone">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-medium text-ink">Filtrer par tag :</span>
+                <button
+                  onClick={() => { setTagFilter(null); setCompareTag(null) }}
+                  className={`text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer transition-colors ${
+                    tagFilter === null
+                      ? 'bg-flame text-white'
+                      : 'bg-slate-100 text-graphite hover:bg-slate-200'
+                  }`}
+                >
+                  Toutes ({activeResponses.length})
+                </button>
+                {allTags.map((tag) => {
+                  const count = activeResponses.filter((r) => r.tags.includes(tag)).length
+                  const isActive = tagFilter === tag
+                  const isCompare = compareTag === tag
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => {
+                        if (isActive) {
+                          // Deselect
+                          setTagFilter(null)
+                          setCompareTag(null)
+                        } else if (tagFilter && !isCompare) {
+                          // Set as compare tag
+                          setCompareTag(tag)
+                        } else if (isCompare) {
+                          // Remove compare
+                          setCompareTag(null)
+                        } else {
+                          setTagFilter(tag)
+                          setCompareTag(null)
+                        }
+                      }}
+                      className={`text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer transition-colors ${
+                        isActive
+                          ? 'bg-flame text-white'
+                          : isCompare
+                            ? 'bg-ink text-white'
+                            : 'bg-slate-100 text-graphite hover:bg-slate-200'
+                      }`}
+                    >
+                      {tag} ({count})
+                      {isActive && ' A'}
+                      {isCompare && ' B'}
+                    </button>
+                  )
+                })}
+                {tagFilter && (
+                  <>
+                    <span className="w-px h-4 bg-stone" />
+                    <span className="text-[10px] text-taupe">
+                      Cliquez un 2e tag pour comparer
+                    </span>
+                  </>
+                )}
+              </div>
+              {isComparing && (
+                <div className="mt-2 flex items-center gap-2 text-xs text-graphite">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-flame" />
+                  <span className="font-medium">A : {tagFilter}</span>
+                  <span className="text-taupe">vs</span>
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-ink" />
+                  <span className="font-medium">B : {compareTag}</span>
+                  <button
+                    onClick={() => { setTagFilter(null); setCompareTag(null) }}
+                    className="ml-2 text-taupe hover:text-ink cursor-pointer"
+                  >
+                    Effacer
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {responsesLoading ? (
             <p className="text-sm text-taupe py-8">Chargement des résultats...</p>
-          ) : !stats?.data ? (
-            <div className="text-center py-12">
-              <p className="text-sm text-taupe">
-                {answersArray.length === 0
-                  ? 'Aucune réponse pour calculer les statistiques.'
-                  : 'Type de questionnaire non reconnu.'}
-              </p>
-            </div>
+          ) : !isComparing ? (
+            /* Single view (all or filtered by one tag) */
+            !stats?.data ? (
+              <div className="text-center py-12">
+                <p className="text-sm text-taupe">
+                  {answersArray.length === 0
+                    ? 'Aucune réponse pour calculer les statistiques.'
+                    : 'Type de questionnaire non reconnu.'}
+                </p>
+              </div>
+            ) : (
+              <StatsRenderer stats={stats} questionnaire={questionnaire} />
+            )
           ) : (
-            <>
-              {stats.type === 'sus' && stats.data && <SusStats stats={stats.data} />}
-              {stats.type === 'deep' && stats.data && <DeepStats stats={stats.data} />}
-              {stats.type === 'umux' && stats.data && <UmuxStats stats={stats.data} />}
-              {stats.type === 'umux_lite' && stats.data && <UmuxLiteStats stats={stats.data} />}
-              {stats.type === 'ueq' && stats.data && <UeqStats stats={stats.data} />}
-              {stats.type === 'ueq_s' && stats.data && <UeqSStats stats={stats.data} />}
-              {(stats.type === 'attrakdiff' || stats.type === 'attrakdiff_abridged') && stats.data && questionnaire && (
-                <AttrakDiffStats
-                  stats={stats.data}
-                  wordPairs={(stats as { wordPairs: Record<string, number> }).wordPairs}
-                  questionnaire={questionnaire}
-                  abridged={stats.type === 'attrakdiff_abridged'}
-                />
-              )}
-            </>
+            /* Comparison view */
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="border border-flame/30 rounded-brand p-4">
+                <div className="flex items-center gap-2 mb-4 pb-2 border-b border-stone">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-flame" />
+                  <span className="text-sm font-semibold text-ink">{tagFilter}</span>
+                  <span className="text-xs text-taupe">n = {answersArray.length}</span>
+                </div>
+                {stats?.data ? (
+                  <StatsRenderer stats={stats} questionnaire={questionnaire} />
+                ) : (
+                  <p className="text-sm text-taupe py-4">Aucune donnée pour ce tag.</p>
+                )}
+              </div>
+              <div className="border border-ink/30 rounded-brand p-4">
+                <div className="flex items-center gap-2 mb-4 pb-2 border-b border-stone">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full bg-ink" />
+                  <span className="text-sm font-semibold text-ink">{compareTag}</span>
+                  <span className="text-xs text-taupe">n = {compareAnswersArray.length}</span>
+                </div>
+                {compareStats?.data ? (
+                  <StatsRenderer stats={compareStats} questionnaire={questionnaire} />
+                ) : (
+                  <p className="text-sm text-taupe py-4">Aucune donnée pour ce tag.</p>
+                )}
+              </div>
+            </div>
           )}
       </div>
 
@@ -1020,6 +1203,47 @@ export function ProjectDetail({
           onCancel={() => setShowDeleteModal(false)}
           loading={deleting}
         />
+      )}
+
+      {showCloneModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-brand shadow-xl p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-bold text-ink mb-2">Cloner le projet</h3>
+            <p className="text-sm text-graphite mb-4">
+              Un nouveau projet sera créé avec les mêmes paramètres (questionnaire, produit, instructions).
+              Il sera créé avec le statut « Fermé » et un nouveau token public.
+            </p>
+
+            <label className="flex items-center gap-2 cursor-pointer mb-6">
+              <input
+                type="checkbox"
+                checked={cloneWithResponses}
+                onChange={(e) => setCloneWithResponses(e.target.checked)}
+                className="rounded accent-flame cursor-pointer"
+              />
+              <span className="text-sm text-ink">
+                Cloner également les {activeResponses.length} réponse{activeResponses.length > 1 ? 's' : ''} (avec leurs tags)
+              </span>
+            </label>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => { setShowCloneModal(false); setCloneWithResponses(false) }}
+                disabled={cloning}
+                className="btn-secondary-sm"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => { void handleClone() }}
+                disabled={cloning}
+                className="btn-primary-sm"
+              >
+                {cloning ? 'Clonage en cours...' : 'Cloner'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

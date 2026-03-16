@@ -33,6 +33,7 @@ export type ProjectResponse = {
   createdTime: string
   lastEditedTime: string
   properties: unknown
+  tags: string[]
 }
 
 export type ProjectStatus = {
@@ -105,6 +106,12 @@ export async function fetchProjects(): Promise<Project[]> {
   return data.projects ?? []
 }
 
+function extractTags(properties: unknown): string[] {
+  const props = properties as Record<string, unknown> | undefined
+  const tagsProp = props?.Tags as { multi_select?: Array<{ name: string }> } | undefined
+  return tagsProp?.multi_select?.map((t) => t.name) ?? []
+}
+
 export async function fetchProjectResponses(projectId: string): Promise<ProjectResponse[]> {
   const res = await fetch(`${API_BASE_URL}/projects/${encodeURIComponent(projectId)}/responses`, {
     headers: authHeaders(),
@@ -113,8 +120,11 @@ export async function fetchProjectResponses(projectId: string): Promise<ProjectR
     const text = await res.text()
     throw new Error(`Erreur API réponses (${res.status}) : ${text}`)
   }
-  const data = (await res.json()) as { responses?: ProjectResponse[] }
-  return data.responses ?? []
+  const data = (await res.json()) as { responses?: Array<Omit<ProjectResponse, 'tags'> & { properties: unknown }> }
+  return (data.responses ?? []).map((r) => ({
+    ...r,
+    tags: extractTags(r.properties),
+  }))
 }
 
 export async function createProject(payload: ProjectPayload): Promise<Project> {
@@ -326,6 +336,65 @@ export async function submitPublicResponse(params: {
       throw new Error('CLOSED')
     }
     throw new Error(data?.error ?? `Erreur enregistrement réponses (${res.status})`)
+  }
+}
+
+export async function cloneProject(
+  projectId: string,
+  cloneResponses: boolean,
+): Promise<{ project: Project; clonedResponses: number }> {
+  const res = await fetch(
+    `${API_BASE_URL}/projects/${encodeURIComponent(projectId)}/clone`,
+    {
+      method: 'POST',
+      headers: authHeaders(true),
+      body: JSON.stringify({ cloneResponses }),
+    },
+  )
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Erreur clonage projet (${res.status}) : ${text}`)
+  }
+  const data = (await res.json()) as { project?: Project; clonedResponses?: number }
+  if (!data.project) throw new Error('Réponse clonage invalide')
+  return { project: data.project, clonedResponses: data.clonedResponses ?? 0 }
+}
+
+export async function updateResponseTags(
+  projectId: string,
+  responseId: string,
+  tags: string[],
+): Promise<void> {
+  const res = await fetch(
+    `${API_BASE_URL}/projects/${encodeURIComponent(projectId)}/responses/${encodeURIComponent(responseId)}/tags`,
+    {
+      method: 'PUT',
+      headers: authHeaders(true),
+      body: JSON.stringify({ tags }),
+    },
+  )
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Erreur mise à jour tags (${res.status}) : ${text}`)
+  }
+}
+
+export async function batchUpdateResponseTags(
+  projectId: string,
+  responseIds: string[],
+  tags: string[],
+): Promise<void> {
+  const res = await fetch(
+    `${API_BASE_URL}/projects/${encodeURIComponent(projectId)}/responses/batch-tags`,
+    {
+      method: 'PUT',
+      headers: authHeaders(true),
+      body: JSON.stringify({ responseIds, tags }),
+    },
+  )
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Erreur mise à jour tags en masse (${res.status}) : ${text}`)
   }
 }
 

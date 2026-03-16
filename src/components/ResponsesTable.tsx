@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Project, ProjectResponse } from '../api'
-import { deleteResponse, recoverResponse } from '../api'
+import { deleteResponse, recoverResponse, batchUpdateResponseTags } from '../api'
 import { computeQuestionnaireId } from './Sidebar'
 import { DeleteConfirmModal } from './DeleteConfirmModal'
 import {
@@ -256,9 +256,29 @@ const GRADE_COLORS: Record<string, string> = {
   'F': 'bg-red-200 text-red-800',
 }
 
+const TAG_COLORS = [
+  'bg-blue-100 text-blue-700',
+  'bg-purple-100 text-purple-700',
+  'bg-teal-100 text-teal-700',
+  'bg-amber-100 text-amber-700',
+  'bg-rose-100 text-rose-700',
+  'bg-indigo-100 text-indigo-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-orange-100 text-orange-700',
+]
+
+function getTagColor(tag: string, allTags: string[]): string {
+  const index = allTags.indexOf(tag)
+  return TAG_COLORS[index % TAG_COLORS.length]
+}
+
 export function ResponsesTable({ project, responses, onResponsesChanged }: Props) {
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [pendingDeletion, setPendingDeletion] = useState<ProjectResponse | null>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [tagInput, setTagInput] = useState('')
+  const [tagging, setTagging] = useState(false)
+  const [showTagBar, setShowTagBar] = useState(false)
 
   const handleDelete = async (responseId: string) => {
     setLoadingId(responseId)
@@ -306,12 +326,98 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
     })
   ), [activeResponses, qid])
 
+  // Collect all unique tags across responses
+  const allTags = useMemo(() => {
+    const set = new Set<string>()
+    for (const r of activeResponses) {
+      for (const tag of r.tags) set.add(tag)
+    }
+    return Array.from(set).sort()
+  }, [activeResponses])
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === activeResponses.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(activeResponses.map((r) => r.id)))
+    }
+  }
+
+  const handleApplyTag = async (tagName: string) => {
+    if (!tagName.trim() || selectedIds.size === 0) return
+    setTagging(true)
+    try {
+      // For each selected response, merge the new tag with existing tags
+      const ids = Array.from(selectedIds)
+      const tagsByResponse = new Map<string, string[]>()
+      for (const id of ids) {
+        const resp = activeResponses.find((r) => r.id === id)
+        const existing = resp?.tags ?? []
+        const merged = [...new Set([...existing, tagName.trim()])]
+        tagsByResponse.set(id, merged)
+      }
+      // Update each response individually (different tags per response)
+      const promises = Array.from(tagsByResponse.entries()).map(([id, tags]) =>
+        batchUpdateResponseTags(project.id, [id], tags)
+      )
+      await Promise.all(promises)
+      setTagInput('')
+      setSelectedIds(new Set())
+      setShowTagBar(false)
+      onResponsesChanged()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setTagging(false)
+    }
+  }
+
+  const handleRemoveTagFromSelected = async (tagName: string) => {
+    if (selectedIds.size === 0) return
+    setTagging(true)
+    try {
+      const ids = Array.from(selectedIds)
+      const promises = ids.map((id) => {
+        const resp = activeResponses.find((r) => r.id === id)
+        const remaining = (resp?.tags ?? []).filter((t) => t !== tagName)
+        return batchUpdateResponseTags(project.id, [id], remaining)
+      })
+      await Promise.all(promises)
+      setSelectedIds(new Set())
+      setShowTagBar(false)
+      onResponsesChanged()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setTagging(false)
+    }
+  }
+
   const confirmDelete = async () => {
     if (!pendingDeletion) return
     const responseToDelete = pendingDeletion
     await handleDelete(responseToDelete.id)
     setPendingDeletion(null)
   }
+
+  // Tags of selected responses
+  const selectedTags = useMemo(() => {
+    const set = new Set<string>()
+    for (const id of selectedIds) {
+      const resp = activeResponses.find((r) => r.id === id)
+      if (resp) for (const tag of resp.tags) set.add(tag)
+    }
+    return Array.from(set).sort()
+  }, [selectedIds, activeResponses])
 
   return (
     <div>
@@ -324,6 +430,80 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
         </span>
       </div>
 
+      {/* Tag toolbar */}
+      {(selectedIds.size > 0 || showTagBar) && (
+        <div className="mb-3 p-3 bg-wash rounded-brand border border-stone flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-ink">
+            {selectedIds.size} sélectionnée{selectedIds.size > 1 ? 's' : ''}
+          </span>
+          <span className="w-px h-4 bg-stone" />
+
+          {/* Existing tags to apply quickly */}
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => { void handleApplyTag(tag) }}
+              disabled={tagging}
+              className={`text-xs px-2 py-0.5 rounded-full font-medium cursor-pointer transition-opacity disabled:opacity-50 ${getTagColor(tag, allTags)}`}
+              title={`Appliquer "${tag}"`}
+            >
+              + {tag}
+            </button>
+          ))}
+
+          {/* New tag input */}
+          <div className="flex items-center gap-1">
+            <input
+              type="text"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && tagInput.trim()) {
+                  void handleApplyTag(tagInput)
+                }
+              }}
+              placeholder="Nouveau tag..."
+              className="text-xs px-2 py-1 border border-stone rounded-brand bg-white text-ink w-32 focus:outline-none focus:border-flame"
+              disabled={tagging}
+            />
+            {tagInput.trim() && (
+              <button
+                onClick={() => { void handleApplyTag(tagInput) }}
+                disabled={tagging}
+                className="text-xs px-2 py-1 bg-flame text-white rounded-brand font-medium cursor-pointer disabled:opacity-50"
+              >
+                Ajouter
+              </button>
+            )}
+          </div>
+
+          {/* Remove tags from selected */}
+          {selectedTags.length > 0 && (
+            <>
+              <span className="w-px h-4 bg-stone" />
+              <span className="text-xs text-taupe">Retirer :</span>
+              {selectedTags.map((tag) => (
+                <button
+                  key={`rm-${tag}`}
+                  onClick={() => { void handleRemoveTagFromSelected(tag) }}
+                  disabled={tagging}
+                  className="text-xs px-2 py-0.5 rounded-full font-medium cursor-pointer bg-slate-100 text-graphite hover:bg-slate-200 transition-colors disabled:opacity-50"
+                >
+                  x {tag}
+                </button>
+              ))}
+            </>
+          )}
+
+          <button
+            onClick={() => { setSelectedIds(new Set()); setShowTagBar(false) }}
+            className="ml-auto text-xs text-taupe hover:text-ink cursor-pointer"
+          >
+            Annuler
+          </button>
+        </div>
+      )}
+
       {responses.length === 0 ? (
         <p className="text-sm text-taupe py-4">Aucune réponse pour le moment.</p>
       ) : (
@@ -332,7 +512,18 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
             <table className="w-full min-w-max text-sm">
               <thead>
                 <tr className="bg-cream border-b border-stone">
+                  <th className="px-2 py-2 w-8">
+                    <input
+                      type="checkbox"
+                      checked={activeResponses.length > 0 && selectedIds.size === activeResponses.length}
+                      onChange={toggleSelectAll}
+                      className="rounded accent-flame cursor-pointer"
+                    />
+                  </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">#</th>
+                  {allTags.length > 0 && (
+                    <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">Tags</th>
+                  )}
                   {metricColumns.map((column) => (
                     <th
                       key={column.key}
@@ -347,8 +538,33 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {activeRows.map((row, i) => (
-                  <tr key={row.response.id} className="hover:bg-cream/50">
+                  <tr
+                    key={row.response.id}
+                    className={`hover:bg-cream/50 ${selectedIds.has(row.response.id) ? 'bg-wash/50' : ''}`}
+                  >
+                    <td className="px-2 py-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(row.response.id)}
+                        onChange={() => toggleSelect(row.response.id)}
+                        className="rounded accent-flame cursor-pointer"
+                      />
+                    </td>
                     <td className="px-3 py-2 text-taupe">{i + 1}</td>
+                    {allTags.length > 0 && (
+                      <td className="px-3 py-2">
+                        <div className="flex gap-1 flex-wrap">
+                          {row.response.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${getTagColor(tag, allTags)}`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                    )}
                     {metricColumns.map((column) => {
                       const value = row.metrics[column.key]
                       if (column.kind === 'grade' && typeof value === 'string') {
@@ -383,7 +599,9 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
 
                 {archivedResponses.map((r, i) => (
                   <tr key={r.id} className="bg-cream/30 opacity-50">
+                    <td className="px-2 py-2" />
                     <td className="px-3 py-2 text-taupe line-through">{activeRows.length + i + 1}</td>
+                    {allTags.length > 0 && <td className="px-3 py-2" />}
                     <td className="px-3 py-2 text-taupe line-through" colSpan={metricColumnCount}>Supprimée</td>
                     <td className="px-3 py-2 text-taupe text-xs line-through whitespace-nowrap">
                       {new Date(r.createdTime).toLocaleString('fr-FR')}

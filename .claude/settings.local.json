@@ -13,7 +13,10 @@
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
       "Bash(npm uninstall jszip)",
-      "Bash(mdfind -name 'node' -onlyin /opt/homebrew)"
+      "Bash(mdfind -name 'node' -onlyin /opt/homebrew)",
+      "Bash(find /Users/flornet/Sites/team.weloveusers.com/src/components/charts -name *.tsx)",
+      "Bash(git stash:*)",
+      "Bash(npm ls:*)"
     ]
   }
 }
