@@ -76,6 +76,12 @@ const IconSettings = (
   </svg>
 )
 
+const IconBuilding = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 21h16M7 21V7.5A1.5 1.5 0 018.5 6h7A1.5 1.5 0 0117 7.5V21M9 10h.01M9 13h.01M9 16h.01M12 10h.01M12 13h.01M12 16h.01M15 10h.01M15 13h.01M15 16h.01" />
+  </svg>
+)
+
 const IconLogout = (
   <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -119,6 +125,12 @@ const ADMIN_NAV_ITEM: NavItem = {
   icon: IconSettings,
 }
 
+const SIRET_NAV_ITEM: NavItem = {
+  to: '/siret',
+  label: 'Siret',
+  icon: IconBuilding,
+}
+
 const NO_FOLDER = '__sans_dossier__'
 
 function hasSecondLevel(item: NavItem): boolean {
@@ -149,7 +161,7 @@ export function TeamShell({
   const location = useLocation()
   const navigate = useNavigate()
   const navItems = useMemo(
-    () => (canAccessAdministration ? [...BASE_NAV_ITEMS, ADMIN_NAV_ITEM] : BASE_NAV_ITEMS),
+    () => (canAccessAdministration ? [...BASE_NAV_ITEMS, ADMIN_NAV_ITEM, SIRET_NAV_ITEM] : BASE_NAV_ITEMS),
     [canAccessAdministration],
   )
   const locationParent = findParentWithSecondLevel(location.pathname, navItems)

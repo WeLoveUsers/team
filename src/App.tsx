@@ -19,6 +19,10 @@ const AdministrationPage = lazy(async () => {
   const mod = await import('./pages/AdministrationPage')
   return { default: mod.AdministrationPage }
 })
+const SiretPage = lazy(async () => {
+  const mod = await import('./pages/SiretPage')
+  return { default: mod.SiretPage }
+})
 const BrandFontsPage = lazy(async () => {
   const mod = await import('./pages/BrandFontsPage')
   return { default: mod.BrandFontsPage }
@@ -161,6 +165,10 @@ function App() {
           <Route
             path="/administration"
             element={isAdmin ? <AdministrationPage /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/siret"
+            element={isAdmin ? <SiretPage /> : <Navigate to="/" replace />}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
