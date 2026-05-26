@@ -51,6 +51,10 @@ const WorkingMethodPage = lazy(async () => {
   const mod = await import('./pages/WorkingMethodPage')
   return { default: mod.WorkingMethodPage }
 })
+const GuidelinesInterventionPage = lazy(async () => {
+  const mod = await import('./pages/GuidelinesInterventionPage')
+  return { default: mod.GuidelinesInterventionPage }
+})
 
 function FullscreenLoading() {
   return (
@@ -153,6 +157,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/notre-facon-de-travailler" element={<WorkingMethodPage />} />
+          <Route path="/guidelines-intervention" element={<GuidelinesInterventionPage />} />
           <Route path="/charte-graphique" element={<BrandGuidelinesPage />} />
           <Route path="/charte-graphique/slides" element={<BrandSlidesPage />} />
           <Route path="/charte-graphique/fonts" element={<BrandFontsPage />} />

@@ -51,6 +51,13 @@ const IconCompass = (
   </svg>
 )
 
+const IconShieldCheck = (
+  <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l8 3v6c0 4.418-3.582 8-8 9-4.418-1-8-4.582-8-9V6l8-3z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+  </svg>
+)
+
 const IconClipboard = (
   <svg className="h-[18px] w-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -99,6 +106,7 @@ const DOC_CATEGORY_LINKS: NavSubItem[] = [
 const BASE_NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Accueil', end: true, icon: IconHome },
   { to: '/notre-facon-de-travailler', label: 'Notre façon de travailler', icon: IconCompass },
+  { to: '/guidelines-intervention', label: "Guidelines d'intervention", icon: IconShieldCheck },
   { to: '/questionnaires', label: 'Questionnaires UX', icon: IconClipboard },
   {
     to: '/charte-graphique',
