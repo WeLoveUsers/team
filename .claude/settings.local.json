@@ -16,7 +16,17 @@
       "Bash(mdfind -name 'node' -onlyin /opt/homebrew)",
       "Bash(find /Users/flornet/Sites/team.weloveusers.com/src/components/charts -name *.tsx)",
       "Bash(git stash:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "WebSearch",
+      "WebFetch(domain:uxmind.eu)",
+      "WebFetch(domain:fabrique-formations.univ-lille.fr)",
+      "Bash(npx eslint *)",
+      "Bash(node --check worker-cloudflare/src/worker.js)",
+      "Bash(npx wrangler *)",
+      "Bash(npm view *)",
+      "Bash(echo \"latest exceljs: $\\(npm view exceljs version 2>&1\\)\")",
+      "Bash(echo \"uuid requis par dernière exceljs: $\\(npm view exceljs dependencies.uuid 2>&1\\)\")",
+      "Bash(echo \"latest uuid: $\\(npm view uuid version 2>&1\\)\")"
     ]
   }
 }

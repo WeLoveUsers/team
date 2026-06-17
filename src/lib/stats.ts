@@ -62,6 +62,26 @@ export type AttrakDiffResult = {
   QH: StatsSummary
 }
 
+export type MecueDimensionKey =
+  | 'U'
+  | 'F'
+  | 'A'
+  | 'S'
+  | 'C'
+  | 'EMO_POS'
+  | 'EMO_NEG'
+  | 'INT'
+  | 'L'
+
+export type MecueResult = {
+  n: number
+  // Dimensions présentes dans les données (moyennes sur l'échelle 1–7).
+  // Une dimension absente (non administrée) n'apparaît pas.
+  dimensions: Partial<Record<MecueDimensionKey, StatsSummary>>
+  // Module IV — évaluation globale, échelle -5 à +5 (présent si administré).
+  global?: StatsSummary
+}
+
 export type WordPairAverages = Record<string, number>
 
 export type Answers = Record<string, number>
@@ -684,4 +704,102 @@ export function computeWordPairAverages(
   }
 
   return result
+}
+
+// ─── meCUE ────────────────────────────────────────────────────────────────────
+//
+// Traduction française validée (Lallemand & Koenig, 2017).
+// Codification : moyenne des items de chaque dimension (échelle 1–7),
+// évaluation globale sur -5 à +5. Les items d'émotions négatives (17, 18, 20, 21)
+// sont inversés au scoring (8 − note), conformément à la consigne « inverser les
+// items inversés afin de scorer dans le même sens » : toutes les dimensions vont
+// ainsi du négatif au positif (note élevée = peu d'émotions négatives ressenties).
+
+const MECUE_DIMENSIONS: Record<MecueDimensionKey, string[]> = {
+  U: ['U1', 'U2', 'U3'],
+  F: ['F1', 'F2', 'F3'],
+  A: ['A1', 'A2', 'A3'],
+  S: ['S1', 'S2', 'S3'],
+  C: ['C1', 'C2', 'C3'],
+  EMO_POS: ['PA1', 'PD1', 'PD3', 'PA3'],
+  EMO_NEG: ['ND1', 'NA1', 'NA2', 'ND2'],
+  INT: ['IN1', 'IN2', 'IN3'],
+  L: ['L1', 'L2', 'L3'],
+}
+
+// Items inversés au scoring (émotions négatives), valeur recodée en 8 − note (échelle 1–7).
+const MECUE_REVERSED_ITEMS = new Set(['ND1', 'NA1', 'NA2', 'ND2'])
+
+const MECUE_DIMENSION_ORDER = Object.keys(MECUE_DIMENSIONS) as MecueDimensionKey[]
+
+function normalizeMecueValue(raw: unknown): number | null {
+  if (typeof raw !== 'number' || !Number.isFinite(raw) || raw < 1 || raw > 7) return null
+  return raw
+}
+
+function normalizeMecueGlobal(raw: unknown): number | null {
+  if (typeof raw !== 'number' || !Number.isFinite(raw) || raw < -5 || raw > 5) return null
+  return raw
+}
+
+export function computeMeCueStats(responses: Answers[]): MecueResult | null {
+  if (responses.length === 0) return null
+
+  const dimensionValues: Record<MecueDimensionKey, number[]> = {
+    U: [], F: [], A: [], S: [], C: [], EMO_POS: [], EMO_NEG: [], INT: [], L: [],
+  }
+  const globalValues: number[] = []
+  let n = 0
+
+  for (const a of responses) {
+    let hasAnyValue = false
+
+    for (const dim of MECUE_DIMENSION_ORDER) {
+      const items: number[] = []
+      for (const itemId of MECUE_DIMENSIONS[dim]) {
+        const value = normalizeMecueValue(a[itemId])
+        if (value == null) continue
+        items.push(MECUE_REVERSED_ITEMS.has(itemId) ? 8 - value : value)
+      }
+      if (items.length > 0) {
+        dimensionValues[dim].push(mean(items))
+        hasAnyValue = true
+      }
+    }
+
+    const globalValue = normalizeMecueGlobal(a.GLOBAL)
+    if (globalValue != null) {
+      globalValues.push(globalValue)
+      hasAnyValue = true
+    }
+
+    if (hasAnyValue) n++
+  }
+
+  if (n === 0) return null
+
+  const dimensions: Partial<Record<MecueDimensionKey, StatsSummary>> = {}
+  for (const dim of MECUE_DIMENSION_ORDER) {
+    const values = dimensionValues[dim]
+    if (values.length > 0) dimensions[dim] = computeStatsSummary(values, values.length)
+  }
+
+  return {
+    n,
+    dimensions,
+    global: globalValues.length > 0 ? computeStatsSummary(globalValues, globalValues.length) : undefined,
+  }
+}
+
+export const MECUE_DIMENSION_LABELS: Record<MecueDimensionKey | 'GLOBAL', string> = {
+  U: 'Utilisabilité',
+  F: 'Utilité',
+  A: 'Esthétique',
+  S: 'Statut',
+  C: 'Engagement',
+  EMO_POS: 'Émotions positives',
+  EMO_NEG: 'Émotions négatives (inversées)',
+  INT: 'Intention d\'usage',
+  L: 'Fidélité',
+  GLOBAL: 'Évaluation globale',
 }

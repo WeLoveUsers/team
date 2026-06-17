@@ -22,7 +22,7 @@ export type BipolarQuestion = {
 export type QuestionnaireQuestion = LikertQuestion | BipolarQuestion
 
 export type QuestionnaireDefinition = {
-  id: 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged'
+  id: 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged' | 'mecue'
   nameFr: string
   descriptionHtmlFr: string
   questions: QuestionnaireQuestion[]
@@ -53,6 +53,17 @@ const LIKERT_7_UMUX: LikertScaleOption[] = [
   { value: 4, labelFr: 'Plutôt d\'accord' },
   { value: 5, labelFr: 'D\'accord' },
   { value: 6, labelFr: 'Tout à fait d\'accord' },
+]
+
+// Échelle d'accord en 7 points du meCUE (traduction Lallemand & Koenig, 2017).
+const LIKERT_7_MECUE: LikertScaleOption[] = [
+  { value: 1, labelFr: 'Pas du tout d\'accord' },
+  { value: 2, labelFr: 'Très peu d\'accord' },
+  { value: 3, labelFr: 'Un peu d\'accord' },
+  { value: 4, labelFr: 'Moyennement d\'accord' },
+  { value: 5, labelFr: 'Assez d\'accord' },
+  { value: 6, labelFr: 'Fortement d\'accord' },
+  { value: 7, labelFr: 'Tout à fait d\'accord' },
 ]
 
 const SUS: QuestionnaireDefinition = {
@@ -469,6 +480,56 @@ const ATTRAKDIFF_ABRIGED: QuestionnaireDefinition = {
   ],
 }
 
+// meCUE — modular evaluation of key Components of User Experience (Minge & Riedel, 2013).
+// Traduction française validée : Lallemand & Koenig (2017). 30 items, 4 modules.
+// Les identifiants reprennent les codes de la grille (U = utilisabilité, F = utilité,
+// A = esthétique, S = statut, C = engagement, PA/PD/NA/ND = émotions, IN = intention, L = fidélité).
+const MECUE: QuestionnaireDefinition = {
+  id: 'mecue',
+  nameFr: 'meCUE',
+  descriptionHtmlFr:
+    'Questionnaire <strong>modulaire</strong> d\'évaluation de l\'<strong>expérience utilisateur</strong> (Minge &amp; Riedel, 2013 ; traduction Lallemand &amp; Koenig, 2017). Couvre la perception du produit, les émotions, les conséquences sur l\'usage et une évaluation globale.',
+  questions: [
+    // Module I — Perception du produit (échelle d'accord 1 à 7)
+    { id: 'U1', type: 'likert', textFr: 'Le produit est facile à utiliser.', scale: LIKERT_7_MECUE },
+    { id: 'A1', type: 'likert', textFr: 'Le produit est conçu de manière créative.', scale: LIKERT_7_MECUE },
+    { id: 'F1', type: 'likert', textFr: 'Les fonctionnalités du produit sont parfaitement adaptées à mes objectifs.', scale: LIKERT_7_MECUE },
+    { id: 'S1', type: 'likert', textFr: 'Le produit me donne une meilleure image auprès des autres.', scale: LIKERT_7_MECUE },
+    { id: 'C1', type: 'likert', textFr: 'Je ne peux pas vivre sans ce produit.', scale: LIKERT_7_MECUE },
+    { id: 'A2', type: 'likert', textFr: 'Le design a l\'air attrayant.', scale: LIKERT_7_MECUE },
+    { id: 'U2', type: 'likert', textFr: 'On perçoit rapidement comment utiliser le produit.', scale: LIKERT_7_MECUE },
+    { id: 'S2', type: 'likert', textFr: 'À travers ce produit, on me perçoit différemment.', scale: LIKERT_7_MECUE },
+    { id: 'F2', type: 'likert', textFr: 'Je considère ce produit comme extrêmement utile.', scale: LIKERT_7_MECUE },
+    { id: 'C2', type: 'likert', textFr: 'Le produit est comme un ami pour moi.', scale: LIKERT_7_MECUE },
+    { id: 'A3', type: 'likert', textFr: 'Le produit est élégant.', scale: LIKERT_7_MECUE },
+    { id: 'C3', type: 'likert', textFr: 'Si je perdais le produit, j\'en serais dévasté·e.', scale: LIKERT_7_MECUE },
+    { id: 'U3', type: 'likert', textFr: 'L\'utilisation du produit est facile à comprendre.', scale: LIKERT_7_MECUE },
+    { id: 'S3', type: 'likert', textFr: 'Mes amis peuvent bien être envieux de ce produit.', scale: LIKERT_7_MECUE },
+    { id: 'F3', type: 'likert', textFr: 'À l\'aide de ce produit, je peux atteindre mes objectifs.', scale: LIKERT_7_MECUE },
+
+    // Module II — Émotions (la version française comprend 8 items ; items négatifs inversés au scoring)
+    { id: 'PA1', type: 'likert', textFr: 'Le produit m\'enthousiasme.', scale: LIKERT_7_MECUE },
+    { id: 'ND1', type: 'likert', textFr: 'Le produit me fatigue.', scale: LIKERT_7_MECUE },
+    { id: 'NA1', type: 'likert', textFr: 'Le produit m\'énerve.', scale: LIKERT_7_MECUE },
+    { id: 'PD1', type: 'likert', textFr: 'Le produit me détend.', scale: LIKERT_7_MECUE },
+    { id: 'NA2', type: 'likert', textFr: 'Le produit me frustre.', scale: LIKERT_7_MECUE },
+    { id: 'ND2', type: 'likert', textFr: 'Le produit m\'ennuie.', scale: LIKERT_7_MECUE },
+    { id: 'PD3', type: 'likert', textFr: 'Le produit m\'apaise.', scale: LIKERT_7_MECUE },
+    { id: 'PA3', type: 'likert', textFr: 'Quand j\'utilise ce produit, je me sens joyeux.', scale: LIKERT_7_MECUE },
+
+    // Module III — Conséquences sur l'usage
+    { id: 'IN1', type: 'likert', textFr: 'Si je le pouvais, j\'utiliserais le produit chaque jour.', scale: LIKERT_7_MECUE },
+    { id: 'L1', type: 'likert', textFr: 'Je n\'échangerais le produit contre aucun autre.', scale: LIKERT_7_MECUE },
+    { id: 'IN2', type: 'likert', textFr: 'Je suis impatient·e d\'utiliser le produit à nouveau.', scale: LIKERT_7_MECUE },
+    { id: 'L2', type: 'likert', textFr: 'Par rapport à ce produit, les autres produits ont l\'air moins perfectionnés.', scale: LIKERT_7_MECUE },
+    { id: 'L3', type: 'likert', textFr: 'Je n\'hésiterais pas à choisir ce produit (à nouveau).', scale: LIKERT_7_MECUE },
+    { id: 'IN3', type: 'likert', textFr: 'Quand j\'utilise ce produit, il m\'arrive de perdre la notion du temps.', scale: LIKERT_7_MECUE },
+
+    // Module IV — Évaluation globale (échelle bipolaire -5 « Mauvais » à +5 « Bon »)
+    { id: 'GLOBAL', type: 'bipolar', leftFr: 'Mauvais', rightFr: 'Bon', scaleValues: [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5] },
+  ],
+}
+
 export const QUESTIONNAIRES: QuestionnaireDefinition[] = [
   SUS,
   DEEP,
@@ -478,6 +539,7 @@ export const QUESTIONNAIRES: QuestionnaireDefinition[] = [
   UEQ_S,
   ATTRAKDIFF,
   ATTRAKDIFF_ABRIGED,
+  MECUE,
 ]
 
 export const getQuestionnaireById = (id: QuestionnaireDefinition['id']): QuestionnaireDefinition | undefined =>
@@ -503,4 +565,86 @@ export const DEFAULT_INSTRUCTIONS: Record<QuestionnaireDefinition['id'], string>
   attrakdiff: `Dans le cadre d'un projet sur l'expérience utilisateur, nous souhaiterions évaluer vos impressions sur @product_name.\n\n• Ce questionnaire se présente sous forme de paires de mots pour vous assister dans l'évaluation du système.\n• Chaque paire représente des contrastes. Les échelons entre les deux extrémités vous permettent de décrire l'intensité de la qualité choisie.\n• Ne pensez pas aux paires de mots et essayez simplement de donner une réponse spontanée.\n• Vous pourrez avoir l'impression que certains termes ne décrivent pas correctement le système. Dans ce cas, assurez-vous de donner tout de même une réponse.\n• Gardez à l'esprit qu'il n'y a pas de bonne ou mauvaise réponse. Seule votre opinion compte !`,
 
   attrakdiff_abridged: `Dans le cadre d'un projet sur l'expérience utilisateur, nous souhaiterions évaluer vos impressions sur @product_name.\n\n• Ce questionnaire se présente sous forme de paires de mots pour vous assister dans l'évaluation du système.\n• Chaque paire représente des contrastes. Les échelons entre les deux extrémités vous permettent de décrire l'intensité de la qualité choisie.\n• Ne pensez pas aux paires de mots et essayez simplement de donner une réponse spontanée.\n• Vous pourrez avoir l'impression que certains termes ne décrivent pas correctement le système. Dans ce cas, assurez-vous de donner tout de même une réponse.\n• Gardez à l'esprit qu'il n'y a pas de bonne ou mauvaise réponse. Seule votre opinion compte !`,
+
+  mecue: `Ce questionnaire sert à évaluer votre expérience de @product_name.\n\nLisez attentivement chaque phrase et indiquez votre degré d'accord (de « pas du tout d'accord » à « tout à fait d'accord »). Soyez spontané·e : votre réponse doit refléter votre première impression.\n\nMerci d'évaluer chaque affirmation même si vous estimez qu'elle ne correspond pas complètement à votre expérience. Il n'y a pas de bonne ou de mauvaise réponse, seule votre opinion compte !`,
+}
+
+// ─── meCUE — sélection des dimensions par étude ──────────────────────────────
+//
+// meCUE est modulaire : une étude peut n'évaluer qu'une partie des dimensions.
+// La sélection est persistée de façon transparente dans le champ « Instructions »
+// du projet via une directive `@mecue:...` (même convention que @product_name),
+// retirée avant affichage côté répondant. Absence de directive = meCUE complet.
+
+export type MecueSelectionKey = 'U' | 'F' | 'A' | 'S' | 'C' | 'EMO' | 'CONS' | 'EVAL'
+
+export type MecueSelectionGroup = {
+  key: MecueSelectionKey
+  labelFr: string
+  moduleFr: string
+  itemIds: string[]
+}
+
+export const MECUE_SELECTION_GROUPS: MecueSelectionGroup[] = [
+  { key: 'U', labelFr: 'Utilisabilité', moduleFr: 'Module I — Perception du produit', itemIds: ['U1', 'U2', 'U3'] },
+  { key: 'F', labelFr: 'Utilité', moduleFr: 'Module I — Perception du produit', itemIds: ['F1', 'F2', 'F3'] },
+  { key: 'A', labelFr: 'Esthétique', moduleFr: 'Module I — Perception du produit', itemIds: ['A1', 'A2', 'A3'] },
+  { key: 'S', labelFr: 'Statut', moduleFr: 'Module I — Perception du produit', itemIds: ['S1', 'S2', 'S3'] },
+  { key: 'C', labelFr: 'Engagement', moduleFr: 'Module I — Perception du produit', itemIds: ['C1', 'C2', 'C3'] },
+  {
+    key: 'EMO',
+    labelFr: 'Émotions',
+    moduleFr: 'Module II — Émotions',
+    itemIds: ['PA1', 'ND1', 'NA1', 'PD1', 'NA2', 'ND2', 'PD3', 'PA3'],
+  },
+  {
+    key: 'CONS',
+    labelFr: 'Conséquences sur l\'usage',
+    moduleFr: 'Module III — Conséquences',
+    itemIds: ['IN1', 'L1', 'IN2', 'L2', 'L3', 'IN3'],
+  },
+  { key: 'EVAL', labelFr: 'Évaluation globale', moduleFr: 'Module IV — Évaluation globale', itemIds: ['GLOBAL'] },
+]
+
+export const MECUE_ALL_SELECTION_KEYS: MecueSelectionKey[] = MECUE_SELECTION_GROUPS.map((g) => g.key)
+
+const MECUE_ITEM_TO_SELECTION = new Map<string, MecueSelectionKey>()
+for (const group of MECUE_SELECTION_GROUPS) {
+  for (const itemId of group.itemIds) MECUE_ITEM_TO_SELECTION.set(itemId, group.key)
+}
+
+export function getMecueSelectionKeyForItem(itemId: string): MecueSelectionKey | undefined {
+  return MECUE_ITEM_TO_SELECTION.get(itemId)
+}
+
+const MECUE_DIRECTIVE_RE = /@mecue:[A-Za-z]+(?:,[A-Za-z]+)*/i
+
+/** Lit la sélection encodée dans les instructions. `null` = aucune directive (= complet). */
+export function parseMecueSelection(instructions: string | null | undefined): MecueSelectionKey[] | null {
+  if (!instructions) return null
+  const match = instructions.match(MECUE_DIRECTIVE_RE)
+  if (!match) return null
+  const validKeys = new Set<string>(MECUE_ALL_SELECTION_KEYS)
+  const keys = match[0]
+    .slice('@mecue:'.length)
+    .split(',')
+    .map((k) => k.trim().toUpperCase())
+    .filter((k): k is MecueSelectionKey => validKeys.has(k))
+  return keys.length > 0 ? Array.from(new Set(keys)) : null
+}
+
+/** Retire la directive `@mecue:...` du texte affiché au répondant. */
+export function stripMecueDirective(instructions: string | null | undefined): string {
+  if (!instructions) return ''
+  return instructions
+    .replace(MECUE_DIRECTIVE_RE, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
+/** Construit la directive à stocker (vide si la sélection est complète). */
+export function buildMecueDirective(keys: MecueSelectionKey[]): string {
+  const ordered = MECUE_ALL_SELECTION_KEYS.filter((k) => keys.includes(k))
+  if (ordered.length === 0 || ordered.length === MECUE_ALL_SELECTION_KEYS.length) return ''
+  return `@mecue:${ordered.join(',')}`
 }

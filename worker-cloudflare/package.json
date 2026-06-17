@@ -8,6 +8,10 @@
 		"start": "wrangler dev"
 	},
 	"devDependencies": {
-		"wrangler": "^4.65.0"
+		"wrangler": "^4.101.0"
+	},
+	"overrides": {
+		"esbuild": "^0.28.1",
+		"ws": "^8.21.0"
 	}
 }

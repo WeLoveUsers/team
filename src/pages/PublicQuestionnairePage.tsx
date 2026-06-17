@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   getQuestionnaireById,
+  getMecueSelectionKeyForItem,
+  parseMecueSelection,
+  stripMecueDirective,
   type QuestionnaireDefinition,
   type QuestionnaireQuestion,
   type LikertQuestion,
@@ -145,6 +148,104 @@ function DeepLikertQuestionView({
   )
 }
 
+function MeCueLikertQuestionView({
+  q,
+  index,
+  value,
+  onChange,
+  showError,
+}: {
+  q: LikertQuestion
+  index: number
+  value: number | null
+  onChange: (v: number) => void
+  showError: boolean
+}) {
+  const leftAnchor = q.scale[0]?.labelFr ?? ''
+  const rightAnchor = q.scale[q.scale.length - 1]?.labelFr ?? ''
+
+  return (
+    <div className={`py-5 ${index > 0 ? 'border-t border-slate-100' : ''}`}>
+      <p className={`text-sm font-medium mb-3 ${showError && value === null ? 'text-danger-600' : 'text-slate-800'}`}>
+        <span className="text-slate-400 mr-2">{index + 1}.</span>
+        {q.textFr}
+      </p>
+      <div className="flex items-center justify-center gap-1.5">
+        {q.scale.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            title={opt.labelFr}
+            aria-label={`${opt.value} — ${opt.labelFr}`}
+            className={`w-9 h-9 rounded-full border-2 text-xs font-medium transition-all cursor-pointer flex items-center justify-center ${
+              value === opt.value
+                ? 'bg-primary-600 text-white border-primary-600 shadow-sm scale-110'
+                : 'bg-white text-slate-500 border-slate-300 hover:border-primary-300 hover:bg-primary-50'
+            }`}
+          >
+            {opt.value}
+          </button>
+        ))}
+      </div>
+      <div className="flex items-center justify-between mt-1.5 px-0.5">
+        <span className="text-[11px] text-slate-400">{leftAnchor}</span>
+        <span className="text-[11px] text-slate-400 text-right">{rightAnchor}</span>
+      </div>
+      {showError && value === null && (
+        <p className="text-xs text-danger-500 mt-1.5 text-center">Veuillez répondre à cette question.</p>
+      )}
+    </div>
+  )
+}
+
+function MeCueGlobalQuestionView({
+  q,
+  index,
+  value,
+  onChange,
+  showError,
+}: {
+  q: BipolarQuestion
+  index: number
+  value: number | null
+  onChange: (v: number) => void
+  showError: boolean
+}) {
+  return (
+    <div className={`py-5 ${index > 0 ? 'border-t border-slate-100' : ''}`}>
+      <p className={`text-sm font-medium mb-3 ${showError && value === null ? 'text-danger-600' : 'text-slate-800'}`}>
+        <span className="text-slate-400 mr-2">{index + 1}.</span>
+        Pour conclure, comment évalueriez-vous ce produit dans son ensemble ?
+      </p>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-medium text-slate-600">{q.leftFr}</span>
+        <span className="text-xs font-medium text-slate-600 text-right">{q.rightFr}</span>
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-1.5">
+        {q.scaleValues.map((v) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => onChange(v)}
+            aria-label={`Choisir ${v}`}
+            className={`w-9 h-9 rounded-full border-2 text-xs font-medium transition-all cursor-pointer flex items-center justify-center ${
+              value === v
+                ? 'bg-primary-600 text-white border-primary-600 shadow-sm scale-110'
+                : 'bg-white text-slate-500 border-slate-300 hover:border-primary-300 hover:bg-primary-50'
+            }`}
+          >
+            {v > 0 ? `+${v}` : v}
+          </button>
+        ))}
+      </div>
+      {showError && value === null && (
+        <p className="text-xs text-danger-500 mt-1.5 text-center">Veuillez répondre à cette question.</p>
+      )}
+    </div>
+  )
+}
+
 function BipolarQuestionView({
   q,
   index,
@@ -251,19 +352,37 @@ export function PublicQuestionnairePage() {
     [questionnaireId],
   )
 
-  // Questions avec @product_type remplacé
+  // Sélection des dimensions meCUE pour cette étude (null = questionnaire complet)
+  const mecueSelection = useMemo(
+    () => (questionnaireId === 'mecue' ? parseMecueSelection(projectInstructions) : null),
+    [questionnaireId, projectInstructions],
+  )
+
+  // Questions avec @product_type remplacé (et filtrées selon la sélection meCUE)
   const resolvedQuestions = useMemo(() => {
     if (!questionnaire) return []
+    let questions = questionnaire.questions
+    if (questionnaireId === 'mecue' && mecueSelection) {
+      const selected = new Set(mecueSelection)
+      questions = questions.filter((q) => {
+        const key = getMecueSelectionKeyForItem(q.id)
+        return key ? selected.has(key) : true
+      })
+    }
     const label = resolveProductType(productType)
-    return replaceProductType(questionnaire.questions, label)
-  }, [questionnaire, productType])
+    return replaceProductType(questions, label)
+  }, [questionnaire, questionnaireId, mecueSelection, productType])
 
-  // Instructions avec @product_name remplacé par le nom du produit évalué
+  // Instructions avec @product_name remplacé, et directive meCUE retirée
   const resolvedInstructions = useMemo(() => {
     if (!projectInstructions) return null
     const name = productName || ''
-    return projectInstructions.replace(/@product_name/g, name)
-  }, [projectInstructions, productName])
+    const cleaned = questionnaireId === 'mecue'
+      ? stripMecueDirective(projectInstructions)
+      : projectInstructions
+    if (!cleaned) return null
+    return cleaned.replace(/@product_name/g, name)
+  }, [projectInstructions, productName, questionnaireId])
 
   if (statusLoading) {
     return (
@@ -368,6 +487,7 @@ export function PublicQuestionnairePage() {
   }
 
   const isDeep = questionnaireId === 'deep'
+  const isMecue = questionnaireId === 'mecue'
   const hideBipolarValueLabels = questionnaireId === 'ueq'
     || questionnaireId === 'ueq_s'
     || questionnaireId === 'attrakdiff'
@@ -422,7 +542,7 @@ export function PublicQuestionnairePage() {
             <form onSubmit={handleSubmit} className="bg-white rounded-brand border border-stone p-6">
               {resolvedQuestions.map((q, i) => (
                 <div key={q.id} id={`q-${q.id}`}>
-                  {q.type === 'likert' && !isDeep && (
+                  {q.type === 'likert' && !isDeep && !isMecue && (
                     <LikertQuestionView
                       q={q}
                       index={i}
@@ -440,7 +560,25 @@ export function PublicQuestionnairePage() {
                       showError={showValidation}
                     />
                   )}
-                  {q.type === 'bipolar' && (
+                  {q.type === 'likert' && isMecue && (
+                    <MeCueLikertQuestionView
+                      q={q as LikertQuestion}
+                      index={i}
+                      value={answers[q.id] ?? null}
+                      onChange={(v) => handleSetAnswer(q.id, v)}
+                      showError={showValidation}
+                    />
+                  )}
+                  {q.type === 'bipolar' && isMecue && (
+                    <MeCueGlobalQuestionView
+                      q={q}
+                      index={i}
+                      value={answers[q.id] ?? null}
+                      onChange={(v) => handleSetAnswer(q.id, v)}
+                      showError={showValidation}
+                    />
+                  )}
+                  {q.type === 'bipolar' && !isMecue && (
                     <BipolarQuestionView
                       q={q}
                       index={i}

@@ -2,7 +2,7 @@
  * Normalise le label Notion « Questionnaire type » en identifiant technique.
  * Utilisé par ProjectForm, ProjectDetail, ResponsesTable, PublicQuestionnairePage.
  */
-type QuestionnaireId = 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged'
+type QuestionnaireId = 'sus' | 'deep' | 'umux' | 'umux_lite' | 'ueq' | 'ueq_s' | 'attrakdiff' | 'attrakdiff_abridged' | 'mecue'
 
 export function computeQuestionnaireId(
   questionnaireType: string | null,
@@ -14,6 +14,7 @@ export function computeQuestionnaireId(
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '')
 
+  if (normalized.includes('mecue')) return 'mecue'
   if (normalized.includes('sus')) return 'sus'
   if (normalized.includes('deep')) return 'deep'
   if (normalized.includes('umuxlite'))

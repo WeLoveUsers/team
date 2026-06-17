@@ -16,6 +16,7 @@ import { UmuxLiteStats } from './stats/UmuxLiteStats'
 import { UeqStats } from './stats/UeqStats'
 import { UeqSStats } from './stats/UeqSStats'
 import { AttrakDiffStats } from './stats/AttrakDiffStats'
+import { MeCueStats } from './stats/MeCueStats'
 
 import {
   ATTRAKDIFF_DIMENSION_LABELS,
@@ -27,10 +28,13 @@ import {
   computeUeqStats,
   computeUeqSStats,
   computeAttrakDiffStats,
+  computeMeCueStats,
   computeWordPairAverages,
+  MECUE_DIMENSION_LABELS,
   UEQ_DIMENSION_LABELS,
   UEQ_S_DIMENSION_LABELS,
   type Answers,
+  type MecueDimensionKey,
   type StatsSummary,
 } from '../lib/stats'
 
@@ -58,6 +62,7 @@ type ComputedStats =
   | { type: 'ueq_s'; data: ReturnType<typeof computeUeqSStats> }
   | { type: 'attrakdiff'; data: ReturnType<typeof computeAttrakDiffStats>; wordPairs: Record<string, number> }
   | { type: 'attrakdiff_abridged'; data: ReturnType<typeof computeAttrakDiffStats>; wordPairs: Record<string, number> }
+  | { type: 'mecue'; data: ReturnType<typeof computeMeCueStats> }
 
 function parsePayload(r: ProjectResponse): { questionnaireId?: string; answers?: Answers } | null {
   const anyProps = r.properties as Record<string, unknown>
@@ -193,6 +198,19 @@ function getResponseMetricColumns(qid: ReturnType<typeof computeQuestionnaireId>
         { key: 'ATT', label: 'ATT', decimals: 2 },
         { key: 'QH', label: 'QH', decimals: 2 },
       ]
+    case 'mecue':
+      return [
+        { key: 'GLOBAL', label: 'Éval. globale', decimals: 2 },
+        { key: 'U', label: 'Utilisabilité', decimals: 2 },
+        { key: 'F', label: 'Utilité', decimals: 2 },
+        { key: 'A', label: 'Esthétique', decimals: 2 },
+        { key: 'S', label: 'Statut', decimals: 2 },
+        { key: 'C', label: 'Engagement', decimals: 2 },
+        { key: 'EMO_POS', label: 'Émo. +', decimals: 2 },
+        { key: 'EMO_NEG', label: 'Émo. - (inv.)', decimals: 2 },
+        { key: 'INT', label: 'Intention', decimals: 2 },
+        { key: 'L', label: 'Fidélité', decimals: 2 },
+      ]
     default:
       return [{ key: 'answered', label: 'Réponses', kind: 'integer' }]
   }
@@ -294,6 +312,17 @@ function buildResponseMetrics(
         ATT: stats.ATT.mean,
         QH: stats.QH.mean,
       }
+    }
+    case 'mecue': {
+      const stats = computeMeCueStats([answers])
+      if (!stats) return {}
+      const metrics: Record<string, ResponseMetricValue> = {}
+      const dimKeys: MecueDimensionKey[] = ['U', 'F', 'A', 'S', 'C', 'EMO_POS', 'EMO_NEG', 'INT', 'L']
+      for (const key of dimKeys) {
+        metrics[key] = stats.dimensions[key]?.mean ?? null
+      }
+      metrics.GLOBAL = stats.global?.mean ?? null
+      return metrics
     }
     default:
       return { answered: Object.keys(answers).length }
@@ -427,6 +456,20 @@ async function exportWorkbook(
             const score = stats.wordPairs[question.id]
             if (typeof score !== 'number') continue
             sheetResults.push([`${question.leftFr} ↔ ${question.rightFr}`, Number(score.toFixed(2))])
+          }
+        }
+        break
+      }
+      case 'mecue': {
+        const mecue = stats.data as ReturnType<typeof computeMeCueStats>
+        if (mecue) {
+          const dimKeys: MecueDimensionKey[] = ['U', 'F', 'A', 'S', 'C', 'EMO_POS', 'EMO_NEG', 'INT', 'L']
+          for (const key of dimKeys) {
+            const summary = mecue.dimensions[key]
+            if (summary) sheetResults.push(statsRow(MECUE_DIMENSION_LABELS[key], summary))
+          }
+          if (mecue.global) {
+            sheetResults.push(statsRow(`${MECUE_DIMENSION_LABELS.GLOBAL} (-5 à +5)`, mecue.global))
           }
         }
         break
@@ -727,6 +770,7 @@ function StatsRenderer({
           abridged={stats.type === 'attrakdiff_abridged'}
         />
       )}
+      {stats.type === 'mecue' && stats.data && <MeCueStats stats={stats.data} />}
     </>
   )
 }
@@ -848,6 +892,8 @@ export function ProjectDetail({
           data: computeAttrakDiffStats(answers, true),
           wordPairs: computeWordPairAverages(answers, true),
         }
+      case 'mecue':
+        return { type: 'mecue' as const, data: computeMeCueStats(answers) }
       default:
         return null
     }
