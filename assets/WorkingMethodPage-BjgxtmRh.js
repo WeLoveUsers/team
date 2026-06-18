@@ -1,4 +1,4 @@
-import{j as a}from"./charts-CsFW7Ur_.js";import{r as t}from"./react-BW2pKjaD.js";import{s as r}from"./contentInteractions-WnP06vtG.js";const l=`<article class="w-full">
+import{i as e}from"./rolldown-runtime-aKtaBQYM.js";import{g as t,h as n}from"./charts-BEjnuFGg.js";import{t as r}from"./contentInteractions-C-ADOpEy.js";var i=e(t(),1),a=`<article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Note interne · Février 2026</p>
     <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Ce qui change,<br>ce qui reste.</h1>
@@ -223,4 +223,4 @@ import{j as a}from"./charts-CsFW7Ur_.js";import{r as t}from"./react-BW2pKjaD.js"
     <p class="text-sm text-taupe mt-1">We Love Users · Février 2026</p>
   </footer>
 </article>
-`;function d(){const e=t.useRef(null);return t.useEffect(()=>{const n=e.current;if(!n)return;const s=[r(n,{navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeOffset:12,smoothScroll:!0})];return()=>{s.forEach(i=>i())}},[]),a.jsx("div",{ref:e,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:l}})}export{d as WorkingMethodPage};
+`,o=n();function s(){let e=(0,i.useRef)(null);return(0,i.useEffect)(()=>{let t=e.current;if(!t)return;let n=[r(t,{navSelector:`nav[aria-label="Sommaire"]`,linkSelector:`a[href^="#"]`,activeClass:`is-active`,activeOffset:12,smoothScroll:!0})];return()=>{n.forEach(e=>e())}},[]),(0,o.jsx)(`div`,{ref:e,className:`mx-auto w-full max-w-5xl`,dangerouslySetInnerHTML:{__html:a}})}export{s as WorkingMethodPage};

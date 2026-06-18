@@ -1,4 +1,4 @@
-import{j as r}from"./charts-CsFW7Ur_.js";import{r as s}from"./react-BW2pKjaD.js";import{s as i}from"./contentInteractions-WnP06vtG.js";const l=`<article class="w-full">
+import{i as e}from"./rolldown-runtime-aKtaBQYM.js";import{g as t,h as n}from"./charts-BEjnuFGg.js";import{t as r}from"./contentInteractions-C-ADOpEy.js";var i=e(t(),1),a=`<article class="w-full">
   <header class="pb-12 border-b border-stone">
     <p class="text-xs font-bold uppercase tracking-[0.2em] text-flame mb-6">We Love Users · Cadre de référence</p>
     <h1 class="font-serif text-5xl md:text-6xl text-ink leading-tight mb-6">Guidelines d'intervention<br>— Freelances We Love Users.</h1>
@@ -129,4 +129,4 @@ import{j as r}from"./charts-CsFW7Ur_.js";import{r as s}from"./react-BW2pKjaD.js"
     <p class="text-sm text-taupe mt-1">Cadre de référence · Freelances</p>
   </footer>
 </article>
-`;function c(){const e=s.useRef(null);return s.useEffect(()=>{const t=e.current;if(!t)return;const n=[i(t,{navSelector:'nav[aria-label="Sommaire"]',linkSelector:'a[href^="#"]',activeClass:"is-active",activeOffset:12,smoothScroll:!0})];return()=>{n.forEach(a=>a())}},[]),r.jsx("div",{ref:e,className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:l}})}export{c as GuidelinesInterventionPage};
+`,o=n();function s(){let e=(0,i.useRef)(null);return(0,i.useEffect)(()=>{let t=e.current;if(!t)return;let n=[r(t,{navSelector:`nav[aria-label="Sommaire"]`,linkSelector:`a[href^="#"]`,activeClass:`is-active`,activeOffset:12,smoothScroll:!0})];return()=>{n.forEach(e=>e())}},[]),(0,o.jsx)(`div`,{ref:e,className:`mx-auto w-full max-w-5xl`,dangerouslySetInnerHTML:{__html:a}})}export{s as GuidelinesInterventionPage};

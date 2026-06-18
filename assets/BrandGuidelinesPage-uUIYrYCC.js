@@ -1,4 +1,4 @@
-import{j as e}from"./charts-CsFW7Ur_.js";import"./react-BW2pKjaD.js";const t=`
+import{h as e}from"./charts-BEjnuFGg.js";var t=`
 <section class="mb-20">
     <div class="border-b border-stone pb-12">
         <span class="text-xs font-bold uppercase tracking-widest text-flame mb-4 block">Charte graphique</span>
@@ -419,4 +419,4 @@ import{j as e}from"./charts-CsFW7Ur_.js";import"./react-BW2pKjaD.js";const t=`
         <li>Conserver la pile typographique officielle : Sans = Satoshi, Serif = Times New Roman.</li>
     </ul>
 </section>
-`;function a(){return e.jsx("div",{className:"mx-auto w-full max-w-5xl",dangerouslySetInnerHTML:{__html:t}})}export{a as BrandGuidelinesPage};
+`,n=e();function r(){return(0,n.jsx)(`div`,{className:`mx-auto w-full max-w-5xl`,dangerouslySetInnerHTML:{__html:t}})}export{r as BrandGuidelinesPage};
