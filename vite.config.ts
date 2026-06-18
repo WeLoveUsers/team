@@ -7,9 +7,14 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-router-dom'],
-          charts: ['chart.js', 'react-chartjs-2'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          if (id.includes('chart.js') || id.includes('react-chartjs-2')) return 'charts'
+          if (
+            id.includes('react-router-dom') ||
+            id.includes('react-dom') ||
+            id.includes('/react/')
+          ) return 'react'
         },
       },
     },

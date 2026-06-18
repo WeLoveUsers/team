@@ -26,7 +26,8 @@
       "Bash(npm view *)",
       "Bash(echo \"latest exceljs: $\\(npm view exceljs version 2>&1\\)\")",
       "Bash(echo \"uuid requis par dernière exceljs: $\\(npm view exceljs dependencies.uuid 2>&1\\)\")",
-      "Bash(echo \"latest uuid: $\\(npm view uuid version 2>&1\\)\")"
+      "Bash(echo \"latest uuid: $\\(npm view uuid version 2>&1\\)\")",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
