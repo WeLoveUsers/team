@@ -7,12 +7,14 @@
     "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "vitest run",
     "audit:prod": "npm audit --omit=dev --audit-level=moderate",
     "audit:full": "npm audit",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.0",
+    "@tanstack/react-query": "^5.101.2",
     "chart.js": "^4.5.1",
     "exceljs": "^3.4.0",
     "html-to-image": "^1.11.13",
@@ -34,6 +36,7 @@
     "globals": "^17.3.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.56.0",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.10"
   }
 }

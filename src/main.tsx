@@ -1,7 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './index.css'
+
+const queryClient = new QueryClient()
 
 const App = lazy(() => import('./App.tsx'))
 const PublicQuestionnairePage = lazy(async () => {
@@ -19,13 +22,15 @@ function FullscreenLoading() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Suspense fallback={<FullscreenLoading />}>
-        <Routes>
-          <Route path="/p/:projectToken" element={<PublicQuestionnairePage />} />
-          <Route path="/*" element={<App />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Suspense fallback={<FullscreenLoading />}>
+          <Routes>
+            <Route path="/p/:projectToken" element={<PublicQuestionnairePage />} />
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>,
 )
