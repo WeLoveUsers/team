@@ -20,7 +20,9 @@ type Props = {
   onResponsesChanged: () => void
 }
 
-function parsePayload(r: ProjectResponse): { questionnaireId?: string; answers?: Answers } | null {
+function parsePayload(
+  r: ProjectResponse,
+): { questionnaireId?: string; answers?: Answers; firstName?: string } | null {
   const anyProps = r.properties as Record<string, unknown>
   const payloadProp = anyProps?.Payload as { rich_text?: Array<{ plain_text?: string }> } | undefined
   if (!payloadProp?.rich_text) return null
@@ -46,6 +48,7 @@ type MetricColumn = {
 type ActiveRow = {
   response: ProjectResponse
   metrics: MetricMap
+  firstName: string | null
 }
 
 function toTimestamp(value: string): number {
@@ -322,9 +325,13 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
       return {
         response,
         metrics: buildMetrics(qid, answers),
+        firstName: payload?.firstName?.trim() || null,
       }
     })
   ), [activeResponses, qid])
+
+  // Colonne « Prénom » affichée seulement si l'étude collecte les prénoms
+  const showFirstName = useMemo(() => activeRows.some((row) => row.firstName), [activeRows])
 
   // Collect all unique tags across responses
   const allTags = useMemo(() => {
@@ -521,6 +528,9 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
                     />
                   </th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">#</th>
+                  {showFirstName && (
+                    <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">Prénom</th>
+                  )}
                   {allTags.length > 0 && (
                     <th className="px-3 py-2 text-left text-xs font-medium text-taupe uppercase">Tags</th>
                   )}
@@ -551,6 +561,9 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
                       />
                     </td>
                     <td className="px-3 py-2 text-taupe">{i + 1}</td>
+                    {showFirstName && (
+                      <td className="px-3 py-2 text-ink whitespace-nowrap">{row.firstName ?? '—'}</td>
+                    )}
                     {allTags.length > 0 && (
                       <td className="px-3 py-2">
                         <div className="flex gap-1 flex-wrap">
@@ -601,6 +614,7 @@ export function ResponsesTable({ project, responses, onResponsesChanged }: Props
                   <tr key={r.id} className="bg-cream/30 opacity-50">
                     <td className="px-2 py-2" />
                     <td className="px-3 py-2 text-taupe line-through">{activeRows.length + i + 1}</td>
+                    {showFirstName && <td className="px-3 py-2" />}
                     {allTags.length > 0 && <td className="px-3 py-2" />}
                     <td className="px-3 py-2 text-taupe line-through" colSpan={metricColumnCount}>Supprimée</td>
                     <td className="px-3 py-2 text-taupe text-xs line-through whitespace-nowrap">

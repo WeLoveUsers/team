@@ -6,9 +6,11 @@ import {
   DEFAULT_INSTRUCTIONS,
   MECUE_ALL_SELECTION_KEYS,
   MECUE_SELECTION_GROUPS,
+  buildFirstNameDirective,
   buildMecueDirective,
+  parseCollectFirstName,
   parseMecueSelection,
-  stripMecueDirective,
+  stripProjectDirectives,
   type MecueSelectionKey,
 } from '../questionnaires'
 
@@ -56,6 +58,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
   const [productName, setProductName] = useState('')
   const [instructions, setInstructions] = useState('')
   const [mecueDims, setMecueDims] = useState<MecueSelectionKey[]>(MECUE_ALL_SELECTION_KEYS)
+  const [collectFirstName, setCollectFirstName] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -69,10 +72,11 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       setFolder(project.folder ?? '')
       setProductType(project.productType ?? '')
       setProductName(project.productName ?? '')
-      // Les instructions peuvent contenir la directive meCUE @mecue:... : on l'extrait
-      // dans la sélection des dimensions et on n'affiche que le texte « propre ».
-      setInstructions(stripMecueDirective(project.instructions ?? ''))
+      // Les instructions peuvent contenir des directives (@mecue:..., @firstname) :
+      // on les extrait dans les options et on n'affiche que le texte « propre ».
+      setInstructions(stripProjectDirectives(project.instructions ?? ''))
       setMecueDims(parseMecueSelection(project.instructions) ?? MECUE_ALL_SELECTION_KEYS)
+      setCollectFirstName(parseCollectFirstName(project.instructions))
     } else {
       setName('')
       setQuestionnaireType('')
@@ -83,6 +87,7 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
       setProductName('')
       setInstructions('')
       setMecueDims(MECUE_ALL_SELECTION_KEYS)
+      setCollectFirstName(false)
     }
     setError(null)
   }, [project])
@@ -127,14 +132,14 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
         throw new Error('Sélectionnez au moins une dimension meCUE à évaluer.')
       }
 
-      // Pour meCUE, on encode la sélection des dimensions dans les instructions
-      // via la directive @mecue:... (vide si la sélection est complète).
-      let instructionsPayload: string | null = instructions || null
-      if (isMecue) {
-        const base = stripMecueDirective(instructions)
-        const directive = buildMecueDirective(mecueDims)
-        instructionsPayload = [base, directive].filter(Boolean).join('\n\n') || null
-      }
+      // Les options du questionnaire sont encodées dans les instructions via des
+      // directives (@mecue:..., @firstname), retirées avant affichage au répondant.
+      const directives = [
+        isMecue ? buildMecueDirective(mecueDims) : '',
+        buildFirstNameDirective(collectFirstName),
+      ].filter(Boolean)
+      const instructionsPayload: string | null =
+        [stripProjectDirectives(instructions), ...directives].filter(Boolean).join('\n\n') || null
 
       const payload: ProjectPayload = {
         name: name.trim(),
@@ -392,6 +397,25 @@ export function ProjectForm({ project, hasResponses, existingFolders, onSaved, o
             </p>
           </div>
         )}
+      </div>
+
+      <div className="rounded-brand border border-stone bg-cream p-4">
+        <label className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={collectFirstName}
+            onChange={(e) => setCollectFirstName(e.target.checked)}
+            className="mt-0.5 rounded accent-flame cursor-pointer"
+          />
+          <span>
+            <span className="block text-sm font-medium text-ink">Demander le prénom du répondant</span>
+            <span className="block text-xs text-taupe mt-0.5">
+              Un champ « Prénom » obligatoire est affiché avant de commencer le questionnaire.
+              Le prénom apparaît ensuite dans le tableau des réponses et dans l'export Excel,
+              pour faire le lien avec vos notes de séance.
+            </span>
+          </span>
+        </label>
       </div>
 
       {publicUrl && (

@@ -64,7 +64,9 @@ type ComputedStats =
   | { type: 'attrakdiff_abridged'; data: ReturnType<typeof computeAttrakDiffStats>; wordPairs: Record<string, number> }
   | { type: 'mecue'; data: ReturnType<typeof computeMeCueStats> }
 
-function parsePayload(r: ProjectResponse): { questionnaireId?: string; answers?: Answers } | null {
+function parsePayload(
+  r: ProjectResponse,
+): { questionnaireId?: string; answers?: Answers; firstName?: string } | null {
   const anyProps = r.properties as Record<string, unknown>
   const payloadProp = anyProps?.Payload as { rich_text?: Array<{ plain_text?: string }> } | undefined
   if (!payloadProp?.rich_text) return null
@@ -481,9 +483,20 @@ async function exportWorkbook(
     sheetResults.push(['Aucune statistique disponible.'])
   }
 
+  // Prénoms collectés (option @firstname) : colonne ajoutée seulement si présents.
+  const firstNameByResponseId = new Map<string, string>()
+  activeResponses.forEach((response) => {
+    const name = parsePayload(response)?.firstName?.trim()
+    if (name) firstNameByResponseId.set(response.id, name)
+  })
+  const hasFirstNames = firstNameByResponseId.size > 0
+  const firstNameHeader: ExportCell[] = hasFirstNames ? ['Prénom'] : []
+  const firstNameCell = (responseId: string): ExportCell[] =>
+    hasFirstNames ? [firstNameByResponseId.get(responseId) ?? ''] : []
+
   const metricColumns = getResponseMetricColumns(qid)
   const sheetResponses: ExportCell[][] = [
-    ['#', ...metricColumns.map((c) => c.label), 'Date', 'ID réponse', 'Statut'],
+    ['#', ...firstNameHeader, ...metricColumns.map((c) => c.label), 'Date', 'ID réponse', 'Statut'],
   ]
 
   activeResponses.forEach((response, index) => {
@@ -491,6 +504,7 @@ async function exportWorkbook(
     const metrics = buildResponseMetrics(qid, payload?.answers ?? null)
     sheetResponses.push([
       index + 1,
+      ...firstNameCell(response.id),
       ...metricColumns.map((column) => formatMetricValue(metrics[column.key] ?? null, column)),
       new Date(response.createdTime).toLocaleString('fr-FR'),
       response.id,
@@ -501,6 +515,7 @@ async function exportWorkbook(
   archivedResponses.forEach((response, index) => {
     sheetResponses.push([
       activeResponses.length + index + 1,
+      ...firstNameHeader.map(() => null),
       ...metricColumns.map(() => null),
       new Date(response.createdTime).toLocaleString('fr-FR'),
       response.id,
@@ -518,7 +533,7 @@ async function exportWorkbook(
   const questionKeys = rawQuestionKeys.length > 0 ? rawQuestionKeys : Array.from(fallbackKeys).sort((a, b) => a.localeCompare(b, 'fr'))
 
   const sheetRaw: ExportCell[][] = [
-    ['Date', 'ID réponse', ...questionKeys],
+    ['Date', ...firstNameHeader, 'ID réponse', ...questionKeys],
   ]
 
   activeResponses.forEach((response) => {
@@ -526,6 +541,7 @@ async function exportWorkbook(
     const answers = payload?.answers ?? {}
     sheetRaw.push([
       new Date(response.createdTime).toLocaleString('fr-FR'),
+      ...firstNameCell(response.id),
       response.id,
       ...questionKeys.map((key) => {
         const value = answers[key]
@@ -655,6 +671,7 @@ async function exportWorkbook(
     const label = String(h ?? '')
     const norm = label.toLowerCase()
     if (norm === '#') return { width: 6 }
+    if (norm.includes('prénom')) return { width: 16 }
     if (norm.includes('date')) return { width: 20 }
     if (norm.includes('id')) return { width: 38 }
     if (norm.includes('statut')) return { width: 12 }
@@ -689,8 +706,10 @@ async function exportWorkbook(
   const rawHeaders = sheetRaw[0] ?? []
   wsRaw.columns = rawHeaders.map((h) => {
     const label = String(h ?? '')
-    if (label.toLowerCase().includes('date')) return { width: 20 }
-    if (label.toLowerCase().includes('id')) return { width: 38 }
+    const norm = label.toLowerCase()
+    if (norm.includes('prénom')) return { width: 16 }
+    if (norm.includes('date')) return { width: 20 }
+    if (norm.includes('id')) return { width: 38 }
     return { width: 10 }
   })
 

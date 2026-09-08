@@ -12,6 +12,8 @@ const textDecoder = new TextDecoder()
 const AUTH_ROLES = ['admin', 'team']
 const AUTH_STATUSES = ['active', 'suspended']
 const DEFAULT_JWT_TTL_SECONDS = 60 * 60 * 12
+/** Longueur max du prénom d'un répondant (doit rester aligné avec le front). */
+const FIRST_NAME_MAX_LENGTH = 80
 const DOCUMENT_TEMPLATE_PHASES = ['Préparation', 'Passation', 'Restitution']
 const DOCUMENT_TEMPLATE_TYPES = ['Google Doc', 'Google Slide', 'Google Sheet', 'Google Form', 'Dossier']
 const DOCUMENT_TEMPLATE_PHASE_BY_NORMALIZED = {
@@ -1597,7 +1599,7 @@ async function handlePublicSubmit(request, env) {
     return jsonResponse({ error: 'Corps JSON invalide' }, 400)
   }
 
-  const { projectToken, answers } = body || {}
+  const { projectToken, answers, firstName } = body || {}
 
   if (!projectToken || typeof projectToken !== 'string') {
     return jsonResponse({ error: 'projectToken manquant' }, 400)
@@ -1663,7 +1665,13 @@ async function handlePublicSubmit(request, env) {
 
   const responsesDataSourceId = await getDataSourceIdForDatabase(responsesDbId, env)
 
+  // Prénom du répondant : optionnel, collecté seulement si l'étude l'active
+  // (directive @firstname dans les instructions du projet).
+  const cleanFirstName =
+    typeof firstName === 'string' ? firstName.trim().slice(0, FIRST_NAME_MAX_LENGTH) : ''
+
   const payload = { questionnaireId, answers }
+  if (cleanFirstName) payload.firstName = cleanFirstName
 
   const newPageBody = {
     parent: {

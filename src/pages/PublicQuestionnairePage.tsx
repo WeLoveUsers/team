@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom'
 import {
   getQuestionnaireById,
   getMecueSelectionKeyForItem,
+  parseCollectFirstName,
   parseMecueSelection,
-  stripMecueDirective,
+  stripProjectDirectives,
   type QuestionnaireDefinition,
   type QuestionnaireQuestion,
   type LikertQuestion,
@@ -14,6 +15,9 @@ import { submitPublicResponse, fetchProjectStatus, type PublicAnswers } from '..
 import { computeQuestionnaireId } from '../components/Sidebar'
 
 type Answers = Record<string, number | null>
+
+/** Aligné sur la troncature appliquée côté worker. */
+const FIRST_NAME_MAX_LENGTH = 80
 
 /**
  * Correspondance entre la valeur du select "Product type" et le texte
@@ -305,6 +309,8 @@ export function PublicQuestionnairePage() {
   const [error, setError] = useState<string | null>(null)
   const [showValidation, setShowValidation] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [firstNameError, setFirstNameError] = useState(false)
   const [questionnaireId, setQuestionnaireId] = useState<QuestionnaireDefinition['id'] | null>(null)
   const [projectName, setProjectName] = useState<string | null>(null)
   const [productType, setProductType] = useState<string | null>(null)
@@ -373,16 +379,20 @@ export function PublicQuestionnairePage() {
     return replaceProductType(questions, label)
   }, [questionnaire, questionnaireId, mecueSelection, productType])
 
-  // Instructions avec @product_name remplacé, et directive meCUE retirée
+  // L'étude demande-t-elle le prénom du répondant ?
+  const collectFirstName = useMemo(
+    () => parseCollectFirstName(projectInstructions),
+    [projectInstructions],
+  )
+
+  // Instructions avec @product_name remplacé, et directives retirées
   const resolvedInstructions = useMemo(() => {
     if (!projectInstructions) return null
     const name = productName || ''
-    const cleaned = questionnaireId === 'mecue'
-      ? stripMecueDirective(projectInstructions)
-      : projectInstructions
+    const cleaned = stripProjectDirectives(projectInstructions)
     if (!cleaned) return null
     return cleaned.replace(/@product_name/g, name)
-  }, [projectInstructions, productName, questionnaireId])
+  }, [projectInstructions, productName])
 
   if (statusLoading) {
     return (
@@ -427,7 +437,12 @@ export function PublicQuestionnairePage() {
   }
 
   const handleStart = () => {
+    if (collectFirstName && !firstName.trim()) {
+      setFirstNameError(true)
+      return
+    }
     setError(null)
+    setFirstNameError(false)
     setShowValidation(false)
     setHasStarted(true)
   }
@@ -457,6 +472,7 @@ export function PublicQuestionnairePage() {
       await submitPublicResponse({
         projectToken,
         answers: answers as PublicAnswers,
+        firstName: collectFirstName ? firstName.trim() : undefined,
       })
       setSubmitted(true)
     } catch (err) {
@@ -510,7 +526,44 @@ export function PublicQuestionnairePage() {
                 dangerouslySetInnerHTML={{ __html: questionnaire.descriptionHtmlFr }}
               />
             )}
-            <div className="mt-6 pt-4 border-t border-slate-100">
+            {collectFirstName && (
+              <div className="mt-6 pt-4 border-t border-slate-100">
+                <label htmlFor="respondent-first-name" className="block text-sm font-medium text-slate-800 mb-1">
+                  Votre prénom
+                </label>
+                <input
+                  id="respondent-first-name"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value)
+                    if (firstNameError) setFirstNameError(false)
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      handleStart()
+                    }
+                  }}
+                  autoComplete="given-name"
+                  maxLength={FIRST_NAME_MAX_LENGTH}
+                  aria-invalid={firstNameError}
+                  className={`w-full px-3 py-2 text-sm rounded-lg border bg-white text-slate-800 focus:outline-none transition-colors ${
+                    firstNameError
+                      ? 'border-danger-500 focus:border-danger-500'
+                      : 'border-slate-300 focus:border-primary-500'
+                  }`}
+                  placeholder="Ex : Camille"
+                />
+                <p className="text-xs text-slate-500 mt-1.5">
+                  Votre prénom nous sert uniquement à relier vos réponses aux échanges de la séance.
+                </p>
+                {firstNameError && (
+                  <p className="text-xs text-danger-500 mt-1.5">Merci d'indiquer votre prénom pour commencer.</p>
+                )}
+              </div>
+            )}
+            <div className={`mt-6 pt-4 ${collectFirstName ? '' : 'border-t border-slate-100'}`}>
               <button
                 type="button"
                 onClick={handleStart}

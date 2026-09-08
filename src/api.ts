@@ -324,6 +324,8 @@ export type PublicAnswers = Record<string, number | null>
 export async function submitPublicResponse(params: {
   projectToken: string
   answers: PublicAnswers
+  /** Prénom du répondant, si l'étude le collecte (option `@firstname`). */
+  firstName?: string
 }): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/public/submit`, {
     method: 'POST',

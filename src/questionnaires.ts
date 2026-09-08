@@ -633,18 +633,41 @@ export function parseMecueSelection(instructions: string | null | undefined): Me
   return keys.length > 0 ? Array.from(new Set(keys)) : null
 }
 
-/** Retire la directive `@mecue:...` du texte affiché au répondant. */
-export function stripMecueDirective(instructions: string | null | undefined): string {
-  if (!instructions) return ''
-  return instructions
-    .replace(MECUE_DIRECTIVE_RE, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-}
-
 /** Construit la directive à stocker (vide si la sélection est complète). */
 export function buildMecueDirective(keys: MecueSelectionKey[]): string {
   const ordered = MECUE_ALL_SELECTION_KEYS.filter((k) => keys.includes(k))
   if (ordered.length === 0 || ordered.length === MECUE_ALL_SELECTION_KEYS.length) return ''
   return `@mecue:${ordered.join(',')}`
+}
+
+// ─── Prénom du répondant ─────────────────────────────────────────────────────
+//
+// Option activable par étude : un champ « Prénom » est demandé au répondant
+// avant de commencer, pour relier ses réponses aux notes prises en séance.
+// Comme la sélection meCUE, l'option est persistée dans le champ « Instructions »
+// du projet via une directive `@firstname`, retirée avant affichage.
+
+const FIRSTNAME_DIRECTIVE_RE = /@firstname\b/i
+
+/** Indique si l'étude demande le prénom du répondant. */
+export function parseCollectFirstName(instructions: string | null | undefined): boolean {
+  if (!instructions) return false
+  return FIRSTNAME_DIRECTIVE_RE.test(instructions)
+}
+
+/** Construit la directive à stocker (vide si l'option est désactivée). */
+export function buildFirstNameDirective(enabled: boolean): string {
+  return enabled ? '@firstname' : ''
+}
+
+// ─── Directives — utilitaire commun ──────────────────────────────────────────
+
+const PROJECT_DIRECTIVE_RES = [MECUE_DIRECTIVE_RE, FIRSTNAME_DIRECTIVE_RE]
+
+/** Retire toutes les directives (`@mecue:...`, `@firstname`) du texte affiché. */
+export function stripProjectDirectives(instructions: string | null | undefined): string {
+  if (!instructions) return ''
+  let text = instructions
+  for (const re of PROJECT_DIRECTIVE_RES) text = text.replace(re, '')
+  return text.replace(/\n{3,}/g, '\n\n').trim()
 }
