@@ -55,10 +55,6 @@ const GuidelinesInterventionPage = lazy(async () => {
   const mod = await import('./pages/GuidelinesInterventionPage')
   return { default: mod.GuidelinesInterventionPage }
 })
-const TranscriptionPage = lazy(async () => {
-  const mod = await import('./pages/TranscriptionPage')
-  return { default: mod.TranscriptionPage }
-})
 
 function FullscreenLoading() {
   return (
@@ -165,7 +161,6 @@ function App() {
           <Route path="/charte-graphique" element={<BrandGuidelinesPage />} />
           <Route path="/charte-graphique/slides" element={<BrandSlidesPage />} />
           <Route path="/charte-graphique/fonts" element={<BrandFontsPage />} />
-          <Route path="/transcription" element={<TranscriptionPage />} />
           <Route path="/modeles-documents" element={<Navigate to="/modeles-documents/preparation" replace />} />
           <Route path="/modeles-documents/:phase" element={<DocumentTemplatesPage />} />
           <Route

@@ -31,22 +31,10 @@
       "Bash(npm test *)",
       "Bash(npm run *)",
       "Bash(git check-ignore *)",
-      "Bash(ls /Users/flornet/Sites | grep -i -E 'transcri|whisper|api' ; echo \"===\" ; ls /Users/flornet/Sites)",
-      "Bash(fly version *)",
-      "Bash(fly status *)",
-      "Read(//Users/flornet/.fly/**)",
       "Read(//opt/homebrew/bin/**)",
       "Bash(env)",
-      "Bash(ssh -o BatchMode=yes -o ConnectTimeout=3 flornet@192.168.64.4 'echo connected as $\\(whoami\\) on $\\(hostname\\) && which fly flyctl ; ls ~/Shared 2>/dev/null | head -5')",
       "Bash(ssh-add -l)",
-      "Bash(ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N \"\" -C \"flornet@mac\" -q)",
-      "Bash(ssh -o BatchMode=yes -o ConnectTimeout=5 flornet@192.168.64.4 'echo \"connecté sur $\\(hostname\\)\" && which fly flyctl ; fly auth whoami 2>&1 || flyctl auth whoami 2>&1 ; ls ~/Shared/api.weloveusers.com/fly.toml')",
-      "Bash(ssh flornet@192.168.64.4 'ls ~/.fly/bin 2>/dev/null ; ls ~/Shared 2>/dev/null ; echo \"=== home ===\" ; ls ~ ; echo \"=== mounts ===\" ; mount | grep -i virtiofs ; grep -l fly ~/.bashrc ~/.profile 2>/dev/null && grep fly ~/.bashrc ~/.profile 2>/dev/null')",
-      "Bash(ssh flornet@192.168.64.4 'export PATH=\"$HOME/.fly/bin:$PATH\" && fly auth whoami && grep -E \"PROCESS_TIMEOUT_MS|cpus\" ~/Shared/Sites/api.weloveusers.com/fly.toml')",
-      "Bash(ssh flornet@192.168.64.4 'export PATH=\"$HOME/.fly/bin:$PATH\" && cd ~/Shared/Sites/api.weloveusers.com && fly deploy 2>&1')",
-      "Bash(ssh flornet@192.168.64.4 'export PATH=\"$HOME/.fly/bin:$PATH\" && fly machine list -a weloveusers-transcription-api')",
-      "Bash(curl -s -m 30 https://weloveusers-transcription-api.fly.dev/health)",
-      "Bash(ssh flornet@192.168.64.4 'export PATH=\"$HOME/.fly/bin:$PATH\" && fly machine status d894926f90d358 -a weloveusers-transcription-api -d 2>/dev/null | grep -A12 \"Environment\\\\|env\" | head -15')"
+      "Bash(ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N \"\" -C \"flornet@mac\" -q)"
     ]
   }
 }

@@ -33,8 +33,6 @@ jobs:
           VITE_NOTION_PROJECTS_DB_ID: ${{ secrets.NOTION_PROJECTS_DB_ID }}
           VITE_NOTION_RESPONSES_DB_ID: ${{ secrets.NOTION_RESPONSES_DB_ID }}
           VITE_API_BASE_URL: ${{ secrets.API_BASE_URL }}
-          # URL publique (non secrète) : elle est de toute façon visible dans le bundle
-          VITE_TRANSCRIPTION_API_BASE_URL: https://weloveusers-transcription-api.fly.dev
 
       - name: Copy index.html to 404.html (SPA fallback for GitHub Pages)
         run: cp dist/index.html dist/404.html
